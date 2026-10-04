@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Context Health Factory — Inside the Best Model</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif; color: #17202a; background: #fff; }
+  .page { width: 210mm; height: 296.5mm; page-break-after: always; position: relative; overflow: hidden; background: #fff; padding: 9mm 11mm 8mm; }
+  .page:last-child { page-break-after: auto; }
+  .phead { border-bottom: 2.5px solid #17202a; padding-bottom: 6px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: baseline; }
+  .phead h1 { font-size: 15px; letter-spacing: .5px; }
+  .phead .no { font-size: 9px; color: #7f8c9b; font-family: Consolas, monospace; }
+  h2 { font-size: 10.5px; letter-spacing: 1.2px; color: #4a5568; margin: 10px 0 6px; }
+  .box { border: 1px solid #cbd5e0; border-radius: 4px; padding: 7px 10px; font-size: 9px; line-height: 1.45; background: #fff; }
+  .box.hl { background: #f0f7ff; border-color: #3182ce; }
+  .box .t { font-weight: 700; font-size: 9px; color: #2d3748; letter-spacing: .3px; }
+  .cols { display: flex; gap: 10px; }
+  .cols > * { flex: 1; }
+  table.tb { width: 100%; border-collapse: collapse; font-size: 8.2px; }
+  .tb th { background: #17202a; color: #fff; padding: 3px 5px; text-align: left; font-weight: 600; }
+  .tb td { border: 1px solid #cbd5e0; padding: 2.5px 5px; vertical-align: top; line-height: 1.35; }
+  .mono { font-family: Consolas, monospace; }
+  .small { font-size: 8px; color: #4a5568; }
+  pre.tree { font-family: Consolas, monospace; font-size: 7.6px; line-height: 1.42; background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 4px; padding: 6px 9px; white-space: pre; }
+  .footer { position: absolute; bottom: 5mm; left: 11mm; right: 11mm; font-size: 7.5px; color: #a0aec0; display: flex; justify-content: space-between; border-top: 1px solid #edf2f7; padding-top: 4px; }
+  svg text { font-family: "Segoe UI", Arial, sans-serif; }
+  svg .mono { font-family: Consolas, monospace; }
+  .chip { display: inline-block; border: 1px solid #cbd5e0; border-radius: 10px; padding: 2px 8px; font-size: 8.5px; margin: 2px 2px; background: #f7fafc; }
+</style>
+</head>
+<body>
+
+<!-- ============================== PAGE 1 : ANATOMY ============================== -->
+<div class="page">
+  <div class="phead"><h1>INSIDE THE BEST MODEL</h1><span class="no">01 / 02 · anatomy of exp_003</span></div>
+
+  <div class="box hl" style="margin-bottom:8px"><span class="t">What we're dissecting:</span> <b>exp_003</b> — the selected best (judge 82, sim 82.28).
+  The deploy bundle ships <b>exp_010</b> (the hidden-exam winner), which uses the <b>same 35 features and the same 35→64→64→6 architecture</b>; its card is the source of the verbatim feature list below.</div>
+
+  <h2>THE PIPELINE — FROM TELEMETRY TO ACTION</h2>
+  <svg viewBox="0 0 1000 470" style="width:100%; display:block;">
+    <!-- feature group boxes (left) -->
+    <g font-size="9">
+      <rect x="10" y="30" width="210" height="44" fill="#ebf5ff" stroke="#3182ce" rx="4"/><text x="20" y="48" font-weight="bold" fill="#2b6cb0">TELEMETRY · 6</text><text x="20" y="63" font-size="7.5" fill="#4a5568" class="mono">util headroom tool_frac redundancy…</text>
+      <rect x="10" y="82" width="210" height="44" fill="#ebf5ff" stroke="#3182ce" rx="4"/><text x="20" y="100" font-weight="bold" fill="#2b6cb0">COUNTERS &amp; PHASE · 5</text><text x="20" y="115" font-size="7.5" fill="#4a5568" class="mono">phase since_instr since_compact…</text>
+      <rect x="10" y="134" width="210" height="44" fill="#ebf5ff" stroke="#3182ce" rx="4"/><text x="20" y="152" font-weight="bold" fill="#2b6cb0">RECALL &amp; BELIEF · 5</text><text x="20" y="167" font-size="7.5" fill="#4a5568" class="mono">recall_miss salience_est…</text>
+      <rect x="10" y="186" width="210" height="44" fill="#ebf5ff" stroke="#3182ce" rx="4"/><text x="20" y="204" font-weight="bold" fill="#2b6cb0">TEMPORAL DYNAMICS · 10</text><text x="20" y="219" font-size="7.5" fill="#4a5568" class="mono">util_delta growth_ema pressure…</text>
+      <rect x="10" y="238" width="210" height="44" fill="#ebf5ff" stroke="#3182ce" rx="4"/><text x="20" y="256" font-weight="bold" fill="#2b6cb0">LOOP GUARD · 1</text><text x="20" y="271" font-size="7.5" fill="#4a5568" class="mono">loop_persistence</text>
+      <rect x="10" y="290" width="210" height="44" fill="#ebf5ff" stroke="#3182ce" rx="4"/><text x="20" y="308" font-weight="bold" fill="#2b6cb0">LAST ACTION ONE-HOT · 6</text><text x="20" y="323" font-size="7.5" fill="#4a5568" class="mono">last_a0 … last_a5</text>
+      <rect x="10" y="342" width="210" height="44" fill="#fef9e7" stroke="#b7791f" rx="4"/><text x="20" y="360" font-weight="bold" fill="#b7791f">DOCUMENTED EXTRAS · 2</text><text x="20" y="375" font-size="7.5" fill="#4a5568" class="mono">progress_to_threshold, error_streak_decay</text>
+    </g>
+    <!-- arrows into the input vector -->
+    <g stroke="#718096" stroke-width="1.2" fill="none">
+      <polyline points="220,52 280,52 280,96 330,96"/><polyline points="220,104 280,104 280,130 330,130"/>
+      <polyline points="220,156 280,156 280,164 330,164"/><polyline points="220,208 330,208"/>
+      <polyline points="220,260 280,260 280,252 330,252"/><polyline points="220,312 280,312 280,296 330,296"/>
+      <polyline points="220,364 280,364 280,330 330,330"/>
+    </g>
+    <!-- input vector bar -->
+    <rect x="330" y="86" width="42" height="254" fill="#2d3748" rx="3"/>
+    <text x="351" y="220" font-size="11" fill="#fff" text-anchor="middle" transform="rotate(-90 351 220)" class="mono">35-vector</text>
+    <text x="351" y="356" font-size="8" fill="#4a5568" text-anchor="middle">flat input</text>
+    <!-- ensemble bracket -->
+    <rect x="412" y="40" width="248" height="330" fill="none" stroke="#9f7aea" stroke-width="1.5" stroke-dasharray="5 4" rx="6"/>
+    <text x="536" y="32" font-size="9" fill="#6b46c1" text-anchor="middle" font-weight="bold">×3 ENSEMBLE — 3 seeded copies, logits averaged</text>
+    <!-- layers -->
+    <rect x="430" y="60" width="212" height="64" fill="#4a6fa5" rx="4"/>
+    <text x="536" y="86" font-size="10" fill="#fff" text-anchor="middle" font-weight="bold">LINEAR 35 → 64 + ReLU</text>
+    <text x="536" y="106" font-size="8.5" fill="#e2e8f0" text-anchor="middle" class="mono">2,304 params</text>
+    <rect x="430" y="164" width="212" height="64" fill="#4a6fa5" rx="4"/>
+    <text x="536" y="190" font-size="10" fill="#fff" text-anchor="middle" font-weight="bold">LINEAR 64 → 64 + ReLU</text>
+    <text x="536" y="210" font-size="8.5" fill="#e2e8f0" text-anchor="middle" class="mono">4,160 params</text>
+    <rect x="430" y="268" width="212" height="64" fill="#4a6fa5" rx="4"/>
+    <text x="536" y="294" font-size="10" fill="#fff" text-anchor="middle" font-weight="bold">LINEAR 64 → 6</text>
+    <text x="536" y="314" font-size="8.5" fill="#e2e8f0" text-anchor="middle" class="mono">390 params (the 6 action logits)</text>
+    <!-- flow arrows -->
+    <polyline points="372,213 400,213 400,92 430,92" stroke="#718096" stroke-width="1.2" fill="none"/>
+    <polyline points="536,124 536,164" stroke="#718096" stroke-width="1.5"/>
+    <polyline points="536,228 536,268" stroke="#718096" stroke-width="1.5"/>
+    <polyline points="642,300 692,300" stroke="#718096" stroke-width="1.5"/>
+    <!-- calibration box -->
+    <rect x="692" y="252" width="190" height="96" fill="#fff5f5" stroke="#e53e3e" rx="4"/>
+    <text x="787" y="272" font-size="9.5" fill="#b91c1c" text-anchor="middle" font-weight="bold">CALIBRATION BIAS</text>
+    <text x="787" y="290" font-size="8" fill="#4a5568" text-anchor="middle" class="mono">+ [−0.75, 0, 0, 0, 0, 0]</text>
+    <text x="787" y="305" font-size="7.5" fill="#4a5568" text-anchor="middle">pushes the NOOP logit down</text>
+    <text x="787" y="318" font-size="7.5" fill="#4a5568" text-anchor="middle">same bias at train &amp; eval time</text>
+    <text x="787" y="335" font-size="7.5" fill="#718096" text-anchor="middle">knob: decision_calibration =</text>
+    <text x="787" y="344" font-size="7.5" fill="#718096" text-anchor="middle">noop_margin_down</text>
+    <!-- actions output -->
+    <rect x="692" y="40" width="290" height="180" fill="#f0fff4" stroke="#2f855a" rx="4"/>
+    <text x="837" y="60" font-size="9.5" fill="#2f855a" text-anchor="middle" font-weight="bold">ARGMAX OVER 6 ACTIONS</text>
+    <g font-size="8.5" class="mono" fill="#2d3748">
+      <text x="706" y="84">NOOP</text><text x="706" y="104">COMPACT</text><text x="706" y="124">PRUNE_TOOLS</text>
+      <text x="706" y="144">REINJECT_INSTRUCTIONS</text><text x="706" y="164">CHECKPOINT_RESET</text><text x="706" y="184">RETRIEVE_MEMORY</text>
+    </g>
+    <text x="837" y="208" font-size="7.5" fill="#718096" text-anchor="middle">one action per simulator turn</text>
+    <polyline points="787,252 787,220" stroke="#718096" stroke-width="1.5" fill="none"/>
+    <!-- params total -->
+    <rect x="412" y="396" width="248" height="34" fill="#fef9e7" stroke="#b7791f" rx="4"/>
+    <text x="536" y="417" font-size="10" fill="#b7791f" text-anchor="middle" font-weight="bold">TOTAL 6,854 params — tiny on purpose (&lt;5M budget)</text>
+    <text x="130" y="430" font-size="8" fill="#718096">features are standardised before training (optim_recipe: standardize=true)</text>
+  </svg>
+
+  <h2>ALL 35 FEATURES — VERBATIM FROM THE DEPLOY CARD</h2>
+  <pre class="tree">TELEMETRY (6)          util · headroom · tool_frac · redundancy · stale · confidence
+COUNTERS &amp; PHASE (5)    phase · since_instr · since_compact · error_streak · last_error
+RECALL &amp; BELIEF (5)     recall_miss · topic_shift · salience_est · integrity_est · recall_intensity
+TEMPORAL DYNAMICS (10)  util_delta · growth_ema · steps_to_overflow · pressure · streak_pressure
+                       tool_rate · shift_rate · cliff_margin · required_rate · recent_success
+LOOP GUARD (1)          loop_persistence
+LAST ACTION 1-HOT (6)   last_a0 · last_a1 · last_a2 · last_a3 · last_a4 · last_a5
+DOCUMENTED EXTRAS (2)   progress_to_threshold · error_streak_decay</pre>
+  <div class="small" style="margin-top:4px">Groups are for readability — the model sees one flat 35-vector. Design notes: bounded history windows (history[-8:], [-6:]), every value passed through <span class="mono">_safe()</span> for finite floats, batch-size-1 safe forward.</div>
+
+  <div class="footer"><span>context-health factory — inside the best model</span><span>sources: workspace/best_config.json (design notes, metrics) · deploy/policy_card.json (feature list)</span></div>
+</div>
+
+<!-- ============================== PAGE 2 : BEHAVIOUR ============================== -->
+<div class="page">
+  <div class="phead"><h1>HOW IT ACTUALLY BEHAVES</h1><span class="no">02 / 02 · evidence from 200 evaluation scenarios</span></div>
+
+  <div class="cols">
+    <div>
+      <h2>ACTION MIX — 8,000 DECISIONS</h2>
+      <svg viewBox="0 0 470 240" style="width:100%; display:block;">
+        <!-- bar = count/5516*290 -->
+        <text x="8" y="26" font-size="8.5" class="mono">NOOP</text>
+        <rect x="150" y="14" width="290" height="18" fill="#4a6fa5" rx="2"/><text x="432" y="27" font-size="8" class="mono" fill="#fff" text-anchor="end">5,516 · 69%</text>
+        <text x="8" y="62" font-size="8.5" class="mono">REINJECT_INSTR.</text>
+        <rect x="150" y="50" width="68" height="18" fill="#4a6fa5" rx="2"/><text x="222" y="63" font-size="8" class="mono" fill="#4a5568">1,291 · 16%</text>
+        <text x="8" y="98" font-size="8.5" class="mono">COMPACT</text>
+        <rect x="150" y="86" width="38" height="18" fill="#4a6fa5" rx="2"/><text x="192" y="99" font-size="8" class="mono" fill="#4a5568">722 · 9%</text>
+        <text x="8" y="134" font-size="8.5" class="mono">PRUNE_TOOLS</text>
+        <rect x="150" y="122" width="20" height="18" fill="#4a6fa5" rx="2"/><text x="174" y="135" font-size="8" class="mono" fill="#4a5568">385 · 5%</text>
+        <text x="8" y="170" font-size="8.5" class="mono">RETRIEVE_MEM.</text>
+        <rect x="150" y="158" width="5" height="18" fill="#4a6fa5" rx="2"/><text x="159" y="171" font-size="8" class="mono" fill="#4a5568">86 · 1%</text>
+        <text x="8" y="206" font-size="8.5" class="mono">CHECKPOINT_RST</text>
+        <rect x="150" y="194" width="2" height="18" fill="#e53e3e" rx="1"/><text x="156" y="207" font-size="8" class="mono" fill="#b91c1c">0 — never used</text>
+        <text x="8" y="232" font-size="7.5" fill="#718096">judge: RETRIEVE_MEMORY fires almost only in long_horizon_recall turns; NOOP share stays 69% even with the −0.75 bias</text>
+      </svg>
+    </div>
+    <div>
+      <h2>GAP TO THE PERFECT-INFO CEILING, PER FAMILY</h2>
+      <svg viewBox="0 0 470 260" style="width:100%; display:block;">
+        <!-- bar = gap*55 -->
+        <text x="8" y="26" font-size="8.5" class="mono">long_horizon_recall</text>
+        <rect x="170" y="14" width="284" height="16" fill="#e53e3e" opacity="0.75" rx="2"/><text x="176" y="26" font-size="8" class="mono" fill="#fff">+5.17</text>
+        <text x="8" y="58" font-size="8.5" class="mono">topic_hopping</text>
+        <rect x="170" y="46" width="243" height="16" fill="#e53e3e" opacity="0.75" rx="2"/><text x="176" y="58" font-size="8" class="mono" fill="#fff">+4.41</text>
+        <text x="8" y="90" font-size="8.5" class="mono">tool_flood</text>
+        <rect x="170" y="78" width="228" height="16" fill="#e53e3e" opacity="0.75" rx="2"/><text x="176" y="90" font-size="8" class="mono" fill="#fff">+4.15</text>
+        <text x="8" y="122" font-size="8.5" class="mono">debug_loop</text>
+        <rect x="170" y="110" width="225" height="16" fill="#e53e3e" opacity="0.75" rx="2"/><text x="176" y="122" font-size="8" class="mono" fill="#fff">+4.09</text>
+        <text x="8" y="154" font-size="8.5" class="mono">mixed_chaos</text>
+        <rect x="170" y="142" width="216" height="16" fill="#e53e3e" opacity="0.75" rx="2"/><text x="176" y="154" font-size="8" class="mono" fill="#fff">+3.92</text>
+        <text x="8" y="186" font-size="8.5" class="mono">instruction_drift</text>
+        <rect x="170" y="174" width="212" height="16" fill="#e53e3e" opacity="0.75" rx="2"/><text x="176" y="186" font-size="8" class="mono" fill="#fff">+3.85</text>
+        <text x="8" y="218" font-size="8.5" class="mono">steady_dialogue</text>
+        <rect x="170" y="206" width="149" height="16" fill="#e53e3e" opacity="0.75" rx="2"/><text x="176" y="218" font-size="8" class="mono" fill="#fff">+2.70</text>
+        <text x="8" y="246" font-size="7.5" fill="#718096">return points below clairvoyant · smaller = closer to perfect · worst family is memory, easiest is steady chat</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="cols" style="margin-top:6px">
+    <div>
+      <h2>HOW IT WAS TRAINED — THE RECIPE</h2>
+      <table class="tb">
+        <tr><th>piece</th><th>setting</th></tr>
+        <tr><td>data</td><td>behaviour cloning + DAgger: 84 self-play episodes, relabelled, retrained</td></tr>
+        <tr><td>teacher</td><td>v2 — two-step lookahead (labels + DAgger relabelling)</td></tr>
+        <tr><td>target</td><td>soft distillation, softmax(q / 0.5)</td></tr>
+        <tr><td>optimizer</td><td>adamw · lr 5e-4 · 30 epochs · batch 256 · weight_decay 0.01 · grad_clip 1.0</td></tr>
+        <tr><td>ensemble</td><td>3 seeded copies, logits averaged</td></tr>
+        <tr><td>features</td><td>35, standardised</td></tr>
+      </table>
+      <div style="margin-top:5px">
+        <span class="chip">success 98%</span><span class="chip">overflow 0.0</span><span class="chip">mean return +33.51</span><span class="chip">oracle agreement 51.9%</span>
+      </div>
+    </div>
+    <div>
+      <h2>WHAT THE JUDGE FOUND IN THE LOG</h2>
+      <div class="box">
+        <b>No overfit:</b> train_acc 59.0% vs val_acc 59.6% — the gap is negative.<br>
+        <b>DAgger converged:</b> round-1 return on its own self-play episodes was +32.77, vs +33.51 deployed.<br>
+        <b>Weakest families:</b> debug_loop 0.89 and topic_hopping 0.96 success — everything else ≥ ~0.97.<br>
+        <b>Beats its teacher:</b> +33.51 vs teacher_v2's +32.14 and the one-step oracle's +31.73 in aggregate.<br>
+        <b>Oracle agreement only 51.9%</b> — it wins by context management, not by mimicking the oracle; dips to 0.25–0.35 on some tool_flood / instruction_drift turns.<br>
+        <b>Judge's verdict:</b> base score = round(sim_score) = 82, no deduction flags (no NOTE lines, overflow 0.00 &lt; 0.02 threshold).
+      </div>
+      <div class="box hl" style="margin-top:6px"><span class="t">READ IT THIS WAY</span><br>
+      <span class="small">A tiny 6.9k-param MLP on 35 hand-documented features, distilled from a two-step lookahead teacher, corrected by 84 rounds of its own mistakes (DAgger), with the "do nothing" option deliberately damped — and it out-scores the teacher it was distilled from.</span></div>
+    </div>
+  </div>
+
+  <h2 style="margin-top:12px">THE TWO CHAMPIONS — DON'T MIX THEM UP</h2>
+  <div class="cols">
+    <div class="box" style="border-color:#b7791f; background:#fef9e7">
+      <span class="t" style="color:#b7791f">exp_003 — SELECTED BEST</span><br>
+      <span class="small">Crowned by the spec rule: highest judge score (82), tie broken by sim (82.28). Eval return <b>+33.51</b>. Lives at <span class="mono">workspace/best_model.py</span>. This page's metrics and judge evidence describe this one.</span>
+    </div>
+    <div class="box" style="border-color:#2f855a; background:#f0fff4">
+      <span class="t" style="color:#2f855a">exp_010 — CONFIRMED BEST</span><br>
+      <span class="small">Won the hidden exam: 200 fresh scenarios, seeds 95000+, never used for selection → sim <b>81.37</b>, return <b>+32.93</b>. Its card lists the same 35 features and ensemble×3. Lives at <span class="mono">workspace/best_model_confirmed.py</span>.</span>
+    </div>
+    <div class="box">
+      <span class="t">WHAT SHIPS — deploy/</span><br>
+      <span class="small">The bundle deploys <b>exp_010</b> (the evidence winner): <span class="mono">intervention_policy.pt</span> + runtime + <span class="mono">policy_card.json</span>. Parity check on the card: <b>all 50 replay turns identical</b> between simulator and runtime.</span>
+    </div>
+  </div>
+
+  <div class="footer"><span>context-health factory — inside the best model</span><span>sources: workspace/best_config.json (metrics + judge feedback) · deploy/policy_card.json</span></div>
+</div>
+
+</body>
+</html>

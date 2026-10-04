@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Context Health Factory — Operational Walkthrough</title>
+<style>
+  :root{
+    --mono: "Cascadia Code","Cascadia Mono",Consolas,"Courier New",monospace;
+    --sans: system-ui,"Segoe UI",Arial,sans-serif;
+    --ink:#1b2434; --mut:#5b6b84; --line:#c9d4e4;
+    --blue:#1d4ed8;  --blue-f:#e9f0fe;
+    --orange:#c2410c;--orange-f:#fdeee2;
+    --teal:#0f766e;  --teal-f:#e3f2f0;
+    --green:#15803d; --green-f:#e7f5ec;
+    --red:#b91c1c;   --red-f:#fcebeb;
+    --purple:#6d28d9;--purple-f:#f0eafc;
+    --gray:#475569;  --gray-f:#eef2f7;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  @page{ size:A4; margin:0; }
+  body{ font-family:var(--sans); color:var(--ink); background:#fff; }
+  .page{ width:210mm; height:296.5mm; padding:9mm 11mm 8mm; page-break-after:always; position:relative; overflow:hidden; background:#fff; }
+  .page:last-child{ page-break-after:auto; }
+
+  header.ph{ display:flex; justify-content:space-between; align-items:baseline; border-bottom:2.5px solid var(--ink); padding-bottom:2.2mm; margin-bottom:3mm; }
+  .kicker{ font-family:var(--mono); font-size:8.2pt; letter-spacing:.18em; color:var(--mut); text-transform:uppercase; }
+  .pno{ font-family:var(--mono); font-size:8.2pt; color:var(--mut); }
+  h1.sec{ font-family:var(--mono); font-size:15.5pt; font-weight:700; letter-spacing:.02em; margin:1.2mm 0 .8mm; }
+  h1.sec .n{ color:var(--blue); }
+  .lede{ font-size:8.6pt; color:var(--mut); line-height:1.45; margin-bottom:2.4mm; max-width:186mm; }
+  .lede b{ color:var(--ink); }
+  .golden{ font-family:var(--mono); font-size:9pt; background:var(--gray-f); border-left:3px solid var(--ink); padding:1.6mm 3mm; margin-bottom:2.6mm; color:var(--ink); }
+
+  footer.pf{ position:absolute; left:11mm; right:11mm; bottom:5mm; display:flex; justify-content:space-between; font-family:var(--mono); font-size:6.8pt; color:#93a1b8; border-top:1px solid var(--line); padding-top:1.4mm; }
+
+  h2.di{ font-family:var(--mono); font-size:9.2pt; font-weight:700; color:var(--ink); margin:2.2mm 0 1.2mm; }
+  h2.di .tag{ color:#93a1b8; font-weight:400; }
+  svg{ display:block; width:100%; height:auto; }
+  svg text{ font-family:var(--mono); }
+
+  .chips{ display:flex; flex-wrap:wrap; gap:1.6mm; margin:0 0 2.4mm; }
+  .chip{ font-family:var(--mono); font-size:7.4pt; border:1px solid var(--line); border-radius:2mm; padding:1mm 2.2mm; background:#fbfdff; color:var(--ink); }
+  .chip b{ color:var(--blue); }
+
+  table.dt{ width:100%; border-collapse:collapse; font-family:var(--mono); font-size:7.6pt; }
+  table.dt th{ text-align:left; background:var(--ink); color:#fff; padding:1.2mm 2mm; font-weight:700; letter-spacing:.06em; }
+  table.dt td{ border:1px solid var(--line); padding:1.1mm 2mm; vertical-align:top; line-height:1.4; color:#2a3548; }
+  table.dt tr:nth-child(even) td{ background:#f8fafd; }
+  td.p{ color:var(--blue); font-weight:700; white-space:nowrap; }
+  table.dt.compact{ font-size:6.9pt; }
+  table.dt.compact td{ padding:.8mm 1.6mm; line-height:1.32; }
+
+  .note{ font-size:7.6pt; color:var(--mut); line-height:1.45; margin-top:1.8mm; }
+  .note b{ color:var(--ink); }
+  .twocol{ display:grid; grid-template-columns:1fr 1fr; gap:3mm; align-items:start; }
+  .panel{ border:1.2px solid var(--line); border-radius:1.6mm; padding:2mm 2.6mm; background:#fbfdff; }
+  .panel h3{ font-family:var(--mono); font-size:8.4pt; margin-bottom:1.2mm; color:var(--ink); }
+  pre.tree{ font-family:var(--mono); font-size:6.9pt; line-height:1.42; background:#fbfdff; border:1px solid var(--line); border-radius:1.6mm; padding:2mm 2.6mm; color:#2a3548; white-space:pre; }
+  pre.tree b{ color:var(--blue); }
+  pre.tree .g{ color:var(--green); } pre.tree .o{ color:var(--orange); } pre.tree .r{ color:var(--red); } pre.tree .m{ color:var(--mut); }
+</style>
+</head>
+<body>
+
+<!-- shared arrow markers -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <marker id="m-g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#8494ab"/></marker>
+    <marker id="m-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1d4ed8"/></marker>
+    <marker id="m-o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#c2410c"/></marker>
+    <marker id="m-t" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#0f766e"/></marker>
+    <marker id="m-gr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#15803d"/></marker>
+    <marker id="m-r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#b91c1c"/></marker>
+    <marker id="m-p" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6d28d9"/></marker>
+  </defs>
+</svg>
+
+<!-- ============================================================ PAGE 1 -->
+<section class="page">
+  <header class="ph">
+    <span class="kicker">Context Health Factory · Operational Walkthrough</span>
+    <span class="pno">01 / 05</span>
+  </header>
+  <h1 class="sec"><span class="n">01</span> · THE RUN, END TO END</h1>
+  <div class="golden">THE GOLDEN RULE — “The harness is deterministic; the work is creative.” Python owns the loop, every stop decision, every model choice and every file write. Agents are pure functions from a whitelisted prompt to JSON.</div>
+  <div class="lede">What actually happens when you type <b>python factory/run_factory.py</b>. Every box below is Python code in <b>run_factory.py</b>; LLM agents exist only inside <b>run_wave()</b> (page 02). There is exactly one clean way out — <b>halt(reason)</b> — and three ways to stop early.</div>
+
+  <h2 class="di">RUN TIMELINE <span class="tag">— main() → exit code</span></h2>
+  <svg viewBox="0 0 1000 504">
+    <!-- spine blocks -->
+    <rect x="16" y="8" width="446" height="40" rx="5" fill="#eef2f7" stroke="#475569" stroke-width="1.4"/>
+    <text x="28" y="25" font-size="10.5" font-weight="700" fill="#1b2434">main() — entry</text>
+    <text x="28" y="40" font-size="9" fill="#37455c">argparse · re-exec into the .venv interpreter (FACTORY_REEXEC guard)</text>
+
+    <rect x="16" y="72" width="446" height="40" rx="5" fill="#eef2f7" stroke="#475569" stroke-width="1.4"/>
+    <text x="28" y="89" font-size="10.5" font-weight="700" fill="#1b2434">initialize(fresh?) — only when --fresh or uninitialized</text>
+    <text x="28" y="104" font-size="9" fill="#37455c">seed space: 1 dim (hidden_layers) · paper header · factory_state.json</text>
+
+    <rect x="16" y="136" width="446" height="40" rx="5" fill="#e9f0fe" stroke="#1d4ed8" stroke-width="1.4"/>
+    <text x="28" y="153" font-size="10.5" font-weight="700" fill="#1d4ed8">run() — the orchestrator</text>
+    <text x="28" y="168" font-size="9" fill="#37455c">early exit if state.halted is set · then preflight, then the loop</text>
+
+    <rect x="16" y="200" width="446" height="40" rx="5" fill="#e3f2f0" stroke="#0f766e" stroke-width="1.4"/>
+    <text x="28" y="217" font-size="10.5" font-weight="700" fill="#0f766e">preflight() — make the world safe</text>
+    <text x="28" y="232" font-size="9" fill="#37455c">ai_docs checksum · sim cache + warm-up · archive stale · restore snapshots</text>
+
+    <rect x="16" y="264" width="446" height="40" rx="5" fill="#fff" stroke="#c2410c" stroke-width="1.8"/>
+    <text x="28" y="281" font-size="10.5" font-weight="700" fill="#c2410c">done_checker.check(state, max_iterations)</text>
+    <text x="28" y="296" font-size="9" fill="#37455c">None ⇒ run a wave · a reason string ⇒ jump to halt(reason)</text>
+
+    <rect x="16" y="328" width="446" height="40" rx="5" fill="#fdeee2" stroke="#c2410c" stroke-width="1.8"/>
+    <text x="28" y="345" font-size="10.5" font-weight="700" fill="#c2410c">run_wave() — build + score K iterations in parallel</text>
+    <text x="28" y="360" font-size="9" fill="#37455c">A Meta → B Worker/Sim/Judge ×K → C update → D Doc ×K → E close — page 02</text>
+
+    <rect x="16" y="392" width="446" height="40" rx="5" fill="#fff" stroke="#b91c1c" stroke-width="1.4"/>
+    <text x="28" y="409" font-size="10.5" font-weight="700" fill="#b91c1c">_circuit_breaker()</text>
+    <text x="28" y="424" font-size="9" fill="#37455c">last 2 waves fully poisoned by one error type ⇒ InfraUnavailable</text>
+
+    <rect x="16" y="456" width="446" height="40" rx="5" fill="#f0eafc" stroke="#6d28d9" stroke-width="1.8"/>
+    <text x="28" y="473" font-size="10.5" font-weight="700" fill="#6d28d9">halt(reason) — the only clean exit</text>
+    <text x="28" y="488" font-size="9" fill="#37455c">confirm top-6 (paired SE) · summary · final synthesis · paper · report</text>
+
+    <!-- spine arrows -->
+    <line x1="239" y1="48" x2="239" y2="72" stroke="#8494ab" stroke-width="1.6" marker-end="url(#m-g)"/>
+    <line x1="239" y1="112" x2="239" y2="136" stroke="#8494ab" stroke-width="1.6" marker-end="url(#m-g)"/>
+    <line x1="239" y1="176" x2="239" y2="200" stroke="#8494ab" stroke-width="1.6" marker-end="url(#m-g)"/>
+    <line x1="239" y1="240" x2="239" y2="264" stroke="#8494ab" stroke-width="1.6" marker-end="url(#m-g)"/>
+    <line x1="239" y1="304" x2="239" y2="328" stroke="#8494ab" stroke-width="1.6" marker-end="url(#m-g)"/>
+    <text x="247" y="320" font-size="8.5" fill="#5b6b84">None</text>
+    <line x1="239" y1="368" x2="239" y2="392" stroke="#8494ab" stroke-width="1.6" marker-end="url(#m-g)"/>
+
+    <!-- loop back: circuit breaker -> done_checker -->
+    <polyline points="16,412 6,412 6,284 16,284" fill="none" stroke="#1d4ed8" stroke-width="1.6" marker-end="url(#m-b)"/>
+    <text x="11" y="356" font-size="8.5" fill="#1d4ed8" transform="rotate(-90 11 356)" text-anchor="middle">loop</text>
+
+    <!-- reason jump: done_checker -> halt -->
+    <polyline points="462,284 471,284 471,476 462,476" fill="none" stroke="#6d28d9" stroke-width="1.6" marker-end="url(#m-p)"/>
+
+    <!-- right annotations -->
+    <text x="478" y="22" font-size="9.5" fill="#37455c">CLI: python factory/run_factory.py --max-iterations 50 --parallel 2 [--fresh]</text>
+    <text x="478" y="36" font-size="9.5" fill="#5b6b84">--parallel sets the wave width K (config cap: 8)</text>
+
+    <text x="478" y="86" font-size="9.5" fill="#37455c">--fresh ⇒ old run archived to experiments/_archived/&lt;timestamp&gt;</text>
+    <text x="478" y="100" font-size="9.5" fill="#5b6b84">otherwise seed from factory/templates/state_space_seed.json</text>
+
+    <text x="478" y="150" font-size="9.5" fill="#37455c">idempotent: a halted run returns immediately —</text>
+    <text x="478" y="164" font-size="9.5" fill="#5b6b84">the paper and report from halt() are already on disk</text>
+
+    <text x="478" y="214" font-size="9.5" fill="#37455c">crash recovery: stale exp_* (i ≥ next_iteration) → _aborted/ and</text>
+    <text x="478" y="228" font-size="9.5" fill="#37455c">.snapshots/before_NNN.json restored — an interrupted wave rolls back</text>
+
+    <rect x="478" y="262" width="508" height="58" rx="4" fill="#fbfdff" stroke="#c9d4e4" stroke-width="1.2"/>
+    <text x="488" y="277" font-size="9" font-weight="700" fill="#1b2434">halt reasons — the exact strings done_checker can return</text>
+    <text x="488" y="290" font-size="8.5" fill="#37455c">max-iterations reached ({closed}/{max})</text>
+    <text x="488" y="301" font-size="8.5" fill="#37455c">state space stagnant: no dimension added in the last 10 iterations …</text>
+    <text x="488" y="312" font-size="8.5" fill="#37455c">score plateau: best of last 10 iterations = R, best before = B; improvement &lt;= 2.0</text>
+
+    <text x="478" y="406" font-size="9.5" fill="#37455c">a dead model or transport poisons every member the same way —</text>
+    <text x="478" y="420" font-size="9.5" fill="#37455c">two such waves in a row ⇒ stop spending, pause (exit 3, resumable)</text>
+
+    <text x="478" y="470" font-size="9.5" fill="#37455c">confirmation: top-6 sim-tied candidates re-run (paired per-turn test)</text>
+    <text x="478" y="484" font-size="9.5" fill="#5b6b84">⇒ confirmation.json + best_model_confirmed.py · then factory_report.json</text>
+  </svg>
+
+  <div class="twocol" style="margin-top:2mm">
+    <div>
+      <h2 class="di">factory_state.json <span class="tag">— one JSON file is the whole run</span></h2>
+      <pre class="tree">{
+  <b>"schema_version"</b>: 1,  <span class="m">"created": "…",</span>
+  <b>"next_iteration"</b>: 0,          <span class="m"># == iterations closed</span>
+  <b>"iterations"</b>: [],             <span class="m"># one row per closed iteration (p.05)</span>
+  <b>"scores"</b>: {},               <span class="m"># judge scores — plateau rule</span>
+  <b>"sim_scores"</b>: {},           <span class="m"># deterministic sim scores</span>
+  <b>"best"</b>: null,               <span class="m"># {iteration, score, …}</span>
+  <b>"last_judge_score"</b>: null,   <span class="m"># router input R3</span>
+  <b>"meta_invalid_streak"</b>: 0,   <span class="m"># router input R4</span>
+  <b>"last_dimension_added_iteration"</b>: -1,  <span class="m"># stagnation rule</span>
+  <b>"poisoned"</b>: [],             <span class="m"># exhausted iterations</span>
+  <b>"canaries"</b>: {},  <b>"halted"</b>: null,
+  <b>"ai_docs_checksum"</b>: "sha256…",  <span class="m"># read-only guard</span>
+  <b>"llm_usage"</b>: {"calls": 0, "cost_usd": 0.0}
+  <span class="m"># runtime additions: waves · fingerprints · baselines</span>
+}</pre>
+    </div>
+    <div>
+      <h2 class="di">EXIT CODES <span class="tag">— four ways the process ends</span></h2>
+      <table class="dt">
+        <tr><th style="width:10mm">exit</th><th style="width:34mm">meaning</th><th>state on disk</th></tr>
+        <tr><td class="p">0</td><td>halt(reason) ran to completion</td><td>halted=&lt;reason&gt; · confirmation.json · factory_report.json</td></tr>
+        <tr><td class="p">2</td><td>MacroFail — isolation / read-only violation</td><td>macro_fail.json · stale exp_* archived at next start</td></tr>
+        <tr><td class="p">3</td><td>InfraUnavailable — LLM transport down</td><td>resumable — snapshots intact; re-run the same command</td></tr>
+        <tr><td class="p">130</td><td>KeyboardInterrupt</td><td>resumable — same as exit 3</td></tr>
+      </table>
+      <div class="note">The loop never idles: every wave either closes K leaderboard rows or poisons them — both are recorded, both feed the next Meta call. There is no other path through the factory.</div>
+    </div>
+  </div>
+
+  <footer class="pf">
+    <span>Context Health Factory — operational walkthrough · all mechanics traced to factory/run_factory.py</span>
+    <span>1 / 5</span>
+  </footer>
+</section>
+
+<!-- ============================================================ PAGE 2 -->
+<section class="page">
+  <header class="ph">
+    <span class="kicker">Context Health Factory · Operational Walkthrough</span>
+    <span class="pno">02 / 05</span>
+  </header>
+  <h1 class="sec"><span class="n">02</span> · ONE WAVE AS A SEQUENCE DIAGRAM</h1>
+  <div class="lede">A wave builds <b>K = --parallel</b> iterations at once. Time flows down; bars on lifelines mark busy threads; gray/blue/teal/purple bands are <b>serial — main thread only</b>, orange/green bands are <b>parallel — member threads</b>. Threads only compute: every shared-state write happens on the main thread at a barrier, in iteration order, so the outcome never depends on which thread finishes first.</div>
+
+  <div class="chips">
+    <span class="chip"><b>A</b> Meta: 1 call, ≤3 attempts</span>
+    <span class="chip"><b>B1</b> build ×K · <b>B2</b> dedupe · <b>B3</b> simulate+judge ×K</span>
+    <span class="chip"><b>C</b> ledger update · <b>D</b> document ×K · <b>E</b> paper + close</span>
+    <span class="chip">refills ≤ <b>2</b>/wave · sim timeout <b>60 s</b> · judge anchored <b>±3</b></span>
+  </div>
+
+  <svg viewBox="0 0 1000 916">
+    <!-- lifeline headers -->
+    <rect x="7" y="6" width="118" height="30" rx="4" fill="#eef2f7" stroke="#475569" stroke-width="1.2"/>
+    <text x="66" y="20" font-size="10" font-weight="700" fill="#1b2434" text-anchor="middle">MAIN THREAD</text>
+    <text x="66" y="31" font-size="8" fill="#5b6b84" text-anchor="middle">owns all state</text>
+    <rect x="137" y="6" width="118" height="30" rx="4" fill="#e9f0fe" stroke="#1d4ed8" stroke-width="1.2"/>
+    <text x="196" y="20" font-size="10" font-weight="700" fill="#1d4ed8" text-anchor="middle">META</text>
+    <text x="196" y="31" font-size="8" fill="#5b6b84" text-anchor="middle">LLM · phase A</text>
+    <rect x="271" y="6" width="118" height="30" rx="4" fill="#fdeee2" stroke="#c2410c" stroke-width="1.2"/>
+    <text x="330" y="20" font-size="10" font-weight="700" fill="#c2410c" text-anchor="middle">MEMBER i</text>
+    <text x="330" y="31" font-size="8" fill="#5b6b84" text-anchor="middle">thread</text>
+    <rect x="403" y="6" width="118" height="30" rx="4" fill="#fdeee2" stroke="#c2410c" stroke-width="1.2"/>
+    <text x="462" y="20" font-size="10" font-weight="700" fill="#c2410c" text-anchor="middle">MEMBER i+1</text>
+    <text x="462" y="31" font-size="8" fill="#5b6b84" text-anchor="middle">thread</text>
+    <rect x="529" y="6" width="118" height="30" rx="4" fill="#f0eafc" stroke="#6d28d9" stroke-width="1.2"/>
+    <text x="588" y="20" font-size="10" font-weight="700" fill="#6d28d9" text-anchor="middle">JUDGE</text>
+    <text x="588" y="31" font-size="8" fill="#5b6b84" text-anchor="middle">LLM · phase B3</text>
+    <rect x="653" y="6" width="118" height="30" rx="4" fill="#e3f2f0" stroke="#0f766e" stroke-width="1.2"/>
+    <text x="712" y="20" font-size="10" font-weight="700" fill="#0f766e" text-anchor="middle">SIMULATOR</text>
+    <text x="712" y="31" font-size="8" fill="#5b6b84" text-anchor="middle">subprocess</text>
+    <rect x="803" y="6" width="118" height="30" rx="4" fill="#eef2f7" stroke="#475569" stroke-width="1.2"/>
+    <text x="862" y="20" font-size="10" font-weight="700" fill="#1b2434" text-anchor="middle">WORKSPACE</text>
+    <text x="862" y="31" font-size="8" fill="#5b6b84" text-anchor="middle">disk</text>
+
+    <!-- lifelines -->
+    <line x1="66" y1="40" x2="66" y2="910" stroke="#cdd7e4" stroke-width="1.2" stroke-dasharray="3 3"/>
+    <line x1="196" y1="40" x2="196" y2="910" stroke="#cdd7e4" stroke-width="1.2" stroke-dasharray="3 3"/>
+    <line x1="330" y1="40" x2="330" y2="910" stroke="#cdd7e4" stroke-width="1.2" stroke-dasharray="3 3"/>
+    <line x1="462" y1="40" x2="462" y2="910" stroke="#cdd7e4" stroke-width="1.2" stroke-dasharray="3 3"/>
+    <line x1="588" y1="40" x2="588" y2="910" stroke="#cdd7e4" stroke-width="1.2" stroke-dasharray="3 3"/>
+    <line x1="712" y1="40" x2="712" y2="910" stroke="#cdd7e4" stroke-width="1.2" stroke-dasharray="3 3"/>
+    <line x1="862" y1="40" x2="862" y2="910" stroke="#cdd7e4" stroke-width="1.2" stroke-dasharray="3 3"/>
+
+    <!-- phase bands -->
+    <rect x="4" y="46" width="982" height="200" rx="6" fill="#e9f0fe" opacity="0.5"/>
+    <rect x="4" y="246" width="982" height="90" rx="6" fill="#fdeee2" opacity="0.6"/>
+    <rect x="4" y="336" width="982" height="74" rx="6" fill="#eef2f7" opacity="0.8"/>
+    <rect x="4" y="410" width="982" height="158" rx="6" fill="#fdeee2" opacity="0.6"/>
+    <rect x="4" y="568" width="982" height="112" rx="6" fill="#e3f2f0" opacity="0.7"/>
+    <rect x="4" y="680" width="982" height="92" rx="6" fill="#e7f5ec" opacity="0.7"/>
+    <rect x="4" y="772" width="982" height="134" rx="6" fill="#f0eafc" opacity="0.55"/>
+
+    <!-- ================= PHASE A ================= -->
+    <text x="12" y="59" font-size="10" font-weight="700" fill="#1d4ed8">A · META — propose mutations + K coordinates</text>
+    <text x="355" y="59" font-size="8.5" fill="#5b6b84">serial · one LLM call · retried ≤ 3 attempts</text>
+
+    <text x="76" y="76" font-size="9" fill="#37455c">snapshot: state_space.json + factory_state.json → .snapshots/before_{NNN}.json</text>
+    <line x1="66" y1="82" x2="862" y2="82" stroke="#8494ab" stroke-width="1.4" marker-end="url(#m-g)"/>
+
+    <polyline points="66,100 150,100 150,110 66,110" fill="none" stroke="#8494ab" stroke-width="1.4" marker-end="url(#m-g)"/>
+    <text x="66" y="96" font-size="9" fill="#37455c">ctx: WaveContext(wave, last_judge_score, meta_invalid_streak)</text>
+
+    <text x="76" y="134" font-size="9" fill="#37455c">phase_meta — payload: ITERATION · WAVE_SIZE · STATE_SPACE · BEST_CONFIG · LAST_JUDGE · REFILL_NOTE</text>
+    <line x1="66" y1="142" x2="196" y2="142" stroke="#1d4ed8" stroke-width="1.6" marker-end="url(#m-b)"/>
+
+    <text x="76" y="158" font-size="9" fill="#37455c">{analysis, mutations ≤ 6, candidates K × {next_coordinate, hypothesis}}</text>
+    <text x="76" y="170" font-size="9" fill="#37455c">validator = space.apply_wave_proposal · each failure escalates Meta +1 level (R6)</text>
+    <line x1="196" y1="178" x2="66" y2="178" stroke="#1d4ed8" stroke-width="1.4" stroke-dasharray="5 3" marker-end="url(#m-b)"/>
+
+    <text x="76" y="196" font-size="9" fill="#37455c">apply: state_space.json rev+1 · mutation_log += mutations · meta_invalid_streak reset</text>
+    <text x="76" y="208" font-size="9" fill="#37455c">fan-out: next_coordinate.json ×K {iteration, coordinate, hash, hypothesis, …} + router_log copy</text>
+    <line x1="66" y1="216" x2="862" y2="216" stroke="#8494ab" stroke-width="1.4" marker-end="url(#m-g)"/>
+
+    <text x="66" y="238" font-size="9" fill="#b91c1c">A failed (3 invalid proposals) ⇒ lead poisoned: B–D skipped, E closes the wave · streak ≥ 2 ⇒ next Meta starts at L3 (R4)</text>
+
+    <!-- ================= PHASE B1 ================= -->
+    <text x="12" y="259" font-size="10" font-weight="700" fill="#c2410c">B1 · BUILD — Worker + fingerprint, per member</text>
+    <text x="330" y="259" font-size="8.5" fill="#5b6b84">parallel · each member on its own thread</text>
+
+    <rect x="324" y="266" width="12" height="62" fill="#fff" stroke="#c2410c" stroke-width="1.2"/>
+    <text x="348" y="274" font-size="9" fill="#37455c">stage_worker → Worker LLM — payload {COORDINATE · DIMENSIONS · AI_DOCS · RETRY_ERROR}</text>
+    <text x="348" y="288" font-size="9" fill="#37455c">writes model.py (static gate: check_model_source) + config.json · worker.json</text>
+    <text x="348" y="302" font-size="9" fill="#37455c">stage_fingerprint → structural fingerprint of model.py — the dedupe key</text>
+    <text x="66" y="330" font-size="8.5" font-style="italic" fill="#5b6b84">each member runs its own 3-attempt retry loop here (machine 3, page 03) · passed stages are memoized in Member.memo</text>
+
+    <!-- ================= PHASE B2 ================= -->
+    <text x="12" y="349" font-size="10" font-weight="700" fill="#475569">B2 · DEDUPE — serial barrier</text>
+
+    <line x1="330" y1="362" x2="66" y2="362" stroke="#8494ab" stroke-width="1.3" marker-end="url(#m-g)"/>
+    <line x1="462" y1="362" x2="66" y2="362" stroke="#8494ab" stroke-width="1.3" marker-end="url(#m-g)" opacity="0.6"/>
+    <text x="76" y="358" font-size="9" fill="#37455c">barrier: threads join — results live in Member.memo; the main thread owns every write from here</text>
+
+    <polyline points="66,378 120,378 120,386 66,386" fill="none" stroke="#8494ab" stroke-width="1.4" marker-end="url(#m-g)"/>
+    <text x="130" y="382" font-size="9" fill="#37455c">fingerprint already in state.fingerprints? ⇒ Meta refill (≤ 2 per wave, no new mutations)</text>
+    <text x="130" y="396" font-size="9" fill="#b91c1c">refill failed or cap reached ⇒ keep the original, tag duplicate_of = &lt;earlier iteration&gt;</text>
+
+    <!-- ================= PHASE B3 ================= -->
+    <text x="12" y="423" font-size="10" font-weight="700" fill="#c2410c">B3 · SIMULATE + JUDGE — per member</text>
+    <text x="330" y="423" font-size="8.5" fill="#5b6b84">parallel · simulator is a subprocess, never in-process</text>
+
+    <rect x="324" y="430" width="12" height="126" fill="#fff" stroke="#c2410c" stroke-width="1.2"/>
+
+    <text x="340" y="440" font-size="9" fill="#37455c">stage_simulate → run_simulator(dir, canary, timeout 60 s)</text>
+    <line x1="336" y1="446" x2="712" y2="446" stroke="#0f766e" stroke-width="1.5" marker-end="url(#m-t)"/>
+
+    <text x="340" y="464" font-size="9" fill="#37455c">{sim_score · mean_return · success_rate · training.val_acc} → memo + simulation.log</text>
+    <line x1="712" y1="470" x2="336" y2="470" stroke="#0f766e" stroke-width="1.4" stroke-dasharray="5 3" marker-end="url(#m-t)"/>
+
+    <text x="340" y="488" font-size="9" fill="#37455c">stage_judge → Judge LLM — payload {CONFIG (hypothesis withheld) · SIMULATION_LOG}</text>
+    <line x1="336" y1="494" x2="588" y2="494" stroke="#6d28d9" stroke-width="1.5" marker-end="url(#m-p)"/>
+
+    <text x="340" y="508" font-size="9" fill="#37455c">{score 0–100 · feedback · strengths · weaknesses · next_steps}</text>
+    <text x="340" y="520" font-size="9" fill="#37455c">anchor gate: |score − sim_score| ≤ 3, else JudgeAnchorError → retry loop</text>
+    <line x1="588" y1="526" x2="336" y2="526" stroke="#6d28d9" stroke-width="1.4" stroke-dasharray="5 3" marker-end="url(#m-p)"/>
+
+    <text x="66" y="560" font-size="8.5" font-style="italic" fill="#5b6b84">member i+1 runs the identical chain concurrently on its own thread (arrows omitted) — the two LLM call chains never share state</text>
+
+    <!-- ================= PHASE C ================= -->
+    <text x="12" y="581" font-size="10" font-weight="700" fill="#0f766e">C · STATE UPDATE — serial barrier</text>
+
+    <line x1="330" y1="594" x2="66" y2="594" stroke="#8494ab" stroke-width="1.3" marker-end="url(#m-g)"/>
+    <line x1="462" y1="594" x2="66" y2="594" stroke="#8494ab" stroke-width="1.3" marker-end="url(#m-g)" opacity="0.6"/>
+    <text x="76" y="590" font-size="9" fill="#37455c">barrier: threads join — serial from here, in iteration order (i before i+1)</text>
+
+    <text x="76" y="612" font-size="9" fill="#37455c">stage_update(member): scores[i] · sim_scores[i] · last_judge_score · space.record(ledger += coordinate+score)</text>
+    <text x="76" y="626" font-size="9" fill="#37455c">new best ⇒ _sync_best_files() → best_config.json + best_model.py · member failed ⇒ _poison_bookkeeping</text>
+    <text x="76" y="646" font-size="9" fill="#37455c">write factory_state.json · best_config.json · last_judge.json (verdict + _harness anchor block)</text>
+    <line x1="66" y1="652" x2="862" y2="652" stroke="#8494ab" stroke-width="1.4" marker-end="url(#m-g)"/>
+    <text x="76" y="672" font-size="8.5" font-style="italic" fill="#5b6b84">repeated for every member, i ascending — ledger order never depends on thread timing</text>
+
+    <!-- ================= PHASE D ================= -->
+    <text x="12" y="693" font-size="10" font-weight="700" fill="#15803d">D · DOCUMENT — per ready member</text>
+    <text x="330" y="693" font-size="8.5" fill="#5b6b84">parallel · Sonnet draft → Fable format pass</text>
+
+    <rect x="324" y="700" width="12" height="58" fill="#fff" stroke="#15803d" stroke-width="1.2"/>
+    <text x="348" y="708" font-size="9" fill="#37455c">stage_doc → Doc LLM draft — validator: section starts ### Iteration NNN:, no H1/H2</text>
+    <text x="348" y="722" font-size="9" fill="#37455c">→ format pass (Fable; format_preserves guard) — a rejected format keeps the raw draft</text>
+    <text x="348" y="736" font-size="9" fill="#b91c1c">exhausted ⇒ deterministic _fallback_section · poisoned members ⇒ _poison_section (no LLM)</text>
+    <line x1="330" y1="758" x2="66" y2="758" stroke="#8494ab" stroke-width="1.3" marker-end="url(#m-g)"/>
+    <line x1="462" y1="758" x2="66" y2="758" stroke="#8494ab" stroke-width="1.3" marker-end="url(#m-g)" opacity="0.6"/>
+
+    <!-- ================= PHASE E ================= -->
+    <text x="12" y="785" font-size="10" font-weight="700" fill="#6d28d9">E · ASSEMBLE + CLOSE — serial</text>
+
+    <text x="76" y="802" font-size="9" fill="#37455c">paper: upsert_iteration ×K · replace ABSTRACT · RESULTS_NARRATIVE · RESULTS_TABLE · APPENDIX_SPACE · STATUS</text>
+    <line x1="66" y1="808" x2="862" y2="808" stroke="#8494ab" stroke-width="1.4" marker-end="url(#m-g)"/>
+
+    <text x="76" y="826" font-size="9" fill="#37455c">state: iterations += row {wave, router_verdict, closed_at} · next_iteration = i+1 · fingerprints registered</text>
+    <line x1="66" y1="832" x2="862" y2="832" stroke="#8494ab" stroke-width="1.4" marker-end="url(#m-g)"/>
+
+    <text x="76" y="850" font-size="9" fill="#37455c">space: analytics = analytics.compute(state, space) — this table feeds the next Meta prompt</text>
+    <line x1="66" y1="856" x2="862" y2="856" stroke="#8494ab" stroke-width="1.4" marker-end="url(#m-g)"/>
+
+    <text x="76" y="874" font-size="9" fill="#37455c">verify: check_experiment ×K → iteration_summary.json · snapshots deleted — the wave is committed</text>
+    <line x1="66" y1="880" x2="862" y2="880" stroke="#8494ab" stroke-width="1.4" marker-end="url(#m-g)"/>
+
+    <text x="66" y="900" font-size="8.5" font-style="italic" fill="#5b6b84">→ back to the run loop: done_checker.check() decides whether another wave starts (machine 1, page 03)</text>
+  </svg>
+
+  <div class="note">—— call / file write · ⇢ dashed = return · white bar on a lifeline = thread busy · bands: blue/gray/teal/purple = serial (main thread) · orange/green = parallel (member threads)</div>
+
+  <footer class="pf">
+    <span>Context Health Factory — operational walkthrough · run_wave() in factory/run_factory.py</span>
+    <span>2 / 5</span>
+  </footer>
+</section>
+
+<!-- ============================================================ PAGE 3 -->
+<section class="page">
+  <header class="ph">
+    <span class="kicker">Context Health Factory · Operational Walkthrough</span>
+    <span class="pno">03 / 05</span>
+  </header>
+  <h1 class="sec"><span class="n">03</span> · THE THREE NESTED STATE MACHINES</h1>
+  <div class="lede">The factory is three state machines stacked. A failure at a lower level is caught, retried and escalated there; it only travels upward when local retries exhaust. <b>Iteration</b> failures feed the wave machine; two identically-poisoned <b>waves</b> trip the circuit breaker and pause the <b>run</b>.</div>
+
+  <h2 class="di">MACHINE 1 · THE RUN <span class="tag">— process lifetime, main()</span></h2>
+  <svg viewBox="0 0 1000 240">
+    <circle cx="24" cy="86" r="5" fill="#1b2434"/>
+    <line x1="29" y1="86" x2="60" y2="86" stroke="#8494ab" stroke-width="1.6" marker-end="url(#m-g)"/>
+    <text x="20" y="130" font-size="8.5" fill="#5b6b84">initialize()</text>
+    <text x="20" y="141" font-size="8.5" fill="#5b6b84">+ preflight()</text>
+
+    <rect x="60" y="60" width="240" height="52" rx="5" fill="#e9f0fe" stroke="#1d4ed8" stroke-width="1.8"/>
+    <text x="74" y="80" font-size="11" font-weight="700" fill="#1d4ed8">RUNNING</text>
+    <text x="74" y="95" font-size="8.5" fill="#37455c">loop: done_checker → run_wave →</text>
+    <text x="74" y="106" font-size="8.5" fill="#37455c">circuit_breaker</text>
+
+    <rect x="560" y="16" width="420" height="56" rx="5" fill="#e7f5ec" stroke="#15803d" stroke-width="1.8"/>
+    <text x="574" y="36" font-size="11" font-weight="700" fill="#15803d">HALTED — exit 0</text>
+    <text x="574" y="50" font-size="8.5" fill="#37455c">halt(reason): confirm top-6 · final synthesis · paper rewrite</text>
+    <text x="574" y="62" font-size="8.5" fill="#37455c">⇒ confirmation.json · factory_report.json</text>
+
+    <rect x="560" y="92" width="420" height="56" rx="5" fill="#fdeee2" stroke="#c2410c" stroke-width="1.8"/>
+    <text x="574" y="112" font-size="11" font-weight="700" fill="#c2410c">PAUSED — exit 3 / 130</text>
+    <text x="574" y="126" font-size="8.5" fill="#37455c">InfraUnavailable (backoff 30·60·120·240·480 s) · Ctrl-C</text>
+    <text x="574" y="138" font-size="8.5" fill="#37455c">state + snapshots on disk — nothing lost</text>
+
+    <rect x="560" y="168" width="420" height="56" rx="5" fill="#fcebeb" stroke="#b91c1c" stroke-width="1.8"/>
+    <text x="574" y="188" font-size="11" font-weight="700" fill="#b91c1c">ABORTED — exit 2</text>
+    <text x="574" y="202" font-size="8.5" fill="#37455c">MacroFail: IsolationViolation · ReadOnlyViolation — never caught</text>
+    <text x="574" y="214" font-size="8.5" fill="#37455c">macro_fail.json written · stale exp_* → _aborted/ at next start</text>
+
+    <polyline points="300,70 430,70 430,44 560,44" fill="none" stroke="#15803d" stroke-width="1.6" marker-end="url(#m-gr)"/>
+    <text x="306" y="64" font-size="8.5" fill="#15803d">done_checker returns a reason ⇒ halt(reason)</text>
+
+    <polyline points="300,90 500,90 500,120 560,120" fill="none" stroke="#c2410c" stroke-width="1.6" marker-end="url(#m-o)"/>
+    <text x="306" y="84" font-size="8.5" fill="#c2410c">LLM transport down / Ctrl-C</text>
+
+    <polyline points="300,110 470,110 470,196 560,196" fill="none" stroke="#b91c1c" stroke-width="1.6" marker-end="url(#m-r)"/>
+    <text x="306" y="104" font-size="8.5" fill="#b91c1c">isolation/read-only violation</text>
+
+    <polyline points="700,148 700,230 180,230 180,112" fill="none" stroke="#475569" stroke-width="1.4" stroke-dasharray="6 4" marker-end="url(#m-g)"/>
+    <text x="190" y="224" font-size="8.5" fill="#475569">resume: re-run the same command — preflight restores the wave snapshot</text>
+  </svg>
+
+  <h2 class="di">MACHINE 2 · THE WAVE <span class="tag">— phases A–E, run_wave()</span></h2>
+  <svg viewBox="0 0 1000 234">
+    <!-- next-wave loop -->
+    <polyline points="918,56 918,30 78,30 78,56" fill="none" stroke="#1d4ed8" stroke-width="1.5" marker-end="url(#m-b)"/>
+    <text x="350" y="24" font-size="8.5" fill="#1d4ed8">wave committed ⇒ next wave (machine 1 runs done_checker first)</text>
+
+    <!-- phase boxes -->
+    <rect x="16" y="56" width="124" height="46" rx="5" fill="#e9f0fe" stroke="#1d4ed8" stroke-width="1.6"/>
+    <text x="78" y="76" font-size="10" font-weight="700" fill="#1d4ed8" text-anchor="middle">A · META</text>
+    <text x="78" y="92" font-size="8.5" fill="#5b6b84" text-anchor="middle">serial</text>
+
+    <rect x="156" y="56" width="124" height="46" rx="5" fill="#fdeee2" stroke="#c2410c" stroke-width="1.6"/>
+    <text x="218" y="76" font-size="10" font-weight="700" fill="#c2410c" text-anchor="middle">B1 · BUILD ×K</text>
+    <text x="218" y="92" font-size="8.5" fill="#5b6b84" text-anchor="middle">parallel</text>
+
+    <rect x="296" y="56" width="124" height="46" rx="5" fill="#eef2f7" stroke="#475569" stroke-width="1.6"/>
+    <text x="358" y="76" font-size="10" font-weight="700" fill="#475569" text-anchor="middle">B2 · DEDUPE</text>
+    <text x="358" y="92" font-size="8.5" fill="#5b6b84" text-anchor="middle">serial barrier</text>
+
+    <rect x="436" y="56" width="124" height="46" rx="5" fill="#fdeee2" stroke="#c2410c" stroke-width="1.6"/>
+    <text x="498" y="74" font-size="10" font-weight="700" fill="#c2410c" text-anchor="middle">B3 · SIM+JUDGE</text>
+    <text x="498" y="92" font-size="8.5" fill="#5b6b84" text-anchor="middle">parallel ×K</text>
+
+    <rect x="576" y="56" width="124" height="46" rx="5" fill="#e3f2f0" stroke="#0f766e" stroke-width="1.6"/>
+    <text x="638" y="76" font-size="10" font-weight="700" fill="#0f766e" text-anchor="middle">C · UPDATE</text>
+    <text x="638" y="92" font-size="8.5" fill="#5b6b84" text-anchor="middle">serial barrier</text>
+
+    <rect x="716" y="56" width="124" height="46" rx="5" fill="#e7f5ec" stroke="#15803d" stroke-width="1.6"/>
+    <text x="778" y="76" font-size="10" font-weight="700" fill="#15803d" text-anchor="middle">D · DOC ×K</text>
+    <text x="778" y="92" font-size="8.5" fill="#5b6b84" text-anchor="middle">parallel</text>
+
+    <rect x="856" y="56" width="124" height="46" rx="5" fill="#f0eafc" stroke="#6d28d9" stroke-width="1.6"/>
+    <text x="918" y="76" font-size="10" font-weight="700" fill="#6d28d9" text-anchor="middle">E · CLOSE</text>
+    <text x="918" y="92" font-size="8.5" fill="#5b6b84" text-anchor="middle">serial</text>
+
+    <!-- chain arrows -->
+    <line x1="140" y1="79" x2="156" y2="79" stroke="#8494ab" stroke-width="1.6" marker-end="url(#m-g)"/>
+    <line x1="280" y1="79" x2="296" y2="79" stroke="#8494ab" stroke-width="1.6" marker-end="url(#m-g)"/>
+    <line x1="420" y1="79" x2="436" y2="79" stroke="#8494ab" stroke-width="1.6" marker-end="url(#m-g)"/>
+    <line x1="560" y1="79" x2="576" y2="79" stroke="#8494ab" stroke-width="1.6" marker-end="url(#m-g)"/>
+    <line x1="700" y1="79" x2="716" y2="79" stroke="#8494ab" stroke-width="1.6" marker-end="url(#m-g)"/>
+    <line x1="840" y1="79" x2="856" y2="79" stroke="#8494ab" stroke-width="1.6" marker-end="url(#m-g)"/>
+
+    <!-- A fail branch -->
+    <polyline points="78,102 78,132 918,132 918,102" fill="none" stroke="#b91c1c" stroke-width="1.5" marker-end="url(#m-r)"/>
+    <text x="200" y="127" font-size="8.5" fill="#b91c1c" style="paint-order:stroke" stroke="#fff" stroke-width="3">Meta invalid ×3 ⇒ lead poisoned, streak += 1 — B–D skipped, E closes the wave as failed</text>
+
+    <!-- B2 refill loop -->
+    <polyline points="320,102 320,146 396,146 396,102" fill="none" stroke="#c2410c" stroke-width="1.5" marker-end="url(#m-o)"/>
+    <text x="296" y="160" font-size="8.5" fill="#c2410c">duplicate fingerprint ⇒ Meta refill (≤ 2/wave) · cap hit ⇒ duplicate_of</text>
+
+    <!-- B3 poison branch -->
+    <polyline points="498,102 498,116 640,116 640,102" fill="none" stroke="#b91c1c" stroke-width="1.5" marker-end="url(#m-r)"/>
+    <text x="506" y="112" font-size="8.5" fill="#b91c1c" style="paint-order:stroke" stroke="#fff" stroke-width="3">member poisoned ⇒ C records it</text>
+
+    <!-- circuit breaker -->
+    <rect x="296" y="178" width="420" height="44" rx="5" fill="#fff" stroke="#b91c1c" stroke-width="1.6"/>
+    <text x="308" y="195" font-size="9" font-weight="700" fill="#b91c1c">CIRCUIT BREAKER — checked after every wave</text>
+    <text x="308" y="209" font-size="8.5" fill="#37455c">last 2 waves poisoned by one error type ⇒ InfraUnavailable ⇒ machine 1: PAUSED</text>
+    <polyline points="890,102 890,200 716,200" fill="none" stroke="#b91c1c" stroke-width="1.4" stroke-dasharray="5 3" marker-end="url(#m-r)"/>
+  </svg>
+
+  <h2 class="di">MACHINE 3 · THE ITERATION <span class="tag">— one member thread, member_core()</span></h2>
+  <svg viewBox="0 0 1000 292">
+    <rect x="16" y="36" width="120" height="44" rx="5" fill="#eef2f7" stroke="#475569" stroke-width="1.6"/>
+    <text x="76" y="56" font-size="10" font-weight="700" fill="#1b2434" text-anchor="middle">open</text>
+    <text x="76" y="71" font-size="8" fill="#5b6b84" text-anchor="middle">Member from fan-out</text>
+
+    <rect x="220" y="28" width="360" height="60" rx="5" fill="#e9f0fe" stroke="#1d4ed8" stroke-width="1.6"/>
+    <text x="234" y="47" font-size="10" font-weight="700" fill="#1d4ed8">stage pipeline — memoized per stage</text>
+    <text x="234" y="62" font-size="8.5" fill="#37455c">worker → fingerprint → simulate → judge</text>
+    <text x="234" y="76" font-size="8.5" fill="#37455c">each LLM step: 1 in-place retry (R2: effort forced high)</text>
+
+    <rect x="700" y="16" width="130" height="40" rx="5" fill="#e7f5ec" stroke="#15803d" stroke-width="1.6"/>
+    <text x="765" y="34" font-size="10" font-weight="700" fill="#15803d" text-anchor="middle">ready</text>
+    <text x="765" y="48" font-size="8" fill="#5b6b84" text-anchor="middle">judge anchored</text>
+
+    <rect x="700" y="88" width="130" height="40" rx="5" fill="#fcebeb" stroke="#b91c1c" stroke-width="1.6"/>
+    <text x="765" y="106" font-size="10" font-weight="700" fill="#b91c1c" text-anchor="middle">poisoned</text>
+    <text x="765" y="120" font-size="8" fill="#5b6b84" text-anchor="middle">3 consecutive fails</text>
+
+    <rect x="880" y="16" width="106" height="40" rx="5" fill="#e7f5ec" stroke="#15803d" stroke-width="1.4"/>
+    <text x="933" y="34" font-size="9.5" font-weight="700" fill="#15803d" text-anchor="middle">documented</text>
+    <text x="933" y="48" font-size="8" fill="#5b6b84" text-anchor="middle">phase D</text>
+
+    <rect x="880" y="88" width="106" height="40" rx="5" fill="#eef2f7" stroke="#475569" stroke-width="1.4"/>
+    <text x="933" y="106" font-size="8.5" font-weight="700" fill="#475569" text-anchor="middle">_poison_section</text>
+    <text x="933" y="120" font-size="8" fill="#5b6b84" text-anchor="middle">phase D</text>
+
+    <rect x="220" y="150" width="360" height="52" rx="5" fill="#fdeee2" stroke="#c2410c" stroke-width="1.6"/>
+    <text x="234" y="169" font-size="10" font-weight="700" fill="#c2410c">_record_failure()</text>
+    <text x="234" y="184" font-size="8.5" fill="#37455c">consecutive_fails += 1 · attempts.json += entry</text>
+    <text x="234" y="197" font-size="8.5" fill="#37455c">escalate the failing agent +1 level (R6, cap L3)</text>
+
+    <!-- edges -->
+    <line x1="136" y1="58" x2="220" y2="58" stroke="#8494ab" stroke-width="1.6" marker-end="url(#m-g)"/>
+
+    <polyline points="580,58 640,58 640,36 700,36" fill="none" stroke="#15803d" stroke-width="1.6" marker-end="url(#m-gr)"/>
+    <text x="596" y="30" font-size="8.5" fill="#15803d">judge ok</text>
+
+    <line x1="320" y1="88" x2="320" y2="150" stroke="#c2410c" stroke-width="1.6" marker-end="url(#m-o)"/>
+    <text x="330" y="122" font-size="8.5" fill="#c2410c">MicroFail at any stage</text>
+
+    <line x1="500" y1="150" x2="500" y2="88" stroke="#1d4ed8" stroke-width="1.6" marker-end="url(#m-b)"/>
+    <text x="510" y="122" font-size="8.5" fill="#1d4ed8">retry — memoized stages skipped</text>
+
+    <polyline points="580,176 660,176 660,108 700,108" fill="none" stroke="#b91c1c" stroke-width="1.6" marker-end="url(#m-r)"/>
+    <text x="588" y="170" font-size="8.5" fill="#b91c1c">3rd failure</text>
+
+    <line x1="830" y1="36" x2="880" y2="36" stroke="#15803d" stroke-width="1.5" marker-end="url(#m-gr)"/>
+    <line x1="830" y1="108" x2="880" y2="108" stroke="#8494ab" stroke-width="1.5" marker-end="url(#m-g)"/>
+
+    <text x="220" y="222" font-size="8.5" fill="#5b6b84">SimulatorError / WorkerCodeError also evict worker+fingerprint from the memo ⇒ the next attempt</text>
+    <text x="220" y="234" font-size="8.5" fill="#5b6b84">regenerates model.py with the RETRY_ERROR block in its prompt</text>
+
+    <text x="16" y="268" font-size="8.5" fill="#5b6b84">escape hatches: OSError ⇒ InfraUnavailable (machine 1: PAUSED) · unexpected Exception ⇒ HarnessStageError, treated as MicroFail</text>
+    <text x="16" y="280" font-size="8.5" fill="#5b6b84">· MacroFail ⇒ machine 1: ABORTED — never caught inside an iteration</text>
+  </svg>
+
+  <footer class="pf">
+    <span>Context Health Factory — operational walkthrough · run() / run_wave() / member_core()</span>
+    <span>3 / 5</span>
+  </footer>
+</section>
+
+<!-- ============================================================ PAGE 4 -->
+<section class="page">
+  <header class="ph">
+    <span class="kicker">Context Health Factory · Operational Walkthrough</span>
+    <span class="pno">04 / 05</span>
+  </header>
+  <h1 class="sec"><span class="n">04</span> · THE FEEDBACK LOOP BETWEEN WAVES</h1>
+  <div class="lede">Nothing resets between waves except the member threads. Wave N's outputs are written to disk in phases C/E and read back as wave N+1's inputs — the <b>Meta prompt</b>, the <b>router context</b>, the <b>dedupe set</b> and the <b>halt test</b>. This is the whole learning loop: there is no other memory.</div>
+
+  <h2 class="di">WAVE N → WAVE N+1 WIRING <span class="tag">— producer artifact → consumer</span></h2>
+  <svg viewBox="0 0 1000 640">
+    <text x="16" y="22" font-size="11" font-weight="700" fill="#5b6b84" letter-spacing="2">WRITTEN BY WAVE N (MAIN THREAD)</text>
+    <text x="634" y="22" font-size="11" font-weight="700" fill="#5b6b84" letter-spacing="2">READ BY WAVE N+1</text>
+
+    <!-- producers -->
+    <rect x="16" y="40" width="350" height="68" rx="5" fill="#e9f0fe" stroke="#1d4ed8" stroke-width="1.5"/>
+    <text x="28" y="58" font-size="10" font-weight="700" fill="#1d4ed8">factory_state.json</text>
+    <text x="28" y="73" font-size="8.5" fill="#37455c">scores · sim_scores · best · last_judge_score ·</text>
+    <text x="28" y="85" font-size="8.5" fill="#37455c">meta_invalid_streak · iterations[] · fingerprints · poisoned</text>
+    <text x="28" y="97" font-size="8.5" fill="#5b6b84">written by stage_update + _finish_wave (phase C / E)</text>
+
+    <rect x="16" y="150" width="350" height="68" rx="5" fill="#e3f2f0" stroke="#0f766e" stroke-width="1.5"/>
+    <text x="28" y="168" font-size="10" font-weight="700" fill="#0f766e">state_space.json</text>
+    <text x="28" y="183" font-size="8.5" fill="#37455c">dimensions (after mutations) · ledger: coordinate → score ·</text>
+    <text x="28" y="195" font-size="8.5" fill="#37455c">mutation_log · analytics table · last_dimension_added_iteration</text>
+    <text x="28" y="207" font-size="8.5" fill="#5b6b84">written by apply_wave_proposal + space.record + analytics</text>
+
+    <rect x="16" y="260" width="350" height="68" rx="5" fill="#fdeee2" stroke="#c2410c" stroke-width="1.5"/>
+    <text x="28" y="278" font-size="10" font-weight="700" fill="#c2410c">last_judge.json</text>
+    <text x="28" y="293" font-size="8.5" fill="#37455c">score · feedback · strengths · weaknesses · next_steps</text>
+    <text x="28" y="305" font-size="8.5" fill="#37455c">+ _harness anchor block (sim_score, delta, tolerance)</text>
+    <text x="28" y="317" font-size="8.5" fill="#5b6b84">written by _write_last_judge (phase C)</text>
+
+    <rect x="16" y="370" width="350" height="68" rx="5" fill="#f0eafc" stroke="#6d28d9" stroke-width="1.5"/>
+    <text x="28" y="388" font-size="10" font-weight="700" fill="#6d28d9">best_config.json</text>
+    <text x="28" y="403" font-size="8.5" fill="#37455c">the best coordinate + score so far</text>
+    <text x="28" y="415" font-size="8.5" fill="#37455c">(+ best_model.py alongside)</text>
+    <text x="28" y="427" font-size="8.5" fill="#5b6b84">written by _sync_best_files (phase C, on new best)</text>
+
+    <rect x="16" y="480" width="350" height="68" rx="5" fill="#e7f5ec" stroke="#15803d" stroke-width="1.5"/>
+    <text x="28" y="498" font-size="10" font-weight="700" fill="#15803d">research_paper.md</text>
+    <text x="28" y="513" font-size="8.5" fill="#37455c">abstract · results narrative · leaderboard · one section</text>
+    <text x="28" y="525" font-size="8.5" fill="#37455c">per iteration · state-space appendix</text>
+    <text x="28" y="537" font-size="8.5" fill="#5b6b84">rewritten by _finish_wave (phase E)</text>
+
+    <!-- consumers -->
+    <rect x="634" y="40" width="352" height="80" rx="5" fill="#e9f0fe" stroke="#1d4ed8" stroke-width="1.5"/>
+    <text x="646" y="58" font-size="10" font-weight="700" fill="#1d4ed8">META PROMPT — phase A payload</text>
+    <text x="646" y="73" font-size="8.5" fill="#37455c">STATE_SPACE (dimensions + analytics) · BEST_CONFIG ·</text>
+    <text x="646" y="85" font-size="8.5" fill="#37455c">LAST_JUDGE — the judge's next_steps steer the proposal</text>
+    <text x="646" y="97" font-size="8.5" fill="#37455c">+ ITERATION · WAVE_SIZE · REFILL_NOTE</text>
+    <text x="646" y="109" font-size="8.5" fill="#5b6b84">this is the only channel that “invents” new dimensions</text>
+
+    <rect x="634" y="170" width="352" height="68" rx="5" fill="#f0eafc" stroke="#6d28d9" stroke-width="1.5"/>
+    <text x="646" y="188" font-size="10" font-weight="700" fill="#6d28d9">ROUTER — RouteContext per LLM call</text>
+    <text x="646" y="203" font-size="8.5" fill="#37455c">R3 quality: last_judge_score &lt; 60 ⇒ worker+judge start L2</text>
+    <text x="646" y="215" font-size="8.5" fill="#37455c">R4 complexity: meta_invalid_streak ≥ 2 ⇒ meta starts L3</text>
+    <text x="646" y="227" font-size="8.5" fill="#5b6b84">+ attempt (R6) · step_retry (R2) from the retry loops</text>
+
+    <rect x="634" y="300" width="352" height="56" rx="5" fill="#eef2f7" stroke="#475569" stroke-width="1.5"/>
+    <text x="646" y="318" font-size="10" font-weight="700" fill="#475569">DEDUPE — phase B2</text>
+    <text x="646" y="333" font-size="8.5" fill="#37455c">a new fingerprint must be unseen across every past</text>
+    <text x="646" y="345" font-size="8.5" fill="#37455c">ready iteration, else refill / duplicate_of</text>
+
+    <rect x="634" y="420" width="352" height="56" rx="5" fill="#fdeee2" stroke="#c2410c" stroke-width="1.5"/>
+    <text x="646" y="438" font-size="10" font-weight="700" fill="#c2410c">DONE_CHECKER — before every wave</text>
+    <text x="646" y="453" font-size="8.5" fill="#37455c">stagnation: no dimension added in the last 10 iterations</text>
+    <text x="646" y="465" font-size="8.5" fill="#37455c">plateau: best of last 10 ≤ best before + 2.0</text>
+
+    <rect x="634" y="530" width="352" height="56" rx="5" fill="#e7f5ec" stroke="#15803d" stroke-width="1.5"/>
+    <text x="646" y="548" font-size="10" font-weight="700" fill="#15803d">DOC PROMPT — phase D</text>
+    <text x="646" y="563" font-size="8.5" fill="#37455c">the paper-so-far is the narrative context every new</text>
+    <text x="646" y="575" font-size="8.5" fill="#37455c">section is written against</text>
+
+    <!-- edges: P1 -->
+    <line x1="366" y1="56" x2="634" y2="58" stroke="#1d4ed8" stroke-width="1.4" marker-end="url(#m-b)"/>
+    <polyline points="366,70 468,70 468,188 634,188" fill="none" stroke="#1d4ed8" stroke-width="1.4" marker-end="url(#m-b)"/>
+    <polyline points="366,84 456,84 456,318 634,318" fill="none" stroke="#1d4ed8" stroke-width="1.4" marker-end="url(#m-b)"/>
+    <polyline points="366,98 444,98 444,438 634,438" fill="none" stroke="#1d4ed8" stroke-width="1.4" marker-end="url(#m-b)"/>
+    <text x="478" y="184" font-size="8" fill="#1d4ed8" style="paint-order:stroke" stroke="#fff" stroke-width="3">last_judge_score · streak</text>
+    <text x="466" y="312" font-size="8" fill="#1d4ed8" style="paint-order:stroke" stroke="#fff" stroke-width="3">fingerprints</text>
+    <text x="452" y="432" font-size="8" fill="#1d4ed8" style="paint-order:stroke" stroke="#fff" stroke-width="3">scores</text>
+
+    <!-- edges: P2 -->
+    <polyline points="366,166 516,166 516,76 634,76" fill="none" stroke="#0f766e" stroke-width="1.4" marker-end="url(#m-t)"/>
+    <polyline points="366,180 432,180 432,456 634,456" fill="none" stroke="#0f766e" stroke-width="1.4" marker-end="url(#m-t)"/>
+    <text x="524" y="72" font-size="8" fill="#0f766e" style="paint-order:stroke" stroke="#fff" stroke-width="3">dimensions + analytics</text>
+    <text x="440" y="452" font-size="8" fill="#0f766e" style="paint-order:stroke" stroke="#fff" stroke-width="3">last_dim_added</text>
+
+    <!-- edges: P3 -->
+    <polyline points="366,276 540,276 540,94 634,94" fill="none" stroke="#c2410c" stroke-width="1.4" marker-end="url(#m-o)"/>
+    <polyline points="366,290 480,290 480,206 634,206" fill="none" stroke="#c2410c" stroke-width="1.4" marker-end="url(#m-o)"/>
+    <text x="372" y="272" font-size="8" fill="#c2410c" style="paint-order:stroke" stroke="#fff" stroke-width="3">LAST_JUDGE payload</text>
+    <text x="488" y="202" font-size="8" fill="#c2410c" style="paint-order:stroke" stroke="#fff" stroke-width="3">score → R3</text>
+
+    <!-- edges: P4 -->
+    <polyline points="366,404 552,404 552,112 634,112" fill="none" stroke="#6d28d9" stroke-width="1.4" marker-end="url(#m-p)"/>
+    <text x="372" y="400" font-size="8" fill="#6d28d9" style="paint-order:stroke" stroke="#fff" stroke-width="3">BEST_CONFIG payload</text>
+
+    <!-- edges: P5 -->
+    <polyline points="366,514 492,514 492,558 634,558" fill="none" stroke="#15803d" stroke-width="1.4" marker-end="url(#m-gr)"/>
+    <text x="372" y="510" font-size="8" fill="#15803d" style="paint-order:stroke" stroke="#fff" stroke-width="3">paper so far</text>
+  </svg>
+
+  <h2 class="di">ROUTER RECAP <span class="tag">— the only place a model is chosen · ladder L0–L3</span></h2>
+  <div class="twocol">
+    <table class="dt compact">
+      <tr><th style="width:16mm">rule</th><th style="width:20mm">name</th><th>trigger → effect (applied in this order)</th></tr>
+      <tr><td class="p">R1</td><td>baseline</td><td>every core agent starts at L0</td></tr>
+      <tr><td class="p">R3</td><td>quality</td><td>last judge score &lt; 60 ⇒ worker + judge start at L2 next iteration</td></tr>
+      <tr><td class="p">R4</td><td>complexity</td><td>meta invalid streak ≥ 2 ⇒ meta starts at L3</td></tr>
+      <tr><td class="p">R6</td><td>iteration</td><td>each iteration-level failure bumps the failing agent +1 level (cap L3) — per-iteration EscalationTracker, so parallel iterations never interact</td></tr>
+      <tr><td class="p">R2</td><td>micro</td><td>in-place step retry ⇒ effort forced high on the same model</td></tr>
+      <tr><td class="p">R5</td><td>fable</td><td>fable-5.1 only for (doc, format) — anything else raises RoutingViolationError</td></tr>
+    </table>
+    <table class="dt compact">
+      <tr><th style="width:12mm">level</th><th style="width:24mm">model</th><th style="width:18mm">effort</th><th>used for</th></tr>
+      <tr><td class="p">L0</td><td>sonnet-5</td><td>standard</td><td>default for every core agent</td></tr>
+      <tr><td class="p">L1</td><td>sonnet-5</td><td>high</td><td>first escalation step / in-place retry</td></tr>
+      <tr><td class="p">L2</td><td>opus-5.5</td><td>standard</td><td>quality floor after a low judge score (R3)</td></tr>
+      <tr><td class="p">L3</td><td>opus-5.5</td><td>high</td><td>meta after 2 invalid waves (R4) · retry ceiling (R6)</td></tr>
+      <tr><td class="p">—</td><td>fable-5.1</td><td>—</td><td>doc format pass only (R5)</td></tr>
+    </table>
+  </div>
+
+  <footer class="pf">
+    <span>Context Health Factory — operational walkthrough · router.py · done_checker.py</span>
+    <span>4 / 5</span>
+  </footer>
+</section>
+
+<!-- ============================================================ PAGE 5 -->
+<section class="page">
+  <header class="ph">
+    <span class="kicker">Context Health Factory · Operational Walkthrough</span>
+    <span class="pno">05 / 05</span>
+  </header>
+  <h1 class="sec"><span class="n">05</span> · ONE ITERATION'S PAPER TRAIL</h1>
+  <div class="lede">Every arrow on the previous pages is a file. Below: the real shapes for a healthy iteration (<b>exp_000</b>, scored) and a poisoned one (<b>exp_001</b>, exhausted its 3 attempts). <b>Keys are exact; values are illustrative.</b></div>
+
+  <div class="twocol">
+    <div>
+      <h2 class="di">exp_000 · READY <span class="tag">— fan-out → build → score</span></h2>
+      <pre class="tree"><span class="m"># written by _fan_out_meta (phase A)</span>
+experiments/exp_000/next_coordinate.json
+{
+  <b>"iteration"</b>: 0,  <b>"experiment"</b>: "exp_000",
+  <b>"coordinate"</b>: {"hidden_layers": [64, 64]},
+  <b>"coordinate_hash"</b>: "9f2c1ab34d55",
+  <b>"hypothesis"</b>: "Two 64-unit layers give the
+     policy capacity to separate the 6 actions.",
+  <b>"wave_iterations"</b>: [0, 1],  <b>"wave_position"</b>: 0,
+  <b>"mutations_applied"</b>: [],  <b>"dimensions_added"</b>: []
+}</pre>
+      <pre class="tree" style="margin-top:2mm"><span class="m"># written by stage_worker (phase B1)</span>
+experiments/exp_000/config.json
+{
+  <b>"experiment"</b>: "exp_000", <b>"iteration"</b>: 0,
+  <b>"canary"</b>: "exp_000::7f3a9c…",
+  <b>"coordinate"</b>: {"hidden_layers": [64, 64]},
+  <b>"coordinate_hash"</b>: "9f2c1ab34d55",
+  <b>"dimension_definitions"</b>: {"hidden_layers": {
+     "type": "categorical", "values": [[64, 64]],
+     "description": "Widths of the MLP hidden…"}},
+  <b>"hypothesis"</b>: "Two 64-unit layers…",
+  <b>"worker"</b>: {"design_notes": "…",
+     "model_py_sha256": "sha256…",
+     "static_gate": {"lines": 41, …}}
+}</pre>
+      <pre class="tree" style="margin-top:2mm"><span class="m"># written by stage_judge (phase B3)</span>
+experiments/exp_000/judge.json
+{
+  <b>"score"</b>: 62,
+  <b>"feedback"</b>: "…20–2500 chars…",
+  <b>"strengths"</b>: ["…"], <b>"weaknesses"</b>: ["…"],
+  <b>"next_steps"</b>: ["…"],        <span class="m"># next Meta reads these</span>
+  <b>"_harness"</b>: {               <span class="m"># added by the harness</span>
+    "experiment": "exp_000", "iteration": 0,
+    "sim_score": 61.3,
+    "anchor_delta": 0.7, "anchor_tolerance": 3 }
+}</pre>
+    </div>
+    <div>
+      <h2 class="di">exp_001 · POISONED <span class="tag">— 3 attempts exhausted</span></h2>
+      <pre class="tree"><span class="m"># appended by _record_failure (phases B1–B3)</span>
+experiments/exp_001/attempts.json
+[
+  {<b>"attempt"</b>: 0, <b>"stage"</b>: "worker", <b>"agent"</b>: "worker",
+   <b>"error_type"</b>: "WorkerCodeError",
+   <b>"error"</b>: "static gate: forbidden symbol…"},
+  {<b>"attempt"</b>: 1, <b>"stage"</b>: "simulate", <b>"agent"</b>: "worker",
+   <b>"error_type"</b>: "SimulatorError",
+   <b>"error"</b>: "model.py raised: shape (6 vs 5)…"},
+  {<b>"attempt"</b>: 2, <b>"stage"</b>: "simulate", <b>"agent"</b>: "worker",
+   <b>"error_type"</b>: "SimulatorTimeout",
+   <b>"error"</b>: "exceeded the 60 s budget"}
+]
+<span class="r"># 3 consecutive fails ⇒ status = poisoned</span></pre>
+      <pre class="tree" style="margin-top:2mm"><span class="m"># written by _finish_wave (phase E)</span>
+experiments/exp_001/iteration_summary.json
+{
+  <b>"iteration"</b>: 1, <b>"experiment"</b>: "exp_001",
+  <b>"status"</b>: "poisoned",
+  <b>"score"</b>: null, <b>"sim_score"</b>: null, <b>"mean_return"</b>: null,
+  <b>"coordinate_hash"</b>: "77aa09bc21ef", <b>"dims_added"</b>: 0,
+  <b>"attempts"</b>: 3, <b>"duplicate_of"</b>: null, <b>"refills"</b>: [],
+  <b>"failures"</b>: [{"attempt": 0, "stage": "worker", …}, …],
+  <b>"wave"</b>: 0, <b>"router_verdict"</b>: "…",
+  <b>"closed_at"</b>: "2026-10-02T14:31:07",
+  <b>"micro_done"</b>: {"micro_done": false, …}  <span class="m"># verify_run</span>
+}</pre>
+      <pre class="tree" style="margin-top:2mm"><span class="m"># factory_state.json after wave 0 (fragment)</span>
+{
+  <b>"next_iteration"</b>: 2,
+  <b>"iterations"</b>: [ {…row exp_000…}, {…row exp_001…} ],
+  <b>"scores"</b>: {"0": 62},  <b>"sim_scores"</b>: {"0": 61.3},
+  <b>"best"</b>: {"iteration": 0, "score": 62, …},
+  <b>"last_judge_score"</b>: 62,  <b>"poisoned"</b>: [1],
+  <b>"waves"</b>: 1
+}
+<span class="g"># ⇒ wave 1's Meta prompt carries exactly this state</span></pre>
+    </div>
+  </div>
+
+  <h2 class="di">WHO WRITES WHAT <span class="tag">— file → the only function allowed to write it</span></h2>
+  <table class="dt compact">
+    <tr><th style="width:52mm">file</th><th style="width:44mm">writer</th><th>phase · note</th></tr>
+    <tr><td>exp_*/next_coordinate.json</td><td class="p">_fan_out_meta</td><td>A · one per member; refills write next_coordinate.rejected_N.json alongside</td></tr>
+    <tr><td>exp_*/model.py · config.json · worker.json</td><td class="p">stage_worker</td><td>B1 · model.py carries a header: coordinate hash + “generated by the Worker Agent”</td></tr>
+    <tr><td>exp_*/simulation.log · simulation_summary</td><td class="p">simulator subprocess</td><td>B3 · written by the subprocess itself — the factory never trains in-process</td></tr>
+    <tr><td>exp_*/judge.json</td><td class="p">stage_judge</td><td>B3 · verdict + _harness anchor block (sim_score, delta, tolerance)</td></tr>
+    <tr><td>exp_*/attempts.json</td><td class="p">_record_failure</td><td>B1–B3 · appended on every MicroFail; 3 entries ⇒ poisoned</td></tr>
+    <tr><td>exp_*/iteration_summary.json</td><td class="p">_finish_wave + verify_run</td><td>E · leaderboard row + micro_done checks — the per-iteration audit</td></tr>
+    <tr><td>workspace/factory_state.json</td><td class="p">save_state</td><td>C/E · written on every mutation; the whole run is recoverable from it</td></tr>
+    <tr><td>workspace/research_paper.md</td><td class="p">_finish_wave / halt</td><td>E · marker blocks replaced wholesale; sections upserted per iteration</td></tr>
+  </table>
+  <div class="note">A poisoned iteration is not wasted work: it yields a leaderboard row, a deterministic paper section (<b>_poison_section</b>), and a ledger entry the next Meta call can see. Failure is data.</div>
+
+  <footer class="pf">
+    <span>Context Health Factory — operational walkthrough · keys traced to run_factory.py writes</span>
+    <span>5 / 5</span>
+  </footer>
+</section>
+
+</body>
+</html>

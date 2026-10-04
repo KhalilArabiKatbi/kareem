@@ -1,0 +1,71 @@
+{
+  "recipe": "experiments/exp_000/model.py",
+  "dev_scenarios": 280,
+  "anchors": {
+    "noop": -9.9125,
+    "heuristic": 25.969821428571464,
+    "clairvoyant": 37.320178571428556
+  },
+  "variants": {
+    "obs": {
+      "mean_return": 32.594,
+      "sim_score": 79.18,
+      "delta_vs_obs": 0.0,
+      "se": 0.0,
+      "family": {
+        "steady_dialogue": 37.7,
+        "tool_flood": 31.63,
+        "debug_loop": 27.25,
+        "long_horizon_recall": 34.63,
+        "topic_hopping": 30.54,
+        "instruction_drift": 35.09,
+        "mixed_chaos": 31.32
+      }
+    },
+    "+scenario": {
+      "mean_return": 32.481,
+      "sim_score": 78.68,
+      "delta_vs_obs": -0.114,
+      "se": 0.138,
+      "family": {
+        "steady_dialogue": 37.91,
+        "tool_flood": 30.3,
+        "debug_loop": 26.87,
+        "long_horizon_recall": 35.95,
+        "topic_hopping": 30.17,
+        "instruction_drift": 35.29,
+        "mixed_chaos": 30.87
+      }
+    },
+    "+hidden": {
+      "mean_return": 33.106,
+      "sim_score": 81.44,
+      "delta_vs_obs": 0.512,
+      "se": 0.124,
+      "family": {
+        "steady_dialogue": 37.77,
+        "tool_flood": 31.91,
+        "debug_loop": 27.67,
+        "long_horizon_recall": 35.87,
+        "topic_hopping": 30.6,
+        "instruction_drift": 35.8,
+        "mixed_chaos": 32.14
+      }
+    },
+    "+both": {
+      "mean_return": 32.826,
+      "sim_score": 80.2,
+      "delta_vs_obs": 0.232,
+      "se": 0.131,
+      "family": {
+        "steady_dialogue": 37.74,
+        "tool_flood": 30.85,
+        "debug_loop": 27.46,
+        "long_horizon_recall": 36.5,
+        "topic_hopping": 30.23,
+        "instruction_drift": 35.55,
+        "mixed_chaos": 31.46
+      }
+    }
+  }
+}

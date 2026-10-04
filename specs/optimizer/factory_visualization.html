@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Context Health Factory — Technical Blueprint</title>
+<style>
+  :root{
+    --mono: "Cascadia Code","Cascadia Mono",Consolas,"Courier New",monospace;
+    --sans: system-ui,"Segoe UI",Arial,sans-serif;
+    --ink:#1b2434; --mut:#5b6b84; --line:#c9d4e4;
+    --blue:#1d4ed8;  --blue-f:#e9f0fe;
+    --orange:#c2410c;--orange-f:#fdeee2;
+    --teal:#0f766e;  --teal-f:#e3f2f0;
+    --green:#15803d; --green-f:#e7f5ec;
+    --red:#b91c1c;   --red-f:#fcebeb;
+    --purple:#6d28d9;--purple-f:#f0eafc;
+    --gray:#475569;  --gray-f:#eef2f7;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  @page{ size:A4; margin:0; }
+  body{ font-family:var(--sans); color:var(--ink); background:#fff; }
+  .page{ width:210mm; height:296.5mm; padding:9mm 11mm 8mm; page-break-after:always; position:relative; overflow:hidden; background:#fff; }
+  .page:last-child{ page-break-after:auto; }
+
+  header.ph{ display:flex; justify-content:space-between; align-items:baseline; border-bottom:2.5px solid var(--ink); padding-bottom:2.2mm; margin-bottom:3mm; }
+  .kicker{ font-family:var(--mono); font-size:8.2pt; letter-spacing:.18em; color:var(--mut); text-transform:uppercase; }
+  .pno{ font-family:var(--mono); font-size:8.2pt; color:var(--mut); }
+  h1.sec{ font-family:var(--mono); font-size:15.5pt; font-weight:700; letter-spacing:.02em; margin:1.2mm 0 .8mm; }
+  h1.sec .n{ color:var(--blue); }
+  .lede{ font-size:8.6pt; color:var(--mut); line-height:1.45; margin-bottom:2.4mm; max-width:186mm; }
+  .lede b{ color:var(--ink); }
+  .golden{ font-family:var(--mono); font-size:9pt; background:var(--gray-f); border-left:3px solid var(--ink); padding:1.6mm 3mm; margin-bottom:2.6mm; color:var(--ink); }
+
+  footer.pf{ position:absolute; left:11mm; right:11mm; bottom:5mm; display:flex; justify-content:space-between; font-family:var(--mono); font-size:6.8pt; color:#93a1b8; border-top:1px solid var(--line); padding-top:1.4mm; }
+
+  h2.di{ font-family:var(--mono); font-size:9.2pt; font-weight:700; color:var(--ink); margin:2.2mm 0 1.2mm; }
+  h2.di .tag{ color:#93a1b8; font-weight:400; }
+  svg{ display:block; width:100%; height:auto; }
+  svg text{ font-family:var(--mono); }
+
+  .chips{ display:flex; flex-wrap:wrap; gap:1.6mm; margin:0 0 2.4mm; }
+  .chip{ font-family:var(--mono); font-size:7.4pt; border:1px solid var(--line); border-radius:2mm; padding:1mm 2.2mm; background:#fbfdff; color:var(--ink); }
+  .chip b{ color:var(--blue); }
+
+  table.dt{ width:100%; border-collapse:collapse; font-family:var(--mono); font-size:7.6pt; }
+  table.dt th{ text-align:left; background:var(--ink); color:#fff; padding:1.2mm 2mm; font-weight:700; letter-spacing:.06em; }
+  table.dt td{ border:1px solid var(--line); padding:1.1mm 2mm; vertical-align:top; line-height:1.4; color:#2a3548; }
+  table.dt tr:nth-child(even) td{ background:#f8fafd; }
+  td.p{ color:var(--blue); font-weight:700; white-space:nowrap; }
+  table.dt.compact{ font-size:6.9pt; }
+  table.dt.compact td{ padding:.8mm 1.6mm; line-height:1.32; }
+
+  .cards{ display:grid; grid-template-columns:1fr 1fr; gap:2.4mm; }
+  .card{ border:1.4px solid var(--orange); border-radius:1.6mm; background:#fffdfB; overflow:hidden; }
+  .card.teal{ border-color:var(--teal); background:#fbfefe; }
+  .card .ch{ display:flex; justify-content:space-between; align-items:center; background:var(--orange-f); padding:1.4mm 2.4mm; border-bottom:1px solid var(--orange); }
+  .card.teal .ch{ background:var(--teal-f); border-color:var(--teal); }
+  .card .ch .nm{ font-family:var(--mono); font-weight:700; font-size:9pt; color:var(--orange); }
+  .card.teal .ch .nm{ color:var(--teal); }
+  .card .ch .mdl{ font-family:var(--mono); font-size:6.9pt; background:#fff; border:1px solid var(--line); border-radius:1.4mm; padding:.6mm 1.6mm; color:var(--ink); }
+  .card .cb{ padding:1.6mm 2.4mm 2mm; font-size:7.4pt; line-height:1.42; }
+  .card .row{ margin-bottom:1.2mm; }
+  .card .row:last-child{ margin-bottom:0; }
+  .card .k{ font-family:var(--mono); font-size:6.6pt; font-weight:700; letter-spacing:.1em; color:var(--mut); text-transform:uppercase; }
+  .card code, .note code, td code{ font-family:var(--mono); font-size:92%; background:var(--gray-f); padding:0 .8mm; border-radius:.8mm; }
+  .note{ font-size:7.6pt; color:var(--mut); line-height:1.45; margin-top:1.8mm; }
+  .note b{ color:var(--ink); }
+  .twocol{ display:grid; grid-template-columns:1fr 1fr; gap:3mm; align-items:start; }
+  .panel{ border:1.2px solid var(--line); border-radius:1.6mm; padding:2mm 2.6mm; background:#fbfdff; }
+  .panel h3{ font-family:var(--mono); font-size:8.4pt; margin-bottom:1.2mm; color:var(--ink); }
+  .panel ul{ padding-left:4mm; font-size:7.5pt; line-height:1.5; color:#2a3548; }
+  pre.tree{ font-family:var(--mono); font-size:6.9pt; line-height:1.42; background:#fbfdff; border:1px solid var(--line); border-radius:1.6mm; padding:2mm 2.6mm; color:#2a3548; white-space:pre; }
+  pre.tree b{ color:var(--blue); }
+  pre.tree .g{ color:var(--green); } pre.tree .o{ color:var(--orange); } pre.tree .r{ color:var(--red); } pre.tree .m{ color:var(--mut); }
+</style>
+</head>
+<body>
+
+<!-- shared arrow markers -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <marker id="m-g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#8494ab"/></marker>
+    <marker id="m-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1d4ed8"/></marker>
+    <marker id="m-o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#c2410c"/></marker>
+    <marker id="m-t" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#0f766e"/></marker>
+    <marker id="m-gr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#15803d"/></marker>
+    <marker id="m-r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#b91c1c"/></marker>
+    <marker id="m-p" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6d28d9"/></marker>
+  </defs>
+</svg>
+
+<!-- ============================================================ PAGE 1 -->
+<section class="page">
+  <header class="ph">
+    <span class="kicker">Context Health Factory · Technical Blueprint</span>
+    <span class="pno">01 / 07</span>
+  </header>
+  <h1 class="sec"><span class="n">01</span> · SYSTEM CONTEXT</h1>
+  <div class="golden">THE GOLDEN RULE — “The harness is deterministic; the work is creative.” Python owns the loop, every stop decision, every model choice and every file write. LLMs are pure functions from a whitelisted prompt to JSON.</div>
+  <div class="lede">A cognitive software factory that searches for the best <b>context-health intervention MLP</b>. Four isolated LLM agents (Meta, Worker, Judge, Doc) propose, build, score and document experiments; a deterministic Python harness (<code style="font-family:var(--mono)">run_factory.py</code>) controls the loop; a pure-Python <b>simulator</b> trains and evaluates every candidate. Work proceeds in <b>synchronous parallel waves</b>: threads only compute — every shared-state mutation happens on the main thread, at a barrier, in iteration order.</div>
+
+  <div class="chips" style="margin-bottom:1.6mm">
+    <span class="chip"><b>4</b> LLM agents + <b>1</b> deterministic simulator</span>
+    <span class="chip"><b>3</b> models · <b>4</b> ladder levels · <b>6</b> routing rules</span>
+    <span class="chip"><b>50</b> turns · <b>60 s</b> sim budget · judge anchored <b>±3</b></span>
+    <span class="chip"><b>3</b> attempts → poison · stagnation window <b>10</b></span>
+    <span class="chip">waves of <b>2</b> (parallel ≤ 8) · refills ≤ <b>2</b>/wave</span>
+    <span class="chip">LLM call timeout <b>900 s</b> · backoff 30·60·120·240·480 s</span>
+  </div>
+
+  <h2 class="di">CONTEXT MAP <span class="tag">— inputs · harness · transport · owned artifacts</span></h2>
+  <svg viewBox="0 0 1000 528">
+    <!-- column headings -->
+    <text x="14" y="22" font-size="11" font-weight="700" fill="#5b6b84" letter-spacing="2">READ-ONLY INPUTS</text>
+    <text x="764" y="22" font-size="11" font-weight="700" fill="#5b6b84" letter-spacing="2">OWNED ARTIFACTS</text>
+
+    <!-- inputs -->
+    <rect x="14" y="34" width="222" height="60" rx="4" fill="#eef2f7" stroke="#475569" stroke-width="1.4"/>
+    <text x="26" y="52" font-size="12.5" font-weight="700" fill="#1b2434">ai_docs/</text>
+    <text x="26" y="67" font-size="10" fill="#37455c">MLP concepts · feature catalog ·</text>
+    <text x="26" y="80" font-size="10" fill="#37455c">simulator contract</text>
+    <rect x="150" y="41" width="78" height="14" rx="3" fill="#475569"/>
+    <text x="156" y="51" font-size="8.5" fill="#fff" font-weight="700">SHA-LOCKED</text>
+
+    <rect x="14" y="104" width="222" height="50" rx="4" fill="#eef2f7" stroke="#475569" stroke-width="1.4"/>
+    <text x="26" y="122" font-size="12.5" font-weight="700" fill="#1b2434">specs/optimizer/</text>
+    <text x="26" y="137" font-size="10" fill="#37455c">master_spec.md · implementation plan</text>
+
+    <rect x="14" y="164" width="222" height="60" rx="4" fill="#eef2f7" stroke="#475569" stroke-width="1.4"/>
+    <text x="26" y="182" font-size="12.5" font-weight="700" fill="#1b2434">factory/prompts/</text>
+    <text x="26" y="197" font-size="10" fill="#37455c">system + user template per</text>
+    <text x="26" y="210" font-size="10" fill="#37455c">(agent, purpose) — 10 files</text>
+
+    <rect x="14" y="234" width="222" height="50" rx="4" fill="#eef2f7" stroke="#475569" stroke-width="1.4"/>
+    <text x="26" y="252" font-size="12.5" font-weight="700" fill="#1b2434">factory/templates/</text>
+    <text x="26" y="267" font-size="10" fill="#37455c">state-space seed · paper header</text>
+
+    <!-- harness container -->
+    <rect x="292" y="34" width="430" height="300" rx="6" fill="#f7faff" stroke="#1d4ed8" stroke-width="1.8" stroke-dasharray="7 4"/>
+    <text x="308" y="54" font-size="13" font-weight="700" fill="#1d4ed8">DETERMINISTIC HARNESS</text>
+    <text x="308" y="68" font-size="9.5" fill="#37455c">factory/run_factory.py — main thread owns all shared state</text>
+    <g font-size="10">
+      <rect x="308" y="80" width="194" height="56" rx="4" fill="#e9f0fe" stroke="#1d4ed8" stroke-width="1.2"/>
+      <text x="318" y="97" font-size="11" font-weight="700" fill="#1b2434">FactoryOrchestrator</text>
+      <text x="318" y="111" fill="#37455c">wave state machine</text>
+      <text x="318" y="124" fill="#37455c">phases A–E · poison · halt</text>
+
+      <rect x="512" y="80" width="194" height="56" rx="4" fill="#f0eafc" stroke="#6d28d9" stroke-width="1.2"/>
+      <text x="522" y="97" font-size="11" font-weight="700" fill="#1b2434">ModelRouter</text>
+      <text x="522" y="111" fill="#37455c">escalation ladder L0–L3</text>
+      <text x="522" y="124" fill="#37455c">rules R1–R6 · stateless</text>
+
+      <rect x="308" y="148" width="194" height="56" rx="4" fill="#fdeee2" stroke="#c2410c" stroke-width="1.2"/>
+      <text x="318" y="165" font-size="11" font-weight="700" fill="#1b2434">AgentRunner</text>
+      <text x="318" y="179" fill="#37455c">prompt → guard → call →</text>
+      <text x="318" y="192" fill="#37455c">JSON → schema → validate</text>
+
+      <rect x="512" y="148" width="194" height="56" rx="4" fill="#fcebeb" stroke="#b91c1c" stroke-width="1.2"/>
+      <text x="522" y="165" font-size="11" font-weight="700" fill="#1b2434">IsolationGuard</text>
+      <text x="522" y="179" fill="#37455c">payload whitelists · canaries</text>
+      <text x="522" y="192" fill="#37455c">foreign-id scan per prompt</text>
+
+      <rect x="308" y="216" width="194" height="56" rx="4" fill="#e7f5ec" stroke="#15803d" stroke-width="1.2"/>
+      <text x="318" y="233" font-size="11" font-weight="700" fill="#1b2434">StateSpace engine</text>
+      <text x="318" y="247" fill="#37455c">mutation grammar · ledger</text>
+      <text x="318" y="260" fill="#37455c">knows no dimension names</text>
+
+      <rect x="512" y="216" width="194" height="56" rx="4" fill="#e7f5ec" stroke="#15803d" stroke-width="1.2"/>
+      <text x="522" y="233" font-size="11" font-weight="700" fill="#1b2434">done_checker · paper ·</text>
+      <text x="522" y="247" font-size="11" font-weight="700" fill="#1b2434">analytics · verify_run</text>
+      <text x="522" y="261" fill="#37455c">pure functions over state</text>
+    </g>
+    <text x="308" y="296" font-size="9.5" fill="#5b6b84">every loop constant lives in config.py — unreachable by LLM output</text>
+    <text x="308" y="312" font-size="9.5" fill="#5b6b84">exit codes: 0 halt/ok · 2 macro-fail · 3 infra pause · 130 operator</text>
+
+    <!-- artifacts -->
+    <rect x="764" y="34" width="222" height="92" rx="4" fill="#e7f5ec" stroke="#15803d" stroke-width="1.4"/>
+    <text x="776" y="52" font-size="12.5" font-weight="700" fill="#1b2434">workspace/</text>
+    <text x="776" y="67" font-size="10" fill="#37455c">factory_state.json · state_space.json</text>
+    <text x="776" y="80" font-size="10" fill="#37455c">research_paper.md · best_model.py</text>
+    <text x="776" y="93" font-size="10" fill="#37455c">last_judge.json · confirmation.json</text>
+    <text x="776" y="108" font-size="9" fill="#15803d" font-weight="700">selection + confirmation outputs</text>
+
+    <rect x="764" y="136" width="222" height="58" rx="4" fill="#e7f5ec" stroke="#15803d" stroke-width="1.4"/>
+    <text x="776" y="154" font-size="12.5" font-weight="700" fill="#1b2434">experiments/exp_NNN/</text>
+    <text x="776" y="169" font-size="10" fill="#37455c">per-iteration evidence pack</text>
+    <text x="776" y="182" font-size="10" fill="#37455c">(+ _aborted/ · _archived/)</text>
+
+    <rect x="764" y="204" width="222" height="46" rx="4" fill="#e7f5ec" stroke="#15803d" stroke-width="1.4"/>
+    <text x="776" y="222" font-size="12.5" font-weight="700" fill="#1b2434">workspace/factory.log</text>
+    <text x="776" y="237" font-size="10" fill="#37455c">append-only · every decision</text>
+
+    <!-- arrows inputs->harness -->
+    <line x1="236" y1="64" x2="290" y2="64" stroke="#8494ab" stroke-width="1.6" marker-end="url(#m-g)"/>
+    <line x1="236" y1="129" x2="290" y2="129" stroke="#8494ab" stroke-width="1.6" marker-end="url(#m-g)"/>
+    <line x1="236" y1="194" x2="290" y2="194" stroke="#8494ab" stroke-width="1.6" marker-end="url(#m-g)"/>
+    <line x1="236" y1="259" x2="290" y2="259" stroke="#8494ab" stroke-width="1.6" marker-end="url(#m-g)"/>
+    <text x="244" y="56" font-size="9" fill="#5b6b84">read</text>
+    <!-- arrows harness->artifacts -->
+    <line x1="722" y1="80" x2="762" y2="80" stroke="#15803d" stroke-width="1.6" marker-end="url(#m-gr)"/>
+    <line x1="722" y1="165" x2="762" y2="165" stroke="#15803d" stroke-width="1.6" marker-end="url(#m-gr)"/>
+    <line x1="722" y1="227" x2="762" y2="227" stroke="#15803d" stroke-width="1.6" marker-end="url(#m-gr)"/>
+    <text x="700" y="72" font-size="9" fill="#15803d">atomic</text>
+    <text x="700" y="76" font-size="9" fill="#15803d"></text>
+
+    <!-- bottom band -->
+    <!-- simulator -->
+    <rect x="292" y="372" width="200" height="150" rx="5" fill="#e3f2f0" stroke="#0f766e" stroke-width="1.6"/>
+    <text x="304" y="392" font-size="11.5" font-weight="700" fill="#0f766e">SIMULATOR SUBPROCESS</text>
+    <text x="304" y="408" font-size="9.5" fill="#37455c">python -m factory.simulator.</text>
+    <text x="304" y="420" font-size="9.5" fill="#37455c">sim_runner &lt;exp_dir&gt; &lt;cache&gt;</text>
+    <text x="304" y="440" font-size="9.5" fill="#37455c">pure Python + torch · no LLM</text>
+    <text x="304" y="455" font-size="9.5" fill="#37455c">60 s hard kill · 50 turns</text>
+    <text x="304" y="470" font-size="9.5" fill="#37455c">canary-stamped output</text>
+    <text x="304" y="492" font-size="9" fill="#0f766e" font-weight="700">modes: simulate · --fingerprint ·</text>
+    <text x="304" y="504" font-size="9" fill="#0f766e" font-weight="700">--confirm (hidden set)</text>
+
+    <!-- llm transport -->
+    <rect x="508" y="372" width="214" height="150" rx="5" fill="#fdeee2" stroke="#c2410c" stroke-width="1.6"/>
+    <text x="520" y="392" font-size="11.5" font-weight="700" fill="#c2410c">LLM TRANSPORT</text>
+    <text x="520" y="408" font-size="9.5" fill="#37455c">llm_client.py — headless Claude CLI</text>
+    <text x="520" y="421" font-size="9.5" fill="#37455c">tools · hooks · plugins disabled</text>
+    <text x="520" y="436" font-size="9.5" fill="#37455c">900 s timeout · 30·60·120·240·480 s</text>
+    <g font-size="9">
+      <rect x="520" y="448" width="194" height="20" rx="3" fill="#fff" stroke="#c2410c"/>
+      <text x="528" y="462" fill="#1b2434" font-weight="700">sonnet-5 <tspan fill="#5b6b84" font-weight="400">fast · default</tspan></text>
+      <rect x="520" y="472" width="194" height="20" rx="3" fill="#fff" stroke="#c2410c"/>
+      <text x="528" y="486" fill="#1b2434" font-weight="700">opus-5.5 <tspan fill="#5b6b84" font-weight="400">heavy · escalated</tspan></text>
+      <rect x="520" y="496" width="194" height="20" rx="3" fill="#fff" stroke="#6d28d9"/>
+      <text x="528" y="510" fill="#1b2434" font-weight="700">fable-5.1 <tspan fill="#5b6b84" font-weight="400">formatting only</tspan></text>
+    </g>
+
+    <!-- offline tooling -->
+    <rect x="764" y="372" width="222" height="150" rx="5" fill="#eef2f7" stroke="#475569" stroke-width="1.4"/>
+    <text x="776" y="392" font-size="11.5" font-weight="700" fill="#475569">OFFLINE TOOLING</text>
+    <text x="776" y="410" font-size="9.5" fill="#37455c">probes/ — plateau probes on a dev</text>
+    <text x="776" y="423" font-size="9.5" fill="#37455c">set: lab · grokking · privileged</text>
+    <text x="776" y="443" font-size="9.5" fill="#37455c">benchmark/ — final benchmark on</text>
+    <text x="776" y="456" font-size="9.5" fill="#37455c">scenarios no run ever saw</text>
+    <text x="776" y="476" font-size="9.5" fill="#37455c">tools/build_project_report.py —</text>
+    <text x="776" y="489" font-size="9.5" fill="#37455c">consolidated project PDF</text>
+    <text x="776" y="509" font-size="9" fill="#475569" font-weight="700">tests/ — unit · protocol · e2e</text>
+
+    <!-- harness <-> sim / llm arrows -->
+    <line x1="352" y1="334" x2="352" y2="370" stroke="#0f766e" stroke-width="1.6" marker-end="url(#m-t)"/>
+    <text x="302" y="356" font-size="8.5" fill="#0f766e">model.py+canary</text>
+    <line x1="452" y1="370" x2="452" y2="334" stroke="#0f766e" stroke-width="1.6" marker-end="url(#m-t)"/>
+    <text x="414" y="356" font-size="8.5" fill="#0f766e"></text>
+    <text x="456" y="356" font-size="8.5" fill="#0f766e">log+metrics</text>
+
+    <line x1="580" y1="334" x2="580" y2="370" stroke="#c2410c" stroke-width="1.6" marker-end="url(#m-o)"/>
+    <text x="540" y="356" font-size="8.5" fill="#c2410c">prompt+schema</text>
+    <line x1="680" y1="370" x2="680" y2="334" stroke="#c2410c" stroke-width="1.6" marker-end="url(#m-o)"/>
+    <text x="652" y="356" font-size="8.5" fill="#c2410c">JSON+cost</text>
+  </svg>
+
+  <h2 class="di" style="margin-top:1.2mm">THE LOOP AT 10,000 FT <span class="tag">— stop decisions are Python-only</span></h2>
+  <svg viewBox="0 0 1000 164">
+    <rect x="14" y="36" width="230" height="66" rx="5" fill="#e9f0fe" stroke="#1d4ed8" stroke-width="1.5"/>
+    <text x="26" y="58" font-size="11.5" font-weight="700" fill="#1b2434">done_checker.check(state)</text>
+    <text x="26" y="74" font-size="9.5" fill="#37455c">Meta-Done? 3 conditions, pure Python</text>
+    <text x="26" y="88" font-size="9.5" fill="#37455c">no LLM field can stop the loop</text>
+
+    <line x1="244" y1="69" x2="296" y2="69" stroke="#1d4ed8" stroke-width="1.8" marker-end="url(#m-b)"/>
+
+    <rect x="300" y="36" width="270" height="66" rx="5" fill="#e9f0fe" stroke="#1d4ed8" stroke-width="1.5"/>
+    <text x="312" y="58" font-size="11.5" font-weight="700" fill="#1b2434">run_wave()</text>
+    <text x="312" y="74" font-size="9.5" fill="#37455c">phases A·B·C·D·E — page 02</text>
+    <text x="312" y="88" font-size="9.5" fill="#37455c">snapshot before · close after</text>
+
+    <line x1="570" y1="69" x2="622" y2="69" stroke="#1d4ed8" stroke-width="1.8" marker-end="url(#m-b)"/>
+
+    <rect x="626" y="36" width="220" height="66" rx="5" fill="#eef2f7" stroke="#475569" stroke-width="1.5"/>
+    <text x="638" y="58" font-size="11.5" font-weight="700" fill="#1b2434">circuit breaker</text>
+    <text x="638" y="74" font-size="9.5" fill="#37455c">2 fully-poisoned waves, one error</text>
+    <text x="638" y="88" font-size="9.5" fill="#37455c">type ⇒ pause (resumable)</text>
+
+    <path d="M846 69 L 880 69 L 880 14 L 110 14 L 110 34" fill="none" stroke="#8494ab" stroke-width="1.6" marker-end="url(#m-g)"/>
+    <text x="420" y="9" font-size="9" fill="#5b6b84">next wave</text>
+
+    <line x1="129" y1="102" x2="129" y2="126" stroke="#15803d" stroke-width="1.8" marker-end="url(#m-gr)"/>
+    <rect x="14" y="128" width="832" height="32" rx="5" fill="#e7f5ec" stroke="#15803d" stroke-width="1.5"/>
+    <text x="26" y="148" font-size="10" fill="#1b2434"><tspan font-weight="700">halt(reason)</tspan> → hidden confirmation (top-K re-score) → final synthesis (doc/final) → paper sealed → factory_report.json → exit 0</text>
+  </svg>
+
+  <h2 class="di" style="margin-top:1.2mm">DIRECTORY CONTRACT <span class="tag">— deliverables only inside designated roots</span></h2>
+  <table class="dt" style="font-size:7.1pt">
+    <tr><th style="width:34%">ROOT</th><th style="width:14%">MODE</th><th>CONTENTS</th></tr>
+    <tr><td class="p">ai_docs/</td><td>read-only</td><td>initial MLP concepts, feature catalog, simulator contract — checksum-verified at preflight and halt</td></tr>
+    <tr><td class="p">specs/optimizer/</td><td>docs</td><td>master spec, implementation plan, consultations, probe/benchmark results, project report</td></tr>
+    <tr><td class="p">factory/</td><td>code</td><td>the deterministic harness: orchestrator, agents, router, isolation, simulator, prompts, tests</td></tr>
+    <tr><td class="p">workspace/</td><td>owned</td><td>living state: factory_state.json, state_space.json, research_paper.md, best models, logs</td></tr>
+    <tr><td class="p">experiments/</td><td>owned</td><td>exp_000 … exp_NNN evidence packs; _aborted/ (mid-wave interrupts) and _archived/ (fresh restarts)</td></tr>
+  </table>
+
+  <footer class="pf">
+    <span>context-health-factory · factory_visualization</span>
+    <span>source: run_factory.py · master_spec.md · config.py</span>
+  </footer>
+</section>
+
+<!-- ============================================================ PAGE 2 -->
+<section class="page">
+  <header class="ph">
+    <span class="kicker">Context Health Factory · Technical Blueprint</span>
+    <span class="pno">02 / 07</span>
+  </header>
+  <h1 class="sec"><span class="n">02</span> · WAVE EXECUTION PIPELINE</h1>
+  <div class="lede">One <b>wave</b> = K iterations (default K=2, ≤8). Threads only compute; <b>all shared-state mutations happen on the main thread at barriers, in iteration order</b> — the outcome never depends on which thread finishes first. A snapshot of <code style="font-family:var(--mono)">state_space.json</code> + <code style="font-family:var(--mono)">factory_state.json</code> is taken before every wave; an interrupted wave is archived to <code style="font-family:var(--mono)">experiments/_aborted/</code> and restored on resume.</div>
+  <div class="chips">
+    <span class="chip" style="border-color:var(--blue);color:var(--blue)">SERIAL — main thread</span>
+    <span class="chip" style="border-color:var(--orange);color:var(--orange)">PARALLEL — one thread per iteration, compute-only</span>
+    <span class="chip" style="border-color:var(--red);color:var(--red)">BARRIER — join in iteration order</span>
+    <span class="chip">retry loop per member: ≤3 attempts → poison</span>
+  </div>
+
+  <svg viewBox="0 0 1000 912">
+    <!-- ============ PHASE A ============ -->
+    <rect x="10" y="14" width="88" height="134" rx="4" fill="#e9f0fe" stroke="#1d4ed8" stroke-width="1.4"/>
+    <text x="32" y="52" font-size="26" font-weight="700" fill="#1d4ed8">A</text>
+    <text x="20" y="72" font-size="9.5" font-weight="700" fill="#1d4ed8">SERIAL</text>
+    <text x="20" y="88" font-size="8.5" fill="#37455c">meta</text>
+    <text x="20" y="100" font-size="8.5" fill="#37455c">proposal</text>
+
+    <rect x="112" y="14" width="880" height="134" rx="6" fill="none" stroke="#1d4ed8" stroke-width="1.4" stroke-dasharray="7 4"/>
+    <text x="124" y="30" font-size="10" font-weight="700" fill="#1d4ed8">META PHASE — one call proposes the whole wave</text>
+
+    <rect x="128" y="40" width="240" height="62" rx="4" fill="#e7f5ec" stroke="#15803d" stroke-width="1.2"/>
+    <text x="138" y="57" font-size="10" font-weight="700" fill="#1b2434">reads (sanitised)</text>
+    <text x="138" y="71" font-size="9" fill="#37455c">state_space.json · best_config.json</text>
+    <text x="138" y="84" font-size="9" fill="#37455c">last_judge.json · python analytics</text>
+
+    <line x1="368" y1="71" x2="400" y2="71" stroke="#8494ab" stroke-width="1.5" marker-end="url(#m-g)"/>
+
+    <rect x="404" y="40" width="216" height="62" rx="4" fill="#fdeee2" stroke="#c2410c" stroke-width="1.5"/>
+    <text x="414" y="57" font-size="10.5" font-weight="700" fill="#c2410c">META-AGENT</text>
+    <text x="414" y="71" font-size="9" fill="#37455c">mutations + K coordinates</text>
+    <text x="414" y="84" font-size="9" fill="#37455c">+ hypothesis per coordinate</text>
+
+    <line x1="620" y1="71" x2="652" y2="71" stroke="#8494ab" stroke-width="1.5" marker-end="url(#m-g)"/>
+
+    <rect x="656" y="40" width="240" height="62" rx="4" fill="#e7f5ec" stroke="#15803d" stroke-width="1.2"/>
+    <text x="666" y="57" font-size="10" font-weight="700" fill="#1b2434">python applies &amp; validates</text>
+    <text x="666" y="71" font-size="9" fill="#37455c">state_space.json (mutated) · ledger</text>
+    <text x="666" y="84" font-size="9" fill="#37455c">next_coordinate.json × K</text>
+
+    <text x="128" y="122" font-size="9" fill="#5b6b84">validator = StateSpace.apply_wave_proposal (grammar-checked) · ≤3 attempts, meta escalated +1 level each (R6) · streak ≥ 2 ⇒ L3 (R4)</text>
+    <text x="128" y="134" font-size="9" fill="#5b6b84">all attempts exhausted ⇒ lead poisoned, wave skips to E</text>
+
+    <!-- fan-out -->
+    <path d="M512 148 L 512 162 L 328 162 L 328 196" fill="none" stroke="#c2410c" stroke-width="1.6" marker-end="url(#m-o)"/>
+    <path d="M512 148 L 512 162 L 760 162 L 760 196" fill="none" stroke="#c2410c" stroke-width="1.6" marker-end="url(#m-o)"/>
+    <text x="520" y="159" font-size="8.5" fill="#c2410c">fan-out: coordinate k → member k (shared Meta call copied into every member’s router_log)</text>
+
+    <!-- ============ PHASE B ============ -->
+    <rect x="10" y="166" width="88" height="332" rx="4" fill="#fdeee2" stroke="#c2410c" stroke-width="1.4"/>
+    <text x="32" y="232" font-size="26" font-weight="700" fill="#c2410c">B</text>
+    <text x="18" y="252" font-size="9.5" font-weight="700" fill="#c2410c">PARALLEL</text>
+    <text x="18" y="268" font-size="8.5" fill="#37455c">build →</text>
+    <text x="18" y="280" font-size="8.5" fill="#37455c">evaluate,</text>
+    <text x="18" y="292" font-size="8.5" fill="#37455c">thread per</text>
+    <text x="18" y="304" font-size="8.5" fill="#37455c">iteration</text>
+
+    <rect x="112" y="166" width="880" height="332" rx="6" fill="none" stroke="#c2410c" stroke-width="1.4" stroke-dasharray="7 4"/>
+
+    <!-- column headers -->
+    <rect x="128" y="176" width="380" height="18" rx="3" fill="#eef2f7"/>
+    <text x="196" y="189" font-size="9.5" font-weight="700" fill="#475569">MEMBER i · exp_00N — thread 1</text>
+    <rect x="560" y="176" width="380" height="18" rx="3" fill="#eef2f7"/>
+    <text x="628" y="189" font-size="9.5" font-weight="700" fill="#475569">MEMBER i+1 · exp_00N+1 — thread 2</text>
+
+    <!-- col 1 B1 -->
+    <rect x="128" y="200" width="380" height="56" rx="4" fill="#fdeee2" stroke="#c2410c" stroke-width="1.4"/>
+    <text x="138" y="218" font-size="10.5" font-weight="700" fill="#c2410c">WORKER</text>
+    <text x="138" y="232" font-size="9" fill="#37455c">writes model.py + config.json for its coordinate</text>
+    <text x="138" y="245" font-size="9" fill="#37455c">gate: schema → code_guard static AST scan</text>
+    <line x1="318" y1="256" x2="318" y2="264" stroke="#0f766e" stroke-width="1.5" marker-end="url(#m-t)"/>
+
+    <rect x="128" y="266" width="380" height="52" rx="4" fill="#e3f2f0" stroke="#0f766e" stroke-width="1.4"/>
+    <text x="138" y="284" font-size="10.5" font-weight="700" fill="#0f766e">FINGERPRINT <tspan font-size="8.5" fill="#37455c" font-weight="400">(pre-simulation, outside the 60 s budget)</tspan></text>
+    <text x="138" y="298" font-size="9" fill="#37455c">functional hash: features · architecture · init · train config · loss</text>
+    <text x="138" y="310" font-size="9" fill="#37455c">also runs validity gates before any sim time is spent</text>
+
+    <!-- col 2 B1 -->
+    <rect x="560" y="200" width="380" height="56" rx="4" fill="#fdeee2" stroke="#c2410c" stroke-width="1.4"/>
+    <text x="570" y="218" font-size="10.5" font-weight="700" fill="#c2410c">WORKER</text>
+    <text x="570" y="232" font-size="9" fill="#37455c">writes model.py + config.json for its coordinate</text>
+    <text x="570" y="245" font-size="9" fill="#37455c">gate: schema → code_guard static AST scan</text>
+    <line x1="750" y1="256" x2="750" y2="264" stroke="#0f766e" stroke-width="1.5" marker-end="url(#m-t)"/>
+
+    <rect x="560" y="266" width="380" height="52" rx="4" fill="#e3f2f0" stroke="#0f766e" stroke-width="1.4"/>
+    <text x="570" y="284" font-size="10.5" font-weight="700" fill="#0f766e">FINGERPRINT</text>
+    <text x="570" y="298" font-size="9" fill="#37455c">functional hash: features · architecture · init · train config · loss</text>
+    <text x="570" y="310" font-size="9" fill="#37455c">identical hash ⇒ functional duplicate</text>
+
+    <!-- retry loop arcs -->
+    <path d="M516 292 C 546 292 546 228 516 228" fill="none" stroke="#b91c1c" stroke-width="1.4" stroke-dasharray="4 3" marker-end="url(#m-r)"/>
+    <path d="M948 292 C 978 292 978 228 948 228" fill="none" stroke="#b91c1c" stroke-width="1.4" stroke-dasharray="4 3" marker-end="url(#m-r)"/>
+
+    <!-- B2 barrier -->
+    <rect x="112" y="330" width="880" height="30" rx="4" fill="#fcebeb" stroke="#b91c1c" stroke-width="1.6"/>
+    <text x="128" y="349" font-size="9.5" font-weight="700" fill="#b91c1c">BARRIER · B2 DEDUPE — serial, iteration order: <tspan font-weight="400" fill="#37455c">identical fingerprint ⇒ Meta refill (≤ 2/wave, no mutations) · refill failed/capped ⇒ duplicate_of</tspan></text>
+
+    <!-- B3 -->
+    <line x1="318" y1="318" x2="318" y2="330" stroke="#8494ab" stroke-width="1.5" marker-end="url(#m-g)"/>
+    <line x1="750" y1="318" x2="750" y2="330" stroke="#8494ab" stroke-width="1.5" marker-end="url(#m-g)"/>
+    <line x1="318" y1="360" x2="318" y2="372" stroke="#0f766e" stroke-width="1.5" marker-end="url(#m-t)"/>
+    <line x1="750" y1="360" x2="750" y2="372" stroke="#0f766e" stroke-width="1.5" marker-end="url(#m-t)"/>
+
+    <rect x="128" y="374" width="380" height="54" rx="4" fill="#e3f2f0" stroke="#0f766e" stroke-width="1.4"/>
+    <text x="138" y="392" font-size="10.5" font-weight="700" fill="#0f766e">SIMULATOR <tspan font-size="8.5" fill="#37455c" font-weight="400">subprocess · 60 s hard kill · pure Python</tspan></text>
+    <text x="138" y="406" font-size="9" fill="#37455c">train student MLP → 50 mock context scenarios</text>
+    <text x="138" y="419" font-size="9" fill="#37455c">simulation.log + sim_metrics.json → sim_score</text>
+    <line x1="318" y1="428" x2="318" y2="436" stroke="#c2410c" stroke-width="1.5" marker-end="url(#m-o)"/>
+
+    <rect x="128" y="438" width="380" height="52" rx="4" fill="#fdeee2" stroke="#c2410c" stroke-width="1.4"/>
+    <text x="138" y="456" font-size="10.5" font-weight="700" fill="#c2410c">JUDGE</text>
+    <text x="138" y="470" font-size="9" fill="#37455c">score int 0–100 · anchored: |score − sim_score| ≤ 3</text>
+    <text x="138" y="483" font-size="9" fill="#37455c">hypothesis withheld from the config view</text>
+
+    <rect x="560" y="374" width="380" height="54" rx="4" fill="#e3f2f0" stroke="#0f766e" stroke-width="1.4"/>
+    <text x="570" y="392" font-size="10.5" font-weight="700" fill="#0f766e">SIMULATOR</text>
+    <text x="570" y="406" font-size="9" fill="#37455c">same protocol, own subprocess + canary</text>
+    <text x="570" y="419" font-size="9" fill="#37455c">crash / timeout ⇒ retry with feedback (R6)</text>
+    <line x1="750" y1="428" x2="750" y2="436" stroke="#c2410c" stroke-width="1.5" marker-end="url(#m-o)"/>
+
+    <rect x="560" y="438" width="380" height="52" rx="4" fill="#fdeee2" stroke="#c2410c" stroke-width="1.4"/>
+    <text x="570" y="456" font-size="10.5" font-weight="700" fill="#c2410c">JUDGE</text>
+    <text x="570" y="470" font-size="9" fill="#37455c">judge.json: score · feedback · next_steps</text>
+    <text x="570" y="483" font-size="9" fill="#37455c">strengths · weaknesses (+ _harness anchor block)</text>
+
+    <!-- B -> C arrows -->
+    <line x1="318" y1="498" x2="318" y2="514" stroke="#15803d" stroke-width="1.5" marker-end="url(#m-gr)"/>
+    <line x1="750" y1="498" x2="750" y2="514" stroke="#15803d" stroke-width="1.5" marker-end="url(#m-gr)"/>
+
+    <!-- ============ PHASE C ============ -->
+    <rect x="10" y="516" width="88" height="80" rx="4" fill="#e9f0fe" stroke="#1d4ed8" stroke-width="1.4"/>
+    <text x="32" y="552" font-size="26" font-weight="700" fill="#1d4ed8">C</text>
+    <text x="20" y="572" font-size="9.5" font-weight="700" fill="#1d4ed8">SERIAL</text>
+
+    <rect x="112" y="516" width="880" height="80" rx="6" fill="none" stroke="#1d4ed8" stroke-width="1.4" stroke-dasharray="7 4"/>
+    <rect x="128" y="530" width="848" height="52" rx="4" fill="#e7f5ec" stroke="#15803d" stroke-width="1.4"/>
+    <text x="138" y="548" font-size="10.5" font-weight="700" fill="#15803d">STATE UPDATE — main thread, strict iteration order</text>
+    <text x="138" y="562" font-size="9" fill="#37455c">scores · sim_scores · space.record(ledger) · best ⇒ sync best_model.py + best_config.json · last_judge.json (wave verdicts) · fingerprints registry</text>
+    <text x="138" y="575" font-size="9" fill="#37455c">poisoned members ⇒ ledger “poisoned” + reasons recorded here too</text>
+
+    <line x1="512" y1="596" x2="512" y2="610" stroke="#c2410c" stroke-width="1.5" marker-end="url(#m-o)"/>
+
+    <!-- ============ PHASE D ============ -->
+    <rect x="10" y="612" width="88" height="100" rx="4" fill="#fdeee2" stroke="#c2410c" stroke-width="1.4"/>
+    <text x="32" y="650" font-size="26" font-weight="700" fill="#c2410c">D</text>
+    <text x="18" y="670" font-size="9.5" font-weight="700" fill="#c2410c">PARALLEL</text>
+
+    <rect x="112" y="612" width="880" height="100" rx="6" fill="none" stroke="#c2410c" stroke-width="1.4" stroke-dasharray="7 4"/>
+
+    <rect x="128" y="624" width="380" height="36" rx="4" fill="#fdeee2" stroke="#c2410c" stroke-width="1.3"/>
+    <text x="138" y="639" font-size="9.5" font-weight="700" fill="#c2410c">DOC DRAFT <tspan font-weight="400" fill="#37455c" font-size="8.5">sonnet-5 · section + abstract + narrative</tspan></text>
+    <text x="138" y="652" font-size="8.5" fill="#37455c">same paper snapshot for the whole wave</text>
+    <line x1="318" y1="660" x2="318" y2="666" stroke="#6d28d9" stroke-width="1.4" marker-end="url(#m-p)"/>
+    <rect x="128" y="668" width="380" height="36" rx="4" fill="#f0eafc" stroke="#6d28d9" stroke-width="1.3"/>
+    <text x="138" y="683" font-size="9.5" font-weight="700" fill="#6d28d9">DOC FORMAT <tspan font-weight="400" fill="#37455c" font-size="8.5">fable-5.1 · markdown only</tspan></text>
+    <text x="138" y="696" font-size="8.5" fill="#37455c">format_preserves check — content change ⇒ draft kept</text>
+
+    <rect x="560" y="624" width="380" height="36" rx="4" fill="#fdeee2" stroke="#c2410c" stroke-width="1.3"/>
+    <text x="570" y="639" font-size="9.5" font-weight="700" fill="#c2410c">DOC DRAFT <tspan font-weight="400" fill="#37455c" font-size="8.5">per scored member</tspan></text>
+    <text x="570" y="652" font-size="8.5" fill="#37455c">heading “### Iteration NNN: …” enforced</text>
+    <line x1="750" y1="660" x2="750" y2="666" stroke="#6d28d9" stroke-width="1.4" marker-end="url(#m-p)"/>
+    <rect x="560" y="668" width="380" height="36" rx="4" fill="#f0eafc" stroke="#6d28d9" stroke-width="1.3"/>
+    <text x="570" y="683" font-size="9.5" font-weight="700" fill="#6d28d9">DOC FORMAT</text>
+    <text x="570" y="696" font-size="8.5" fill="#37455c">doc failure ⇒ deterministic fallback section</text>
+
+    <line x1="512" y1="712" x2="512" y2="726" stroke="#15803d" stroke-width="1.5" marker-end="url(#m-gr)"/>
+
+    <!-- ============ PHASE E ============ -->
+    <rect x="10" y="728" width="88" height="106" rx="4" fill="#e9f0fe" stroke="#1d4ed8" stroke-width="1.4"/>
+    <text x="32" y="766" font-size="26" font-weight="700" fill="#1d4ed8">E</text>
+    <text x="20" y="786" font-size="9.5" font-weight="700" fill="#1d4ed8">SERIAL</text>
+
+    <rect x="112" y="728" width="880" height="106" rx="6" fill="none" stroke="#1d4ed8" stroke-width="1.4" stroke-dasharray="7 4"/>
+    <rect x="128" y="740" width="848" height="82" rx="4" fill="#e7f5ec" stroke="#15803d" stroke-width="1.4"/>
+    <text x="138" y="758" font-size="10.5" font-weight="700" fill="#15803d">PAPER ASSEMBLY + WAVE CLOSE — iteration order</text>
+    <text x="138" y="772" font-size="9" fill="#37455c">upsert iteration sections → replace ABSTRACT · RESULTS_NARRATIVE (latest draft) · RESULTS_TABLE (leaderboard) · APPENDIX_SPACE · STATUS</text>
+    <text x="138" y="785" font-size="9" fill="#37455c">analytics for the next Meta call → verify_run micro-done per iteration → iteration_summary.json (row + router verdict) → next_iteration → drop wave snapshots</text>
+    <text x="138" y="800" font-size="9" fill="#37455c">state mutations only here and in phase C — never inside a thread</text>
+
+    <line x1="512" y1="834" x2="512" y2="848" stroke="#475569" stroke-width="1.5" marker-end="url(#m-g)"/>
+
+    <!-- circuit breaker + loop back -->
+    <rect x="112" y="850" width="700" height="46" rx="4" fill="#eef2f7" stroke="#475569" stroke-width="1.5"/>
+    <text x="124" y="869" font-size="10" font-weight="700" fill="#475569">CIRCUIT BREAKER</text>
+    <text x="124" y="884" font-size="9" fill="#37455c">last 2 waves fully poisoned by a single error type ⇒ InfraUnavailable — pause, resumable (exit 3)</text>
+
+    <rect x="828" y="850" width="130" height="46" rx="4" fill="#e9f0fe" stroke="#1d4ed8" stroke-width="1.5"/>
+    <text x="846" y="878" font-size="10" font-weight="700" fill="#1d4ed8">next wave →</text>
+    <path d="M958 873 L 978 873 L 978 81 L 994 81" fill="none" stroke="#1d4ed8" stroke-width="1.6" marker-end="url(#m-b)"/>
+  </svg>
+
+  <div class="note"><b>Memoisation:</b> each member caches stage results (<code>memo</code>); a retry redoes only failed stages — except simulator/worker-code failures, which redo Worker + Fingerprint with the error fed back as <code>retry_error</code>. <b>Poisoned</b> members skip D’s LLM calls and still get a deterministic paper section, so the research record is complete.</div>
+
+  <footer class="pf">
+    <span>context-health-factory · factory_visualization</span>
+    <span>source: run_factory.py — run_wave() · member_core() · _dedupe() · _finish_wave()</span>
+  </footer>
+</section>
+
+<!-- ============================================================ PAGE 3 -->
+<section class="page">
+  <header class="ph">
+    <span class="kicker">Context Health Factory · Technical Blueprint</span>
+    <span class="pno">03 / 07</span>
+  </header>
+  <h1 class="sec"><span class="n">03</span> · AGENTS &amp; ISOLATION</h1>
+  <div class="lede">Agents are <b>pure functions from a whitelisted prompt to JSON</b>. They have no tools; the only data they ever see is what Python assembles into the prompt. Every call runs the same <code style="font-family:var(--mono)">AgentRunner</code> pipeline: render template → isolation check → routed LLM call → JSON extraction → schema validation → semantic validator, with <b>one in-place retry</b> (rejection feedback appended, effort forced high — rule R2).</div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="ch"><span class="nm">A · META-AGENT — “The Explorer”</span><span class="mdl">sonnet-5 · std → opus-5.5/high on streak</span></div>
+      <div class="cb">
+        <div class="row"><span class="k">Reads</span> — <code>state_space.json</code> · <code>best_config.json</code> · <code>last_judge.json</code> (all sanitised; analytics are Python-computed aggregates)</div>
+        <div class="row"><span class="k">Writes</span> — state-space mutations + K coordinates + hypotheses, applied by Python via <code>StateSpace.apply_wave_proposal</code></div>
+        <div class="row"><span class="k">Gates</span> — JSON schema → grammar: ops <code>add_dimension · add_values · prune_values · prune_dimension</code>; ≤6 mutations/iter; ≤32 active dims; categorical ≤16 values; description 10–800 chars; ledger/wave hash uniqueness</div>
+        <div class="row"><span class="k">Blind spot</span> — never sees past experiment logs; 2 consecutive invalid proposals ⇒ escalated to L3 (R4)</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ch"><span class="nm">B · WORKER — “The Builder”</span><span class="mdl">sonnet-5 · std (L2 if last score &lt; 60)</span></div>
+      <div class="cb">
+        <div class="row"><span class="k">Reads</span> — <code>next_coordinate.json</code> · dimension definitions · full <code>ai_docs/*</code> corpus · <code>retry_error</code> after a failed attempt</div>
+        <div class="row"><span class="k">Writes</span> — <code>model.py</code> (PyTorch) + <code>config.json</code> for exactly its coordinate</div>
+        <div class="row"><span class="k">Gates</span> — schema → <code>code_guard</code> static AST scan <b>before any execution</b> → fingerprint-stage validity gates; simulator crashes return as <code>retry_error</code> feedback</div>
+        <div class="row"><span class="k">Blind spot</span> — never sees past experiment logs or other wave members’ code</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ch"><span class="nm">D · JUDGE — “The Evaluator”</span><span class="mdl">sonnet-5 · std (L2 if last score &lt; 60)</span></div>
+      <div class="cb">
+        <div class="row"><span class="k">Reads</span> — <code>simulation.log</code> · <code>config.json</code> <b>with the hypothesis withheld</b> so it cannot bias the score</div>
+        <div class="row"><span class="k">Writes</span> — <code>judge.json</code>: score (int 0–100) · feedback · next_steps · strengths · weaknesses</div>
+        <div class="row"><span class="k">Gates</span> — schema → <b>anchor</b>: |score − sim_score| ≤ 3 else <code>JudgeAnchorError</code> (micro-fail → escalate); the rubric can only move the deterministic sim_score within tolerance</div>
+        <div class="row"><span class="k">Blind spot</span> — never sees past experiment logs; score must stay near the deterministic metric</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ch"><span class="nm">E · DOC — “The Researcher”</span><span class="mdl">sonnet-5 draft · fable-5.1 format only</span></div>
+      <div class="cb">
+        <div class="row"><span class="k">Reads</span> — <code>config.json</code> · <code>judge.json</code> · sim summary · paper snapshot (identical for the whole wave); final synthesis: paper + factory summary</div>
+        <div class="row"><span class="k">Writes</span> — iteration section (“### Iteration NNN: &lt;title&gt;”) + refreshed abstract + results narrative</div>
+        <div class="row"><span class="k">Gates</span> — heading pattern + no h1/h2 → format pass must be <b>content-preserving</b> (<code>format_preserves</code>) else the draft is kept → total doc failure ⇒ harness writes a deterministic fallback section</div>
+        <div class="row"><span class="k">Only fable consumer</span> — fable-5.1 exists solely for its markdown formatting pass (R5)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card teal" style="margin-top:2.4mm">
+    <div class="ch"><span class="nm">C · SIMULATOR — “The Ground Truth”</span><span class="mdl">no LLM — RoutingViolationError if any model is routed to it</span></div>
+    <div class="cb" style="display:flex; gap:6mm">
+      <span><span class="k">What</span> — deterministic Python subprocess: trains the Worker’s model.py, runs 50 mock context scenarios, writes canary-stamped log + metrics.</span>
+      <span><span class="k">Budget</span> — 60 s hard kill; identical env for every experiment (PYTHONHASHSEED=0, CUDA off, OMP threads pinned).</span>
+      <span><span class="k">Role</span> — produces <code>sim_score</code>, the number the Judge is anchored to and the Meta reasons over.</span>
+    </div>
+  </div>
+
+  <h2 class="di" style="margin-top:3mm">ISOLATION GUARD <span class="tag">— scanned on every prompt, right before the LLM call</span></h2>
+  <svg viewBox="0 0 1000 300">
+    <rect x="14" y="56" width="230" height="78" rx="5" fill="#e9f0fe" stroke="#1d4ed8" stroke-width="1.4"/>
+    <text x="26" y="76" font-size="10.5" font-weight="700" fill="#1b2434">1 · RENDER</text>
+    <text x="26" y="92" font-size="9" fill="#37455c">system + user templates</text>
+    <text x="26" y="105" font-size="9" fill="#37455c">payload from whitelist only</text>
+    <text x="26" y="120" font-size="8.5" fill="#5b6b84">PAYLOAD_WHITELIST per agent,</text>
+    <text x="26" y="131" font-size="8.5" fill="#5b6b84">enforced before anything is sent</text>
+
+    <line x1="244" y1="95" x2="276" y2="95" stroke="#8494ab" stroke-width="1.6" marker-end="url(#m-g)"/>
+
+    <rect x="280" y="56" width="300" height="78" rx="5" fill="#fcebeb" stroke="#b91c1c" stroke-width="1.4"/>
+    <text x="292" y="76" font-size="10.5" font-weight="700" fill="#b91c1c">2 · GUARD.CHECK</text>
+    <text x="292" y="92" font-size="9" fill="#37455c">scan rendered prompt for foreign exp ids</text>
+    <text x="292" y="105" font-size="9" fill="#37455c">(exp_\d{3}) and foreign canaries</text>
+    <text x="292" y="120" font-size="8.5" fill="#5b6b84">canary registry lives in factory_state.json —</text>
+    <text x="292" y="131" font-size="8.5" fill="#5b6b84">one fresh canary per experiment</text>
+
+    <line x1="580" y1="95" x2="612" y2="95" stroke="#15803d" stroke-width="1.6" marker-end="url(#m-gr)"/>
+    <rect x="616" y="56" width="160" height="78" rx="5" fill="#e7f5ec" stroke="#15803d" stroke-width="1.4"/>
+    <text x="628" y="76" font-size="10.5" font-weight="700" fill="#15803d">3 · ISOLATED</text>
+    <text x="628" y="92" font-size="9" fill="#37455c">send to the routed model</text>
+    <text x="628" y="105" font-size="9" fill="#37455c">verdict + sources archived</text>
+    <text x="628" y="122" font-size="8.5" fill="#5b6b84">isolation_audit.json per exp</text>
+
+    <path d="M430 134 L 430 160 L 700 160 L 700 188" fill="none" stroke="#b91c1c" stroke-width="1.6" marker-end="url(#m-r)"/>
+    <rect x="616" y="190" width="360" height="46" rx="5" fill="#b91c1c"/>
+    <text x="628" y="209" font-size="10.5" font-weight="700" fill="#fff">IsolationViolation ⇒ MACRO-FAIL</text>
+    <text x="628" y="224" font-size="9" fill="#ffd9d9">foreign id or canary in a prompt aborts the factory (exit 2)</text>
+
+    <rect x="14" y="160" width="420" height="40" rx="4" fill="#eef2f7" stroke="#475569" stroke-width="1.2"/>
+    <text x="26" y="176" font-size="9" font-weight="700" fill="#475569">EVERY CALL ARCHIVED</text>
+    <text x="26" y="190" font-size="8.5" fill="#37455c">exp_NNN/prompts/&lt;agent&gt;_&lt;purpose&gt;_aA_rR.md (+ .response.json) — full route header included</text>
+
+    <rect x="14" y="212" width="420" height="34" rx="4" fill="#fff" stroke="#b91c1c" stroke-width="1.2" stroke-dasharray="5 3"/>
+    <text x="26" y="226" font-size="9" fill="#1b2434">canary format: <tspan font-weight="700">CANARY-exp_007-9f3a1c2e</tspan></text>
+    <text x="26" y="239" font-size="8.5" fill="#5b6b84">stamped into simulation.log and checked by the parent</text>
+
+    <text x="14" y="276" font-size="9.5" font-weight="700" fill="#475569">SANITISERS</text>
+    <rect x="110" y="258" width="286" height="36" rx="4" fill="#eef2f7" stroke="#475569" stroke-width="1"/>
+    <text x="120" y="273" font-size="8.7" font-weight="700" fill="#1b2434">sanitize_obj — before prompts</text>
+    <text x="120" y="286" font-size="8.3" fill="#37455c">drop canary/experiment keys, scrub ids in strings</text>
+    <rect x="404" y="258" width="286" height="36" rx="4" fill="#eef2f7" stroke="#475569" stroke-width="1"/>
+    <text x="414" y="273" font-size="8.7" font-weight="700" fill="#1b2434">scrub_foreign — at ingestion</text>
+    <text x="414" y="286" font-size="8.3" fill="#37455c">clean hallucinated ids out of LLM output JSON</text>
+    <rect x="698" y="258" width="288" height="36" rx="4" fill="#eef2f7" stroke="#475569" stroke-width="1"/>
+    <text x="708" y="273" font-size="8.7" font-weight="700" fill="#1b2434">paperize — for the paper</text>
+    <text x="708" y="286" font-size="8.3" fill="#37455c">exp ids → “Iteration NNN”, canaries removed</text>
+  </svg>
+
+  <div class="note"><b>Why it matters:</b> the Meta must reason over the <i>space</i>, not over other experiments’ logs; the Judge must score this run, not a remembered one. Isolation is what makes scores comparable across iterations — and a breach is catastrophic, so it aborts rather than degrades.</div>
+
+  <footer class="pf">
+    <span>context-health-factory · factory_visualization</span>
+    <span>source: agents.py · isolation.py · run_factory.py stage_* methods</span>
+  </footer>
+</section>
+
+<!-- ============================================================ PAGE 4 -->
+<section class="page">
+  <header class="ph">
+    <span class="kicker">Context Health Factory · Technical Blueprint</span>
+    <span class="pno">04 / 07</span>
+  </header>
+  <h1 class="sec"><span class="n">04</span> · MODEL &amp; EFFORT ROUTER</h1>
+  <div class="lede">The LLM never picks a model. <b>Python assigns one from failure history</b>, using a 4-level escalation ladder and six hardcoded rules. The router is <b>stateless</b> — <code style="font-family:var(--mono)">route()</code> is a pure function of a <code style="font-family:var(--mono)">RouteContext</code>; all mutable escalation state lives in one <code style="font-family:var(--mono)">EscalationTracker</code> per iteration, so parallel iterations can never change each other’s routing. Every decision is logged to <code style="font-family:var(--mono)">router_log.json</code> and independently re-audited.</div>
+
+  <div class="twocol">
+    <div>
+      <h2 class="di">THE ESCALATION LADDER</h2>
+      <svg viewBox="0 0 470 560">
+        <line x1="46" y1="506" x2="46" y2="26" stroke="#8494ab" stroke-width="1.8" marker-end="url(#m-g)"/>
+        <text x="18" y="270" font-size="9.5" fill="#5b6b84" transform="rotate(-90 18 270)">cost · capability</text>
+
+        <rect x="90" y="36" width="340" height="86" rx="5" fill="#f0eafc" stroke="#6d28d9" stroke-width="1.6"/>
+        <text x="102" y="58" font-size="11.5" font-weight="700" fill="#6d28d9">L3 · opus-5.5 + high</text>
+        <text x="102" y="76" font-size="9" fill="#37455c">R4 complexity — meta invalid streak ≥ 2</text>
+        <text x="102" y="90" font-size="9" fill="#37455c">also the ceiling for R6 iteration escalation</text>
+        <text x="102" y="108" font-size="8.5" fill="#5b6b84">slowest · strongest</text>
+
+        <rect x="90" y="146" width="340" height="86" rx="5" fill="#fdeee2" stroke="#c2410c" stroke-width="1.5"/>
+        <text x="102" y="168" font-size="11.5" font-weight="700" fill="#c2410c">L2 · opus-5.5 + standard</text>
+        <text x="102" y="186" font-size="9" fill="#37455c">R3 quality — last judge score &lt; 60 ⇒</text>
+        <text x="102" y="199" font-size="9" fill="#37455c">next iteration’s worker &amp; judge start here</text>
+        <text x="102" y="217" font-size="8.5" fill="#5b6b84">heavy model, normal thinking</text>
+
+        <rect x="90" y="256" width="340" height="86" rx="5" fill="#e9f0fe" stroke="#1d4ed8" stroke-width="1.5"/>
+        <text x="102" y="278" font-size="11.5" font-weight="700" fill="#1d4ed8">L1 · sonnet-5 + high</text>
+        <text x="102" y="296" font-size="9" fill="#37455c">R2 micro — in-place step retry after invalid</text>
+        <text x="102" y="309" font-size="9" fill="#37455c">JSON / crash: same model, effort forced high</text>
+        <text x="102" y="327" font-size="8.5" fill="#5b6b84">cheapest upgrade: think harder, not bigger</text>
+
+        <rect x="90" y="366" width="340" height="86" rx="5" fill="#e7f5ec" stroke="#15803d" stroke-width="1.5"/>
+        <text x="102" y="388" font-size="11.5" font-weight="700" fill="#15803d">L0 · sonnet-5 + standard</text>
+        <text x="102" y="406" font-size="9" fill="#37455c">R1 baseline — every core agent</text>
+        <text x="102" y="419" font-size="9" fill="#37455c">(meta · worker · judge · doc) starts here</text>
+        <text x="102" y="437" font-size="8.5" fill="#5b6b84">fast · default</text>
+
+        <path d="M70 410 L 70 300" fill="none" stroke="#b91c1c" stroke-width="1.4" marker-end="url(#m-r)"/>
+        <path d="M70 300 L 70 190" fill="none" stroke="#b91c1c" stroke-width="1.4" marker-end="url(#m-r)"/>
+        <path d="M70 190 L 70 80" fill="none" stroke="#b91c1c" stroke-width="1.4" marker-end="url(#m-r)"/>
+        <text x="58" y="420" font-size="8" fill="#b91c1c">R6</text>
+
+        <rect x="90" y="472" width="340" height="72" rx="5" fill="#f0eafc" stroke="#6d28d9" stroke-width="1.6" stroke-dasharray="6 3"/>
+        <text x="102" y="494" font-size="11.5" font-weight="700" fill="#6d28d9">fable-5.1 — OFF the ladder</text>
+        <text x="102" y="512" font-size="9" fill="#37455c">R5 — doc/format pass only; routing it anywhere else</text>
+        <text x="102" y="525" font-size="9" fill="#37455c">(or any model to the simulator) ⇒ RoutingViolationError</text>
+        <text x="102" y="539" font-size="8.5" fill="#5b6b84">ultra-fast · markdown formatting specialist</text>
+      </svg>
+      <div class="note"><b>R6:</b> each iteration-level failure bumps the failing agent one level (cap L3) — tracked per iteration by <code>EscalationTracker</code>.</div>
+    </div>
+
+    <div>
+      <h2 class="di">route() DECISION PIPELINE <span class="tag">— rules applied in order</span></h2>
+      <svg viewBox="0 0 500 560">
+        <rect x="14" y="10" width="472" height="88" rx="5" fill="#eef2f7" stroke="#475569" stroke-width="1.4"/>
+        <text x="26" y="28" font-size="10.5" font-weight="700" fill="#475569">RouteContext — assembled by Python only</text>
+        <text x="26" y="46" font-size="9" fill="#37455c">iteration · agent · purpose (primary | draft | format | final)</text>
+        <text x="26" y="60" font-size="9" fill="#37455c">attempt (0–2) · step_retry (0|1) · escalation (0–3)</text>
+        <text x="26" y="74" font-size="9" fill="#37455c">last_judge_score · meta_invalid_streak</text>
+        <text x="26" y="90" font-size="8.5" fill="#5b6b84">frozen dataclass — the entire input to the decision</text>
+
+        <line x1="250" y1="98" x2="250" y2="112" stroke="#8494ab" stroke-width="1.5" marker-end="url(#m-g)"/>
+
+        <rect x="14" y="114" width="472" height="46" rx="4" fill="#e7f5ec" stroke="#15803d" stroke-width="1.3"/>
+        <text x="26" y="132" font-size="9.8" font-weight="700" fill="#15803d">R1 baseline → level 0</text>
+        <text x="26" y="147" font-size="8.8" fill="#37455c">every core agent starts at sonnet-5 + standard</text>
+
+        <line x1="250" y1="160" x2="250" y2="172" stroke="#8494ab" stroke-width="1.5" marker-end="url(#m-g)"/>
+
+        <rect x="14" y="174" width="472" height="46" rx="4" fill="#fdeee2" stroke="#c2410c" stroke-width="1.3"/>
+        <text x="26" y="192" font-size="9.8" font-weight="700" fill="#c2410c">R3 quality → level ≥ 2</text>
+        <text x="26" y="207" font-size="8.8" fill="#37455c">agent ∈ {worker, judge} ∧ last_judge_score &lt; 60</text>
+
+        <line x1="250" y1="220" x2="250" y2="232" stroke="#8494ab" stroke-width="1.5" marker-end="url(#m-g)"/>
+
+        <rect x="14" y="234" width="472" height="46" rx="4" fill="#f0eafc" stroke="#6d28d9" stroke-width="1.3"/>
+        <text x="26" y="252" font-size="9.8" font-weight="700" fill="#6d28d9">R4 complexity → level 3</text>
+        <text x="26" y="267" font-size="8.8" fill="#37455c">agent = meta ∧ meta_invalid_streak ≥ 2</text>
+
+        <line x1="250" y1="280" x2="250" y2="292" stroke="#8494ab" stroke-width="1.5" marker-end="url(#m-g)"/>
+
+        <rect x="14" y="294" width="472" height="46" rx="4" fill="#fcebeb" stroke="#b91c1c" stroke-width="1.3"/>
+        <text x="26" y="312" font-size="9.8" font-weight="700" fill="#b91c1c">R6 iteration escalation → level += escalation (cap 3)</text>
+        <text x="26" y="327" font-size="8.8" fill="#37455c">from this iteration’s EscalationTracker — never shared across threads</text>
+
+        <line x1="250" y1="340" x2="250" y2="352" stroke="#8494ab" stroke-width="1.5" marker-end="url(#m-g)"/>
+
+        <rect x="14" y="354" width="472" height="46" rx="4" fill="#e9f0fe" stroke="#1d4ed8" stroke-width="1.3"/>
+        <text x="26" y="372" font-size="9.8" font-weight="700" fill="#1d4ed8">R2 micro-retry → effort = high (same model)</text>
+        <text x="26" y="387" font-size="8.8" fill="#37455c">step_retry = 1 — the in-place retry inside AgentRunner</text>
+
+        <line x1="250" y1="400" x2="250" y2="412" stroke="#8494ab" stroke-width="1.5" marker-end="url(#m-g)"/>
+
+        <rect x="14" y="414" width="472" height="128" rx="5" fill="#f7faff" stroke="#1d4ed8" stroke-width="1.5"/>
+        <text x="26" y="434" font-size="10.5" font-weight="700" fill="#1b2434">RouteDecision(model, effort, level, rules)</text>
+        <text x="26" y="452" font-size="8.8" fill="#37455c"><tspan font-weight="700" fill="#6d28d9">R5 enforce</tspan> — fable only for (doc, format); unknown agent rejected;</text>
+        <text x="26" y="466" font-size="8.8" fill="#37455c">simulator must never be routed to an LLM</text>
+        <text x="26" y="486" font-size="8.8" fill="#37455c"><tspan font-weight="700">RouterLog.record</tspan> — context · decision · duration · cost · outcome,</text>
+        <text x="26" y="500" font-size="8.8" fill="#37455c">flushed atomically after every call; shared Meta call fanned out</text>
+        <text x="26" y="514" font-size="8.8" fill="#37455c">into every wave member’s log (shared_from_wave_lead)</text>
+        <text x="26" y="532" font-size="8.8" fill="#37455c"><tspan font-weight="700">router_audit.audit</tspan> — re-computes the expected route and compares</text>
+
+        <rect x="14" y="552" width="150" height="0" rx="0" fill="none"/>
+      </svg>
+      <div class="chips" style="margin-top:1.6mm">
+        <span class="chip" style="border-color:var(--green);color:var(--green)">ROUTER_VERIFIED</span>
+        <span class="chip" style="border-color:var(--red);color:var(--red)">ROUTER_MISMATCH</span>
+        <span class="chip" style="border-color:var(--red);color:var(--red)">FABLE_LEAK</span>
+        <span class="chip">verdict computed per experiment at wave close</span>
+      </div>
+    </div>
+  </div>
+
+  <footer class="pf">
+    <span>context-health-factory · factory_visualization</span>
+    <span>source: router.py · router_audit.py · agents.py (step retry)</span>
+  </footer>
+</section>
+
+<!-- ============================================================ PAGE 5 -->
+<section class="page">
+  <header class="ph">
+    <span class="kicker">Context Health Factory · Technical Blueprint</span>
+    <span class="pno">05 / 07</span>
+  </header>
+  <h1 class="sec"><span class="n">05</span> · FAILURE SEMANTICS &amp; STOP CONDITIONS</h1>
+  <div class="lede">Three failure severities, three different fates. <b>Micro-fails</b> are absorbed by the iteration retry loop (escalate, retry ≤3, then poison the coordinate). <b>Macro-fails</b> abort the factory instantly. <b>InfraUnavailable</b> pauses with fully resumable state. An unexpected exception inside a stage is converted to <code style="font-family:var(--mono)">HarnessStageError</code> (a micro-fail) — the factory survives its own bugs.</div>
+
+  <div class="twocol" style="grid-template-columns: 1fr 1.06fr">
+    <div>
+      <h2 class="di">EXCEPTION HIERARCHY</h2>
+      <svg viewBox="0 0 480 560">
+        <rect x="150" y="10" width="180" height="32" rx="4" fill="#1b2434"/>
+        <text x="196" y="30" font-size="10.5" font-weight="700" fill="#fff">FactoryError</text>
+
+        <path d="M240 42 L 240 54 L 90 54 L 90 66" fill="none" stroke="#8494ab" stroke-width="1.4"/>
+        <path d="M240 42 L 240 66" fill="none" stroke="#8494ab" stroke-width="1.4"/>
+        <path d="M240 42 L 240 54 L 400 54 L 400 66" fill="none" stroke="#8494ab" stroke-width="1.4"/>
+
+        <rect x="14" y="66" width="152" height="34" rx="4" fill="#fdeee2" stroke="#c2410c" stroke-width="1.5"/>
+        <text x="24" y="80" font-size="9.8" font-weight="700" fill="#c2410c">MicroFail</text>
+        <text x="24" y="93" font-size="7.8" fill="#37455c">retry ≤3 → poison</text>
+
+        <rect x="164" y="66" width="140" height="34" rx="4" fill="#fcebeb" stroke="#b91c1c" stroke-width="1.5"/>
+        <text x="174" y="80" font-size="9.8" font-weight="700" fill="#b91c1c">MacroFail</text>
+        <text x="174" y="93" font-size="7.8" fill="#37455c">abort · exit 2</text>
+
+        <rect x="318" y="66" width="148" height="34" rx="4" fill="#eef2f7" stroke="#475569" stroke-width="1.5"/>
+        <text x="328" y="80" font-size="9.8" font-weight="700" fill="#475569">InfraUnavailable</text>
+        <text x="328" y="93" font-size="7.8" fill="#37455c">pause · exit 3</text>
+
+        <line x1="60" y1="100" x2="60" y2="112" stroke="#8494ab" stroke-width="1.2"/>
+        <g font-size="8.6" fill="#2a3548">
+          <rect x="14" y="112" width="214" height="40" rx="3" fill="#fff" stroke="#c9d4e4"/>
+          <text x="22" y="127" font-weight="700" fill="#1b2434">AgentCallError</text>
+          <text x="22" y="141">transport crash · timeout · error envelope</text>
+
+          <rect x="14" y="156" width="214" height="40" rx="3" fill="#fff" stroke="#c9d4e4"/>
+          <text x="22" y="171" font-weight="700" fill="#1b2434">AgentOutputError</text>
+          <text x="22" y="185">invalid JSON · schema violation</text>
+
+          <rect x="34" y="200" width="194" height="30" rx="3" fill="#fff" stroke="#c9d4e4"/>
+          <text x="42" y="213" font-weight="700" fill="#1b2434">MetaProposalInvalid</text>
+          <text x="42" y="225" font-size="7.8" fill="#5b6b84">agent = meta · bad mutation/coordinate</text>
+
+          <rect x="34" y="234" width="194" height="30" rx="3" fill="#fff" stroke="#c9d4e4"/>
+          <text x="42" y="247" font-weight="700" fill="#1b2434">JudgeAnchorError</text>
+          <text x="42" y="259" font-size="7.8" fill="#5b6b84">agent = judge · score drifted &gt; ±3</text>
+
+          <rect x="14" y="272" width="214" height="30" rx="3" fill="#fff" stroke="#c9d4e4"/>
+          <text x="22" y="285" font-weight="700" fill="#1b2434">WorkerCodeError</text>
+          <text x="22" y="297" font-size="7.8" fill="#5b6b84">agent = worker · static gate rejected model.py</text>
+
+          <rect x="14" y="310" width="214" height="30" rx="3" fill="#fff" stroke="#c9d4e4"/>
+          <text x="22" y="323" font-weight="700" fill="#1b2434">SimulatorError</text>
+          <text x="22" y="335" font-size="7.8" fill="#5b6b84">agent = worker · crash / invalid output</text>
+
+          <rect x="34" y="344" width="194" height="28" rx="3" fill="#fff" stroke="#c9d4e4"/>
+          <text x="42" y="357" font-weight="700" fill="#1b2434">SimulatorTimeout</text>
+          <text x="42" y="368" font-size="7.8" fill="#5b6b84">exceeded the 60 s hard kill</text>
+
+          <rect x="14" y="380" width="214" height="30" rx="3" fill="#fff" stroke="#c9d4e4"/>
+          <text x="22" y="393" font-weight="700" fill="#1b2434">RoutingViolationError</text>
+          <text x="22" y="405" font-size="7.8" fill="#5b6b84">forbidden model/agent pairing (R5)</text>
+
+          <rect x="14" y="418" width="214" height="40" rx="3" fill="#e9f0fe" stroke="#1d4ed8" stroke-width="1.2"/>
+          <text x="22" y="433" font-weight="700" fill="#1d4ed8">HarnessStageError</text>
+          <text x="22" y="447" font-size="7.8">unexpected in-stage exception, converted</text>
+          <text x="22" y="456" font-size="7.8">so the factory survives; traceback archived</text>
+        </g>
+
+        <line x1="234" y1="100" x2="234" y2="210" stroke="#8494ab" stroke-width="1.2"/>
+        <rect x="244" y="210" width="222" height="30" rx="3" fill="#fff" stroke="#b91c1c"/>
+        <text x="252" y="223" font-weight="700" font-size="8.6" fill="#b91c1c">IsolationViolation</text>
+        <text x="252" y="235" font-size="7.8" fill="#5b6b84">foreign exp id / canary in a prompt</text>
+        <rect x="244" y="244" width="222" height="30" rx="3" fill="#fff" stroke="#b91c1c"/>
+        <text x="252" y="257" font-weight="700" font-size="8.6" fill="#b91c1c">ReadOnlyViolation</text>
+        <text x="252" y="269" font-size="7.8" fill="#5b6b84">ai_docs checksum changed mid-run</text>
+        <text x="244" y="290" font-size="7.8" fill="#5b6b84">unhandled harness crash is also a macro-fail;</text>
+        <text x="244" y="301" font-size="7.8" fill="#5b6b84">macro_fail.json written on abort</text>
+
+        <line x1="392" y1="100" x2="392" y2="112" stroke="#8494ab" stroke-width="1.2"/>
+        <rect x="318" y="112" width="148" height="86" rx="3" fill="#eef2f7" stroke="#475569"/>
+        <text x="326" y="128" font-size="7.8" fill="#37455c">LLM transport down after the</text>
+        <text x="326" y="140" font-size="7.8" fill="#37455c">full backoff schedule;</text>
+        <text x="326" y="152" font-size="7.8" fill="#37455c">OSError in any stage;</text>
+        <text x="326" y="164" font-size="7.8" fill="#37455c">circuit breaker (page 02)</text>
+        <text x="326" y="182" font-size="7.8" font-weight="700" fill="#475569">state saved — resume with</text>
+        <text x="326" y="193" font-size="7.8" font-weight="700" fill="#475569">the same command</text>
+
+        <text x="14" y="492" font-size="8.4" fill="#5b6b84">micro-fail causes are fed back to the agents: Worker sees retry_error;</text>
+        <text x="14" y="504" font-size="8.4" fill="#5b6b84">the in-place step retry sees the harness rejection text. Failure history</text>
+        <text x="14" y="516" font-size="8.4" fill="#5b6b84">drives routing (R2/R6) — the same failure is never retried at the same</text>
+        <text x="14" y="528" font-size="8.4" fill="#5b6b84">level without escalation.</text>
+      </svg>
+    </div>
+
+    <div>
+      <h2 class="di">ITERATION RETRY STATE MACHINE <span class="tag">— per member, per attempt</span></h2>
+      <svg viewBox="0 0 500 330">
+        <rect x="150" y="14" width="200" height="66" rx="5" fill="#e9f0fe" stroke="#1d4ed8" stroke-width="1.5"/>
+        <text x="162" y="34" font-size="10.5" font-weight="700" fill="#1d4ed8">RUN STAGE</text>
+        <rect x="160" y="42" width="180" height="30" rx="3" fill="none" stroke="#1d4ed8" stroke-width="1" stroke-dasharray="4 3"/>
+        <text x="166" y="55" font-size="7.6" fill="#37455c">inner step-retry (≤1): rejection text</text>
+        <text x="166" y="66" font-size="7.6" fill="#37455c">appended · effort → high (R2)</text>
+
+        <line x1="250" y1="80" x2="250" y2="96" stroke="#b91c1c" stroke-width="1.6" marker-end="url(#m-r)"/>
+        <text x="258" y="92" font-size="8.2" fill="#b91c1c">MicroFail</text>
+
+        <rect x="150" y="98" width="200" height="44" rx="4" fill="#fcebeb" stroke="#b91c1c" stroke-width="1.4"/>
+        <text x="162" y="116" font-size="9.5" font-weight="700" fill="#b91c1c">RECORD + ESCALATE</text>
+        <text x="162" y="131" font-size="8.2" fill="#37455c">attempts.json · escalate agent (R6 +1)</text>
+
+        <line x1="250" y1="142" x2="250" y2="156" stroke="#8494ab" stroke-width="1.5" marker-end="url(#m-g)"/>
+
+        <rect x="150" y="158" width="200" height="40" rx="4" fill="#eef2f7" stroke="#475569" stroke-width="1.4"/>
+        <text x="170" y="182" font-size="9.5" font-weight="700" fill="#475569">consecutive_fails &lt; 3 ?</text>
+
+        <path d="M150 178 L 96 178 L 96 47 L 148 47" fill="none" stroke="#15803d" stroke-width="1.5" marker-end="url(#m-gr)"/>
+        <text x="8" y="140" font-size="8.2" fill="#15803d">yes — retry; on sim/code</text>
+        <text x="8" y="152" font-size="8.2" fill="#15803d">errors Worker + Fingerprint</text>
+        <text x="8" y="164" font-size="8.2" fill="#15803d">redo with retry_error</text>
+
+        <line x1="250" y1="198" x2="250" y2="214" stroke="#b91c1c" stroke-width="1.6" marker-end="url(#m-r)"/>
+        <text x="258" y="210" font-size="8.2" fill="#b91c1c">no</text>
+
+        <rect x="150" y="216" width="200" height="58" rx="5" fill="#b91c1c"/>
+        <text x="162" y="236" font-size="10.5" font-weight="700" fill="#fff">POISONED</text>
+        <text x="162" y="252" font-size="8.2" fill="#ffd9d9">ledger marked “poisoned” + reasons</text>
+        <text x="162" y="265" font-size="8.2" fill="#ffd9d9">never proposed again · poison section</text>
+
+        <line x1="350" y1="47" x2="392" y2="47" stroke="#15803d" stroke-width="1.6" marker-end="url(#m-gr)"/>
+        <rect x="396" y="24" width="96" height="46" rx="4" fill="#e7f5ec" stroke="#15803d" stroke-width="1.3"/>
+        <text x="404" y="42" font-size="8.4" font-weight="700" fill="#15803d">stage ok →</text>
+        <text x="404" y="55" font-size="8.4" fill="#15803d">memoised</text>
+        <text x="396" y="86" font-size="7.8" fill="#5b6b84">retry redoes only</text>
+        <text x="396" y="97" font-size="7.8" fill="#5b6b84">missing stages</text>
+
+        <text x="150" y="300" font-size="8.4" fill="#5b6b84">Meta phase has its own 3-attempt loop (whole wave is the victim);</text>
+        <text x="150" y="312" font-size="8.4" fill="#5b6b84">doc failure never poisons — the experiment is already scored.</text>
+      </svg>
+
+      <h2 class="di" style="margin-top:2.5mm">META-DONE CONDITIONS <span class="tag">— checked by Python before any agent runs</span></h2>
+      <table class="dt">
+        <tr><th style="width:6%">#</th><th style="width:44%">CONDITION</th><th>CONSTANTS</th></tr>
+        <tr><td>1</td><td>state-space stagnation — no dimension added in the window</td><td><code>STAGNATION_WINDOW = 10</code></td></tr>
+        <tr><td>2</td><td>score plateau — best of the window ≤ earlier best + margin</td><td><code>MIN_IMPROVEMENT = 2.0</code></td></tr>
+        <tr><td>3</td><td>hard limit reached</td><td><code>--max-iterations</code> (default 50)</td></tr>
+      </table>
+
+      <h2 class="di" style="margin-top:2.5mm">EXIT CODES</h2>
+      <div class="chips">
+        <span class="chip" style="border-color:var(--green);color:var(--green)">0 — Meta-Done halt / already halted</span>
+        <span class="chip" style="border-color:var(--red);color:var(--red)">2 — macro-fail abort</span>
+        <span class="chip" style="border-color:var(--gray);color:var(--gray)">3 — infra pause · resumable</span>
+        <span class="chip" style="border-color:var(--gray);color:var(--gray)">130 — operator interrupt · resumable</span>
+      </div>
+      <div class="note">A halt is not the end of the pipeline: <b>hidden confirmation</b> and the <b>final synthesis</b> run after it — see page 06. If the factory is rerun after halting, it exits immediately (<code>state["halted"]</code>); <code>--fresh</code> archives the previous run and reseeds.</div>
+    </div>
+  </div>
+
+  <footer class="pf">
+    <span>context-health-factory · factory_visualization</span>
+    <span>source: errors.py · done_checker.py · run_factory.py (retry loops, halt)</span>
+  </footer>
+</section>
+
+<!-- ============================================================ PAGE 6 -->
+<section class="page">
+  <header class="ph">
+    <span class="kicker">Context Health Factory · Technical Blueprint</span>
+    <span class="pno">06 / 07</span>
+  </header>
+  <h1 class="sec"><span class="n">06</span> · SIMULATOR &amp; EVALUATION INTEGRITY</h1>
+  <div class="lede">The simulator is the factory’s ground truth: a <b>pure-Python subprocess</b> that trains the Worker’s model on synthetic context-health scenarios and scores it. Scores stay honest through four mechanisms: <b>canary-stamped output</b>, a <b>functional fingerprint</b> that detects duplicate models, a <b>Judge anchored ±3</b> to the deterministic <code style="font-family:var(--mono)">sim_score</code>, and a <b>hidden confirmation set</b> that breaks the evaluation set’s winner’s curse.</div>
+
+  <h2 class="di">SIMULATION PROTOCOL <span class="tag">— parent spawns, child computes, parent validates</span></h2>
+  <svg viewBox="0 0 1000 330">
+    <rect x="14" y="30" width="280" height="230" rx="5" fill="#fff" stroke="#0f766e" stroke-width="1.6"/>
+    <text x="26" y="52" font-size="10.5" font-weight="700" fill="#0f766e">PARENT — simulator/harness.py</text>
+    <text x="26" y="72" font-size="8.8" fill="#37455c">preflight: ensure_cache + warm_up</text>
+    <text x="26" y="85" font-size="8.8" fill="#37455c">(torch cold start paid once, not inside</text>
+    <text x="26" y="98" font-size="8.8" fill="#37455c">the 60 s budget) · baselines measured</text>
+    <text x="26" y="118" font-size="8.8" fill="#37455c">spawn subprocess · capture output</text>
+    <text x="26" y="131" font-size="8.8" fill="#37455c">hard kill at 60 s ⇒ SimulatorTimeout</text>
+    <text x="26" y="151" font-size="8.8" fill="#37455c">exit ≠ 0 ⇒ SimulatorError with the</text>
+    <text x="26" y="164" font-size="8.8" fill="#37455c">child’s sim_error.txt / stderr tail</text>
+    <text x="26" y="184" font-size="8.8" fill="#5b6b84">same entry point, three modes:</text>
+    <text x="26" y="197" font-size="8.8" fill="#0f766e" font-weight="700">simulate · --fingerprint · --confirm</text>
+    <text x="26" y="216" font-size="8.8" fill="#5b6b84">wall seconds recorded into metrics</text>
+
+    <line x1="294" y1="145" x2="336" y2="145" stroke="#0f766e" stroke-width="1.7" marker-end="url(#m-t)"/>
+    <text x="296" y="136" font-size="7.8" fill="#0f766e">model.py+canary</text>
+
+    <rect x="340" y="30" width="360" height="230" rx="5" fill="#e3f2f0" stroke="#0f766e" stroke-width="1.6"/>
+    <text x="352" y="52" font-size="10.5" font-weight="700" fill="#0f766e">CHILD — sim_runner.py · clean env</text>
+    <rect x="352" y="62" width="336" height="18" rx="3" fill="#fff" stroke="#0f766e" stroke-width="0.8"/>
+    <text x="360" y="75" font-size="8.2" fill="#37455c">PYTHONHASHSEED=0 · CUDA_VISIBLE_DEVICES="" · OMP_NUM_THREADS=2</text>
+    <text x="352" y="100" font-size="8.8" fill="#37455c">1 · load scenario cache (.cache/sim_cache_vN)</text>
+    <text x="352" y="116" font-size="8.8" fill="#37455c">2 · import model.py — already static-gated (AST)</text>
+    <text x="352" y="132" font-size="8.8" fill="#37455c">3 · build + train the student MLP (teacher/</text>
+    <text x="352" y="145" font-size="8.8" fill="#37455c">DAgger labelling per the coordinate)</text>
+    <text x="352" y="161" font-size="8.8" fill="#37455c">4 · run 50 mock context scenarios, one TURN</text>
+    <text x="352" y="174" font-size="8.8" fill="#37455c">line each, canary-stamped</text>
+    <text x="352" y="190" font-size="8.8" fill="#37455c">5 · write simulation.log + SUMMARY line</text>
+    <text x="352" y="203" font-size="8.8" fill="#37455c">+ sim_metrics.json</text>
+    <text x="352" y="224" font-size="8.4" fill="#5b6b84">deterministic seeds; identical protocol for</text>
+    <text x="352" y="236" font-size="8.4" fill="#5b6b84">every experiment → scores are comparable</text>
+
+    <line x1="700" y1="145" x2="742" y2="145" stroke="#0f766e" stroke-width="1.7" marker-end="url(#m-t)"/>
+    <text x="704" y="136" font-size="7.8" fill="#0f766e">log + metrics</text>
+
+    <rect x="746" y="30" width="240" height="230" rx="5" fill="#fff" stroke="#1d4ed8" stroke-width="1.6"/>
+    <text x="758" y="52" font-size="10.5" font-weight="700" fill="#1d4ed8">PARENT VALIDATES</text>
+    <text x="758" y="74" font-size="8.8" fill="#37455c">exactly 50 ordered TURN lines</text>
+    <text x="758" y="87" font-size="8.8" fill="#37455c">(TURN 001/050 … 050/050)</text>
+    <text x="758" y="106" font-size="8.8" fill="#37455c">canary= matches this experiment</text>
+    <text x="758" y="125" font-size="8.8" fill="#37455c">SUMMARY | sim_score= line present</text>
+    <text x="758" y="144" font-size="8.8" fill="#37455c">metrics.turns = 50</text>
+    <text x="758" y="163" font-size="8.8" fill="#37455c">0 ≤ sim_score ≤ 100</text>
+    <line x1="758" y1="176" x2="974" y2="176" stroke="#c9d4e4"/>
+    <text x="758" y="196" font-size="8.8" fill="#15803d" font-weight="700">pass ⇒ SimResult into phase C</text>
+    <text x="758" y="216" font-size="8.8" fill="#b91c1c" font-weight="700">any failure ⇒ SimulatorError</text>
+    <text x="758" y="230" font-size="8.4" fill="#5b6b84">(micro-fail, charged to the Worker)</text>
+
+    <g font-size="8.2" fill="#37455c">
+      <rect x="14" y="286" width="972" height="30" rx="4" fill="#f7faff" stroke="#c9d4e4"/>
+      <text x="26" y="305"><tspan font-weight="700" fill="#1b2434">metrics</tspan> — sim_score · mean_return · success_rate · overflow_rate · oracle_agreement · action_entropy · action_distribution · train_acc / val_acc · features · params · wall_seconds</text>
+    </g>
+  </svg>
+
+  <div class="twocol" style="margin-top:2.4mm">
+    <div>
+      <h2 class="di">FINGERPRINT → DEDUPE → REFILL</h2>
+      <svg viewBox="0 0 480 262">
+        <rect x="14" y="12" width="210" height="64" rx="4" fill="#e3f2f0" stroke="#0f766e" stroke-width="1.4"/>
+        <text x="24" y="30" font-size="9.3" font-weight="700" fill="#0f766e">FINGERPRINT (pre-sim)</text>
+        <text x="24" y="44" font-size="7.9" fill="#37455c">hash of features · architecture · init ·</text>
+        <text x="24" y="56" font-size="7.9" fill="#37455c">effective train config · loss</text>
+        <text x="24" y="69" font-size="7.6" fill="#5b6b84">validity gates run here too</text>
+
+        <line x1="224" y1="44" x2="252" y2="44" stroke="#8494ab" stroke-width="1.4" marker-end="url(#m-g)"/>
+
+        <rect x="256" y="12" width="210" height="64" rx="4" fill="#eef2f7" stroke="#475569" stroke-width="1.4"/>
+        <text x="266" y="36" font-size="9.3" font-weight="700" fill="#475569">hash already in the</text>
+        <text x="266" y="49" font-size="9.3" font-weight="700" fill="#475569">fingerprints registry?</text>
+        <text x="266" y="66" font-size="7.6" fill="#5b6b84">(registry persists across waves)</text>
+
+        <line x1="361" y1="76" x2="361" y2="100" stroke="#15803d" stroke-width="1.5" marker-end="url(#m-gr)"/>
+        <text x="369" y="94" font-size="8" fill="#15803d">no</text>
+        <rect x="256" y="102" width="210" height="34" rx="4" fill="#e7f5ec" stroke="#15803d" stroke-width="1.3"/>
+        <text x="266" y="123" font-size="9" font-weight="700" fill="#15803d">proceed to simulation</text>
+
+        <path d="M300 76 L 300 88 L 119 88 L 119 96" fill="none" stroke="#b91c1c" stroke-width="1.5" marker-end="url(#m-r)"/>
+        <text x="96" y="84" font-size="8" fill="#b91c1c">yes — functional duplicate of iteration k</text>
+        <rect x="14" y="98" width="210" height="38" rx="4" fill="#fcebeb" stroke="#b91c1c" stroke-width="1.3"/>
+        <text x="24" y="114" font-size="8.8" font-weight="700" fill="#b91c1c">DUPLICATE — slot handed back</text>
+        <text x="24" y="127" font-size="7.8" fill="#37455c">no-effect coordinate values identified</text>
+
+        <line x1="119" y1="136" x2="119" y2="152" stroke="#c2410c" stroke-width="1.5" marker-end="url(#m-o)"/>
+        <rect x="14" y="154" width="452" height="64" rx="4" fill="#fdeee2" stroke="#c2410c" stroke-width="1.4"/>
+        <text x="24" y="172" font-size="9.3" font-weight="700" fill="#c2410c">META REFILL — ≤ 2 per wave</text>
+        <text x="24" y="186" font-size="7.9" fill="#37455c">exactly ONE replacement coordinate · mutations list must be empty · ledger + wave hashes reserved</text>
+        <text x="24" y="199" font-size="7.9" fill="#37455c">rejected coordinates archived (next_coordinate.rejected_K.json)</text>
+        <text x="24" y="212" font-size="7.9" fill="#5b6b84">refill failed / cap reached ⇒ keep duplicate: duplicate_of = k (excluded from hidden confirmation)</text>
+      </svg>
+    </div>
+
+    <div>
+      <h2 class="di">JUDGE ANCHOR <span class="tag">— rubric within tolerance of ground truth</span></h2>
+      <svg viewBox="0 0 480 180">
+        <rect x="30" y="70" width="420" height="26" rx="4" fill="#fcebeb"/>
+        <rect x="150" y="70" width="180" height="26" rx="4" fill="#e7f5ec"/>
+        <line x1="30" y1="110" x2="450" y2="110" stroke="#475569" stroke-width="1.6"/>
+        <line x1="240" y1="104" x2="240" y2="116" stroke="#0f766e" stroke-width="2.4"/>
+        <text x="216" y="130" font-size="9" font-weight="700" fill="#0f766e">sim_score</text>
+        <line x1="150" y1="104" x2="150" y2="116" stroke="#15803d" stroke-width="1.6"/>
+        <line x1="330" y1="104" x2="330" y2="116" stroke="#15803d" stroke-width="1.6"/>
+        <text x="138" y="130" font-size="8.4" fill="#15803d">−3</text>
+        <text x="326" y="130" font-size="8.4" fill="#15803d">+3</text>
+        <circle cx="296" cy="83" r="4.5" fill="#c2410c"/>
+        <text x="280" y="60" font-size="8.8" font-weight="700" fill="#c2410c">judge score</text>
+        <text x="36" y="60" font-size="8.4" fill="#b91c1c">outside ⇒ JudgeAnchorError</text>
+        <text x="30" y="158" font-size="8.4" fill="#5b6b84">JUDGE_ANCHOR_TOLERANCE = 3 · score must be int 0–100 · hypothesis withheld</text>
+        <text x="30" y="171" font-size="8.4" fill="#5b6b84">anchor delta recorded in judge.json _harness block</text>
+      </svg>
+
+      <h2 class="di" style="margin-top:2mm">CALIBRATION BASELINES <span class="tag">— measured at preflight</span></h2>
+      <div class="chips">
+        <span class="chip">noop</span><span class="chip">heuristic</span><span class="chip">oracle</span><span class="chip">teacher_v2</span><span class="chip">clairvoyant</span>
+        <span class="chip">mean return per policy → state["baselines"]</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:2.6mm; border-color:var(--green)">
+    <h3 style="color:var(--green)">SELECTION vs CONFIRMATION — beating the winner’s curse</h3>
+    <div class="twocol">
+      <ul>
+        <li><b>Selection (spec rule):</b> <code>best_model.py</code> = highest judge score; ties broken by sim_score. Synced at phase C of every wave.</li>
+        <li><b>Confirmation (harness, at halt):</b> re-score candidates on <b>200 hidden scenarios (seeds 95000+)</b> never used for selection.</li>
+        <li><b>Candidates:</b> every iteration sim-tied within 2 × the typical paired SE of the best (cap CONFIRM_TOP_K = 6; functional duplicates excluded).</li>
+      </ul>
+      <ul>
+        <li><b>Statistics:</b> paired per-turn return differences vs the selected best; mean Δ and its SE reported per candidate.</li>
+        <li><b>Outputs:</b> <code>confirmation.json</code> · <code>best_model_confirmed.py</code> · CONFIRMATION block in the paper · factory summary names <i>selected</i> vs <i>confirmed</i> best.</li>
+        <li><b>Also at halt:</b> final synthesis (doc/final over paper + summary) → factory_report.json (verify_run macro/micro audit) → ai_docs re-checksumed.</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer class="pf">
+    <span>context-health-factory · factory_visualization</span>
+    <span>source: simulator/harness.py · run_factory.py (_dedupe, stage_judge, _confirm_top)</span>
+  </footer>
+</section>
+
+<!-- ============================================================ PAGE 7 -->
+<section class="page">
+  <header class="ph">
+    <span class="kicker">Context Health Factory · Technical Blueprint</span>
+    <span class="pno">07 / 07</span>
+  </header>
+  <h1 class="sec"><span class="n">07</span> · MODULE MAP &amp; ARTIFACT INVENTORY</h1>
+  <div class="lede">Every module in <code style="font-family:var(--mono)">factory/</code> and what it owns, plus the exact artifacts an experiment and a run leave behind. If it isn’t written here, the factory didn’t produce it — <code style="font-family:var(--mono)">verify_run</code> audits the definitions of done and fail independently of the orchestrator.</div>
+
+  <div class="twocol" style="grid-template-columns: 1.12fr 1fr">
+    <div>
+      <h2 class="di">factory/ MODULES</h2>
+      <table class="dt compact">
+        <tr><th style="width:33%">MODULE</th><th>OWNS</th></tr>
+        <tr><td class="p">run_factory.py</td><td>FactoryOrchestrator — wave state machine A–E · retry/poison · dedupe/refill · snapshots + resume · circuit breaker · halt + confirmation + final synthesis</td></tr>
+        <tr><td class="p">config.py</td><td>every path + loop constant; unreachable by LLM output</td></tr>
+        <tr><td class="p">errors.py</td><td>FactoryError hierarchy: MicroFail / MacroFail / InfraUnavailable</td></tr>
+        <tr><td class="p">done_checker.py</td><td>the 3 Meta-Done conditions — pure functions over Python state</td></tr>
+        <tr><td class="p">state_store.py</td><td>atomic JSON persistence (tmp + replace) for Python-owned state</td></tr>
+        <tr><td class="p">agents.py</td><td>AgentRunner: render → guard → routed call → extract → schema → validate · one in-place retry · prompt archiving</td></tr>
+        <tr><td class="p">schemas.py</td><td>JSON Schema per (agent, purpose) — meta/worker/judge/doc draft/format/final</td></tr>
+        <tr><td class="p">router.py</td><td>ladder L0–L3 · rules R1–R6 · EscalationTracker · RouterLog + verdicts</td></tr>
+        <tr><td class="p">router_audit.py</td><td>re-computes the expected route per decision; mismatch detection</td></tr>
+        <tr><td class="p">llm_client.py</td><td>headless Claude CLI transport — tools/hooks off · 900 s timeout · fixed backoff · cost tracking</td></tr>
+        <tr><td class="p">isolation.py</td><td>payload whitelists · canaries · foreign-id scan · sanitize_obj / scrub_foreign / paperize</td></tr>
+        <tr><td class="p">code_guard.py</td><td>static AST gate for Worker model.py — before the code ever executes</td></tr>
+        <tr><td class="p">state_space.py</td><td>mutation grammar engine (types, ops, domain checks, ledger, hashes) — knows no dimension names</td></tr>
+        <tr><td class="p">analytics.py</td><td>Python aggregates for the Meta: iteration rows · per-dimension marginals · paired SE</td></tr>
+        <tr><td class="p">paper.py</td><td>deterministic paper assembly: block replacement · leaderboard · space appendix · format_preserves</td></tr>
+        <tr><td class="p">verify_run.py</td><td>independent audit of Done/Fail → factory_report.json + per-iteration micro-done</td></tr>
+        <tr><td class="p">init_workspace.py</td><td>seed state space + paper header · ai_docs checksum · --fresh archiving</td></tr>
+        <tr><td class="p">export_policy.py</td><td>export a trained intervention MLP → workspace/deploy package</td></tr>
+        <tr><td class="p" style="white-space:normal">simulator/harness.py<br>· sim_runner.py</td><td>parent spawns child subprocess (60 s kill, validates log + metrics) · child trains + scores 50 turns; fingerprint + confirmation modes</td></tr>
+        <tr><td class="p" style="white-space:normal">simulator/dataset.py<br>· env · labeler · reference_policy</td><td>scenario cache · deterministic mock env · teacher labelling (own subprocess) · harness-owned reference student</td></tr>
+        <tr><td class="p" style="white-space:normal">probes/ · benchmark/<br>· tools/</td><td>offline: plateau/grokking/privileged probes · unseen-scenario benchmark · project PDF builder</td></tr>
+        <tr><td class="p">tests/</td><td>unit (router, audit, done, isolation, space, gate) · simulator protocol · e2e with scripted mock LLM</td></tr>
+      </table>
+    </div>
+
+    <div>
+      <h2 class="di">experiments/exp_NNN/ — EVIDENCE PACK</h2>
+      <pre class="tree" style="font-size:6.6pt"><b>exp_007/</b>
+├─ next_coordinate.json    <span class="m"># Meta coordinate + hypothesis</span>
+│  (+ .rejected_K.json)    <span class="m"># after duplicate refills</span>
+├─ config.json             <span class="m"># coordinate · dims · sha(model.py)</span>
+├─ model.py                <span class="o"># Worker code — run by simulator</span>
+├─ worker.json             <span class="m"># design notes · attempt</span>
+├─ fingerprint.json        <span class="m"># functional hash + seconds</span>
+├─ simulation.log          <span class="m"># 50 canary-stamped TURNs + SUMMARY</span>
+├─ sim_metrics.json        <span class="m"># deterministic metrics (sim_score…)</span>
+├─ judge.json              <span class="o"># score · feedback · anchor block</span>
+├─ doc.json                <span class="o"># draft · format status</span>
+├─ router_log.json         <span class="m"># routing decisions + verdicts</span>
+├─ isolation_audit.json    <span class="m"># guard verdict per call</span>
+├─ prompts/                <span class="m"># exact prompts + responses</span>
+├─ attempts.json           <span class="r"># failure ledger (retry / poison)</span>
+├─ meta.json               <span class="m"># wave-lead only: full Meta output</span>
+└─ iteration_summary.json  <span class="g"># row + micro-done checks</span></pre>
+
+      <h2 class="di" style="margin-top:2.6mm">workspace/ — LIVING STATE</h2>
+      <pre class="tree" style="font-size:6.6pt"><b>workspace/</b>
+├─ factory_state.json      <span class="m"># next_iteration · scores · best</span>
+│                          <span class="m"># canaries · fingerprints · waves</span>
+├─ state_space.json        <span class="m"># dimensions · ledger · analytics</span>
+├─ research_paper.md       <span class="o"># living paper — Python blocks</span>
+├─ best_model.py           <span class="g"># selected best (top judge score)</span>
+├─ best_config.json        <span class="g"># its coordinate + metric digest</span>
+├─ best_model_confirmed.py <span class="g"># hidden-set winner</span>
+│  + confirmation.json     <span class="g"># its scores (200 hidden scenarios)</span>
+├─ last_judge.json         <span class="m"># wave verdicts → next Meta input</span>
+├─ factory.log             <span class="m"># append-only run log</span>
+├─ factory_report.json     <span class="g"># verify_run audit at halt</span>
+├─ .snapshots/             <span class="m"># per-wave snapshots → resume</span>
+├─ final_synthesis/        <span class="m"># closing doc call evidence</span>
+└─ deploy/                 <span class="g"># exported policy package</span></pre>
+
+      <div class="note"><b>Reading order for a run:</b> factory.log → factory_state.json (scores, best) → research_paper.md (narrative) → factory_report.json (audit) → individual exp_NNN packs for evidence.</div>
+    </div>
+  </div>
+
+  <footer class="pf">
+    <span>context-health-factory · factory_visualization</span>
+    <span>generated 2026-10-02 · all facts traced to source modules</span>
+  </footer>
+</section>
+
+</body>
+</html>

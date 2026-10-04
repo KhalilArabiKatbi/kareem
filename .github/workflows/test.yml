@@ -1,0 +1,21 @@
+name: test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+      - name: Install
+        run: |
+          uv venv
+          uv pip install -e . -r factory/requirements.txt pytest
+      - name: Policy smoke (loads bundled weights, one decision)
+        run: |
+          uv run python -c "import kareem; p = kareem.load_policy(); t = kareem.SessionTracker(); t.observe(tokens_used=50000); d = p.decide(t.history); print(d.action_name, d.confidence)"
+      - name: Factory tests
+        run: uv run pytest factory/tests -q

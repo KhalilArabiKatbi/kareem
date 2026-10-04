@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "revision": 0,
+  "dimensions": {
+    "hidden_layers": {
+      "type": "categorical",
+      "values": [[64, 64]],
+      "description": "Widths of the MLP hidden layers, input to output. [64, 64] means two fully connected hidden layers of 64 units each, followed by a linear output layer over the 6 actions.",
+      "added_iteration": -1,
+      "origin": "seed"
+    }
+  },
+  "pruned_dimensions": {},
+  "mutation_log": [],
+  "ledger": [],
+  "last_dimension_added_iteration": -1
+}

@@ -1,0 +1,2268 @@
+{
+  "sets": {
+    "main": 1050,
+    "heavy": 210,
+    "drift": 210,
+    "buggy": 210,
+    "recall": 210
+  },
+  "seeds": [
+    1234,
+    2234,
+    3234
+  ],
+  "policies": {
+    "noop": {
+      "main": {
+        "mean_return": -8.835,
+        "ci95": 0.945,
+        "sim_score": 0.0,
+        "vs_heuristic": [
+          -34.758,
+          0.753
+        ],
+        "vs_v42_best": [
+          -41.837,
+          0.793
+        ],
+        "success_rate": 0.0276,
+        "overflow_rate": 0.9952,
+        "interventions_per_episode": 0.0,
+        "action_share": {
+          "NOOP": 1.0,
+          "COMPACT": 0.0,
+          "PRUNE_TOOLS": 0.0,
+          "REINJECT_INSTRUCTIONS": 0.0,
+          "CHECKPOINT_RESET": 0.0,
+          "RETRIEVE_MEMORY": 0.0
+        },
+        "family_return": {
+          "steady_dialogue": 7.21,
+          "tool_flood": -18.95,
+          "debug_loop": -29.14,
+          "long_horizon_recall": -0.21,
+          "topic_hopping": -10.27,
+          "instruction_drift": -1.63,
+          "mixed_chaos": -8.86
+        }
+      },
+      "heavy": {
+        "mean_return": -21.683,
+        "ci95": 2.108,
+        "sim_score": 0.0,
+        "vs_heuristic": [
+          -47.085,
+          1.789
+        ],
+        "vs_v42_best": [
+          -53.358,
+          1.768
+        ],
+        "success_rate": 0.0,
+        "overflow_rate": 1.0,
+        "interventions_per_episode": 0.0,
+        "action_share": {
+          "NOOP": 1.0,
+          "COMPACT": 0.0,
+          "PRUNE_TOOLS": 0.0,
+          "REINJECT_INSTRUCTIONS": 0.0,
+          "CHECKPOINT_RESET": 0.0,
+          "RETRIEVE_MEMORY": 0.0
+        },
+        "family_return": {
+          "steady_dialogue": -5.73,
+          "tool_flood": -36.12,
+          "debug_loop": -39.57,
+          "long_horizon_recall": -16.18,
+          "topic_hopping": -21.57,
+          "instruction_drift": -10.18,
+          "mixed_chaos": -22.43
+        }
+      },
+      "drift": {
+        "mean_return": -12.336,
+        "ci95": 2.013,
+        "sim_score": 0.0,
+        "vs_heuristic": [
+          -34.352,
+          1.656
+        ],
+        "vs_v42_best": [
+          -43.334,
+          1.648
+        ],
+        "success_rate": 0.0095,
+        "overflow_rate": 1.0,
+        "interventions_per_episode": 0.0,
+        "action_share": {
+          "NOOP": 1.0,
+          "COMPACT": 0.0,
+          "PRUNE_TOOLS": 0.0,
+          "REINJECT_INSTRUCTIONS": 0.0,
+          "CHECKPOINT_RESET": 0.0,
+          "RETRIEVE_MEMORY": 0.0
+        },
+        "family_return": {
+          "steady_dialogue": 1.78,
+          "tool_flood": -18.98,
+          "debug_loop": -34.37,
+          "long_horizon_recall": -4.0,
+          "topic_hopping": -11.27,
+          "instruction_drift": -7.18,
+          "mixed_chaos": -12.33
+        }
+      },
+      "buggy": {
+        "mean_return": -13.157,
+        "ci95": 1.828,
+        "sim_score": 0.0,
+        "vs_heuristic": [
+          -33.285,
+          1.562
+        ],
+        "vs_v42_best": [
+          -40.639,
+          1.605
+        ],
+        "success_rate": 0.0,
+        "overflow_rate": 1.0,
+        "interventions_per_episode": 0.0,
+        "action_share": {
+          "NOOP": 1.0,
+          "COMPACT": 0.0,
+          "PRUNE_TOOLS": 0.0,
+          "REINJECT_INSTRUCTIONS": 0.0,
+          "CHECKPOINT_RESET": 0.0,
+          "RETRIEVE_MEMORY": 0.0
+        },
+        "family_return": {
+          "steady_dialogue": 0.78,
+          "tool_flood": -18.17,
+          "debug_loop": -32.48,
+          "long_horizon_recall": -5.78,
+          "topic_hopping": -13.12,
+          "instruction_drift": -7.23,
+          "mixed_chaos": -16.1
+        }
+      },
+      "recall": {
+        "mean_return": -9.688,
+        "ci95": 1.927,
+        "sim_score": 0.0,
+        "vs_heuristic": [
+          -33.805,
+          1.498
+        ],
+        "vs_v42_best": [
+          -40.419,
+          1.569
+        ],
+        "success_rate": 0.0143,
+        "overflow_rate": 0.9952,
+        "interventions_per_episode": 0.0,
+        "action_share": {
+          "NOOP": 1.0,
+          "COMPACT": 0.0,
+          "PRUNE_TOOLS": 0.0,
+          "REINJECT_INSTRUCTIONS": 0.0,
+          "CHECKPOINT_RESET": 0.0,
+          "RETRIEVE_MEMORY": 0.0
+        },
+        "family_return": {
+          "steady_dialogue": 7.37,
+          "tool_flood": -19.53,
+          "debug_loop": -28.1,
+          "long_horizon_recall": -3.0,
+          "topic_hopping": -9.65,
+          "instruction_drift": -4.98,
+          "mixed_chaos": -9.92
+        }
+      }
+    },
+    "heuristic": {
+      "main": {
+        "mean_return": 25.923,
+        "ci95": 0.574,
+        "sim_score": 50.0,
+        "vs_heuristic": [
+          0.0,
+          0.0
+        ],
+        "vs_v42_best": [
+          -7.079,
+          0.405
+        ],
+        "success_rate": 0.5143,
+        "overflow_rate": 0.0019,
+        "interventions_per_episode": 5.52,
+        "action_share": {
+          "NOOP": 0.862,
+          "COMPACT": 0.0563,
+          "PRUNE_TOOLS": 0.0,
+          "REINJECT_INSTRUCTIONS": 0.075,
+          "CHECKPOINT_RESET": 0.0,
+          "RETRIEVE_MEMORY": 0.0067
+        },
+        "family_return": {
+          "steady_dialogue": 34.19,
+          "tool_flood": 23.96,
+          "debug_loop": 19.54,
+          "long_horizon_recall": 33.3,
+          "topic_hopping": 19.42,
+          "instruction_drift": 25.6,
+          "mixed_chaos": 25.46
+        }
+      },
+      "heavy": {
+        "mean_return": 25.401,
+        "ci95": 1.291,
+        "sim_score": 50.0,
+        "vs_heuristic": [
+          0.0,
+          0.0
+        ],
+        "vs_v42_best": [
+          -6.274,
+          0.914
+        ],
+        "success_rate": 0.5714,
+        "overflow_rate": 0.0429,
+        "interventions_per_episode": 6.89,
+        "action_share": {
+          "NOOP": 0.8277,
+          "COMPACT": 0.0846,
+          "PRUNE_TOOLS": 0.0002,
+          "REINJECT_INSTRUCTIONS": 0.075,
+          "CHECKPOINT_RESET": 0.0,
+          "RETRIEVE_MEMORY": 0.0124
+        },
+        "family_return": {
+          "steady_dialogue": 33.71,
+          "tool_flood": 21.15,
+          "debug_loop": 22.36,
+          "long_horizon_recall": 32.51,
+          "topic_hopping": 18.83,
+          "instruction_drift": 25.88,
+          "mixed_chaos": 23.38
+        }
+      },
+      "drift": {
+        "mean_return": 22.016,
+        "ci95": 1.332,
+        "sim_score": 50.0,
+        "vs_heuristic": [
+          0.0,
+          0.0
+        ],
+        "vs_v42_best": [
+          -8.982,
+          0.916
+        ],
+        "success_rate": 0.3714,
+        "overflow_rate": 0.0,
+        "interventions_per_episode": 5.91,
+        "action_share": {
+          "NOOP": 0.8523,
+          "COMPACT": 0.0638,
+          "PRUNE_TOOLS": 0.0,
+          "REINJECT_INSTRUCTIONS": 0.075,
+          "CHECKPOINT_RESET": 0.0,
+          "RETRIEVE_MEMORY": 0.0089
+        },
+        "family_return": {
+          "steady_dialogue": 30.74,
+          "tool_flood": 17.45,
+          "debug_loop": 17.75,
+          "long_horizon_recall": 30.05,
+          "topic_hopping": 17.42,
+          "instruction_drift": 19.54,
+          "mixed_chaos": 21.17
+        }
+      },
+      "buggy": {
+        "mean_return": 20.128,
+        "ci95": 1.116,
+        "sim_score": 50.0,
+        "vs_heuristic": [
+          0.0,
+          0.0
+        ],
+        "vs_v42_best": [
+          -7.354,
+          0.933
+        ],
+        "success_rate": 0.2714,
+        "overflow_rate": 0.0,
+        "interventions_per_episode": 5.9,
+        "action_share": {
+          "NOOP": 0.8526,
+          "COMPACT": 0.0636,
+          "PRUNE_TOOLS": 0.0,
+          "REINJECT_INSTRUCTIONS": 0.075,
+          "CHECKPOINT_RESET": 0.0,
+          "RETRIEVE_MEMORY": 0.0088
+        },
+        "family_return": {
+          "steady_dialogue": 26.87,
+          "tool_flood": 19.33,
+          "debug_loop": 15.71,
+          "long_horizon_recall": 26.01,
+          "topic_hopping": 15.74,
+          "instruction_drift": 19.32,
+          "mixed_chaos": 17.9
+        }
+      },
+      "recall": {
+        "mean_return": 24.117,
+        "ci95": 1.287,
+        "sim_score": 50.0,
+        "vs_heuristic": [
+          0.0,
+          0.0
+        ],
+        "vs_v42_best": [
+          -6.614,
+          0.892
+        ],
+        "success_rate": 0.4524,
+        "overflow_rate": 0.0,
+        "interventions_per_episode": 6.02,
+        "action_share": {
+          "NOOP": 0.8495,
+          "COMPACT": 0.0569,
+          "PRUNE_TOOLS": 0.0,
+          "REINJECT_INSTRUCTIONS": 0.0749,
+          "CHECKPOINT_RESET": 0.0,
+          "RETRIEVE_MEMORY": 0.0187
+        },
+        "family_return": {
+          "steady_dialogue": 33.5,
+          "tool_flood": 22.19,
+          "debug_loop": 16.13,
+          "long_horizon_recall": 31.79,
+          "topic_hopping": 17.4,
+          "instruction_drift": 23.68,
+          "mixed_chaos": 24.13
+        }
+      }
+    },
+    "teacher_v1": {
+      "main": {
+        "mean_return": 31.44,
+        "ci95": 0.381,
+        "sim_score": 74.03,
+        "vs_heuristic": [
+          5.517,
+          0.405
+        ],
+        "vs_v42_best": [
+          -1.562,
+          0.19
+        ],
+        "success_rate": 0.9581,
+        "overflow_rate": 0.0,
+        "interventions_per_episode": 20.16,
+        "action_share": {
+          "NOOP": 0.4959,
+          "COMPACT": 0.0825,
+          "PRUNE_TOOLS": 0.1378,
+          "REINJECT_INSTRUCTIONS": 0.2394,
+          "CHECKPOINT_RESET": 0.003,
+          "RETRIEVE_MEMORY": 0.0414
+        },
+        "family_return": {
+          "steady_dialogue": 36.36,
+          "tool_flood": 29.46,
+          "debug_loop": 25.53,
+          "long_horizon_recall": 34.88,
+          "topic_hopping": 28.87,
+          "instruction_drift": 33.5,
+          "mixed_chaos": 31.48
+        }
+      },
+      "heavy": {
+        "mean_return": 29.719,
+        "ci95": 0.792,
+        "sim_score": 69.59,
+        "vs_heuristic": [
+          4.318,
+          0.979
+        ],
+        "vs_v42_best": [
+          -1.956,
+          0.486
+        ],
+        "success_rate": 0.9571,
+        "overflow_rate": 0.0,
+        "interventions_per_episode": 22.14,
+        "action_share": {
+          "NOOP": 0.4465,
+          "COMPACT": 0.1215,
+          "PRUNE_TOOLS": 0.1543,
+          "REINJECT_INSTRUCTIONS": 0.2263,
+          "CHECKPOINT_RESET": 0.0048,
+          "RETRIEVE_MEMORY": 0.0465
+        },
+        "family_return": {
+          "steady_dialogue": 34.75,
+          "tool_flood": 27.28,
+          "debug_loop": 26.97,
+          "long_horizon_recall": 32.31,
+          "topic_hopping": 26.67,
+          "instruction_drift": 31.6,
+          "mixed_chaos": 28.44
+        }
+      },
+      "drift": {
+        "mean_return": 29.428,
+        "ci95": 0.962,
+        "sim_score": 75.53,
+        "vs_heuristic": [
+          7.412,
+          0.925
+        ],
+        "vs_v42_best": [
+          -1.57,
+          0.497
+        ],
+        "success_rate": 0.9333,
+        "overflow_rate": 0.0,
+        "interventions_per_episode": 22.29,
+        "action_share": {
+          "NOOP": 0.4427,
+          "COMPACT": 0.1006,
+          "PRUNE_TOOLS": 0.1267,
+          "REINJECT_INSTRUCTIONS": 0.2801,
+          "CHECKPOINT_RESET": 0.0031,
+          "RETRIEVE_MEMORY": 0.0468
+        },
+        "family_return": {
+          "steady_dialogue": 35.53,
+          "tool_flood": 25.99,
+          "debug_loop": 23.8,
+          "long_horizon_recall": 33.25,
+          "topic_hopping": 27.57,
+          "instruction_drift": 30.19,
+          "mixed_chaos": 29.66
+        }
+      },
+      "buggy": {
+        "mean_return": 25.96,
+        "ci95": 1.104,
+        "sim_score": 72.41,
+        "vs_heuristic": [
+          5.832,
+          0.956
+        ],
+        "vs_v42_best": [
+          -1.522,
+          0.597
+        ],
+        "success_rate": 0.8238,
+        "overflow_rate": 0.0,
+        "interventions_per_episode": 21.0,
+        "action_share": {
+          "NOOP": 0.475,
+          "COMPACT": 0.095,
+          "PRUNE_TOOLS": 0.1249,
+          "REINJECT_INSTRUCTIONS": 0.2594,
+          "CHECKPOINT_RESET": 0.003,
+          "RETRIEVE_MEMORY": 0.0427
+        },
+        "family_return": {
+          "steady_dialogue": 32.45,
+          "tool_flood": 24.98,
+          "debug_loop": 17.76,
+          "long_horizon_recall": 30.81,
+          "topic_hopping": 21.52,
+          "instruction_drift": 29.76,
+          "mixed_chaos": 24.43
+        }
+      },
+      "recall": {
+        "mean_return": 29.81,
+        "ci95": 0.964,
+        "sim_score": 72.86,
+        "vs_heuristic": [
+          5.694,
+          0.927
+        ],
+        "vs_v42_best": [
+          -0.92,
+          0.534
+        ],
+        "success_rate": 0.9238,
+        "overflow_rate": 0.0,
+        "interventions_per_episode": 21.09,
+        "action_share": {
+          "NOOP": 0.4729,
+          "COMPACT": 0.0732,
+          "PRUNE_TOOLS": 0.1252,
+          "REINJECT_INSTRUCTIONS": 0.2368,
+          "CHECKPOINT_RESET": 0.0051,
+          "RETRIEVE_MEMORY": 0.0868
+        },
+        "family_return": {
+          "steady_dialogue": 35.96,
+          "tool_flood": 28.56,
+          "debug_loop": 20.7,
+          "long_horizon_recall": 33.58,
+          "topic_hopping": 27.32,
+          "instruction_drift": 31.75,
+          "mixed_chaos": 30.8
+        }
+      }
+    },
+    "teacher_v2": {
+      "main": {
+        "mean_return": 32.1,
+        "ci95": 0.378,
+        "sim_score": 76.9,
+        "vs_heuristic": [
+          6.176,
+          0.4
+        ],
+        "vs_v42_best": [
+          -0.903,
+          0.168
+        ],
+        "success_rate": 0.96,
+        "overflow_rate": 0.0,
+        "interventions_per_episode": 17.01,
+        "action_share": {
+          "NOOP": 0.5749,
+          "COMPACT": 0.101,
+          "PRUNE_TOOLS": 0.1073,
+          "REINJECT_INSTRUCTIONS": 0.1767,
+          "CHECKPOINT_RESET": 0.0004,
+          "RETRIEVE_MEMORY": 0.0398
+        },
+        "family_return": {
+          "steady_dialogue": 36.97,
+          "tool_flood": 30.84,
+          "debug_loop": 25.96,
+          "long_horizon_recall": 35.72,
+          "topic_hopping": 29.4,
+          "instruction_drift": 34.07,
+          "mixed_chaos": 31.74
+        }
+      },
+      "heavy": {
+        "mean_return": 30.734,
+        "ci95": 0.791,
+        "sim_score": 74.19,
+        "vs_heuristic": [
+          5.332,
+          0.946
+        ],
+        "vs_v42_best": [
+          -0.941,
+          0.451
+        ],
+        "success_rate": 0.9476,
+        "overflow_rate": 0.0,
+        "interventions_per_episode": 18.31,
+        "action_share": {
+          "NOOP": 0.5423,
+          "COMPACT": 0.114,
+          "PRUNE_TOOLS": 0.1252,
+          "REINJECT_INSTRUCTIONS": 0.1788,
+          "CHECKPOINT_RESET": 0.0006,
+          "RETRIEVE_MEMORY": 0.039
+        },
+        "family_return": {
+          "steady_dialogue": 35.23,
+          "tool_flood": 28.51,
+          "debug_loop": 26.85,
+          "long_horizon_recall": 33.78,
+          "topic_hopping": 28.08,
+          "instruction_drift": 33.12,
+          "mixed_chaos": 29.56
+        }
+      },
+      "drift": {
+        "mean_return": 30.041,
+        "ci95": 0.971,
+        "sim_score": 77.64,
+        "vs_heuristic": [
+          8.024,
+          0.939
+        ],
+        "vs_v42_best": [
+          -0.958,
+          0.556
+        ],
+        "success_rate": 0.919,
+        "overflow_rate": 0.0,
+        "interventions_per_episode": 18.55,
+        "action_share": {
+          "NOOP": 0.5362,
+          "COMPACT": 0.1067,
+          "PRUNE_TOOLS": 0.0989,
+          "REINJECT_INSTRUCTIONS": 0.2157,
+          "CHECKPOINT_RESET": 0.0006,
+          "RETRIEVE_MEMORY": 0.0419
+        },
+        "family_return": {
+          "steady_dialogue": 36.05,
+          "tool_flood": 25.87,
+          "debug_loop": 23.5,
+          "long_horizon_recall": 33.95,
+          "topic_hopping": 27.98,
+          "instruction_drift": 31.86,
+          "mixed_chaos": 31.07
+        }
+      },
+      "buggy": {
+        "mean_return": 26.314,
+        "ci95": 1.11,
+        "sim_score": 73.77,
+        "vs_heuristic": [
+          6.186,
+          0.933
+        ],
+        "vs_v42_best": [
+          -1.168,
+          0.564
+        ],
+        "success_rate": 0.819,
+        "overflow_rate": 0.0,
+        "interventions_per_episode": 17.42,
+        "action_share": {
+          "NOOP": 0.5645,
+          "COMPACT": 0.1167,
+          "PRUNE_TOOLS": 0.0906,
+          "REINJECT_INSTRUCTIONS": 0.1863,
+          "CHECKPOINT_RESET": 0.0002,
+          "RETRIEVE_MEMORY": 0.0417
+        },
+        "family_return": {
+          "steady_dialogue": 32.26,
+          "tool_flood": 25.44,
+          "debug_loop": 18.73,
+          "long_horizon_recall": 30.65,
+          "topic_hopping": 21.84,
+          "instruction_drift": 30.05,
+          "mixed_chaos": 25.22
+        }
+      },
+      "recall": {
+        "mean_return": 30.739,
+        "ci95": 0.947,
+        "sim_score": 76.59,
+        "vs_heuristic": [
+          6.622,
+          0.891
+        ],
+        "vs_v42_best": [
+          0.008,
+          0.487
+        ],
+        "success_rate": 0.9333,
+        "overflow_rate": 0.0,
+        "interventions_per_episode": 17.9,
+        "action_share": {
+          "NOOP": 0.5526,
+          "COMPACT": 0.0927,
+          "PRUNE_TOOLS": 0.0968,
+          "REINJECT_INSTRUCTIONS": 0.1735,
+          "CHECKPOINT_RESET": 0.0006,
+          "RETRIEVE_MEMORY": 0.0838
+        },
+        "family_return": {
+          "steady_dialogue": 36.24,
+          "tool_flood": 29.01,
+          "debug_loop": 20.76,
+          "long_horizon_recall": 34.97,
+          "topic_hopping": 28.78,
+          "instruction_drift": 33.29,
+          "mixed_chaos": 32.13
+        }
+      }
+    },
+    "clairvoyant": {
+      "main": {
+        "mean_return": 37.403,
+        "ci95": 0.276,
+        "sim_score": 100.0,
+        "vs_heuristic": [
+          11.48,
+          0.411
+        ],
+        "vs_v42_best": [
+          4.4,
+          0.152
+        ],
+        "success_rate": 0.9876,
+        "overflow_rate": 0.0,
+        "interventions_per_episode": 11.68,
+        "action_share": {
+          "NOOP": 0.7079,
+          "COMPACT": 0.0713,
+          "PRUNE_TOOLS": 0.0823,
+          "REINJECT_INSTRUCTIONS": 0.1088,
+          "CHECKPOINT_RESET": 0.0058,
+          "RETRIEVE_MEMORY": 0.024
+        },
+        "family_return": {
+          "steady_dialogue": 40.69,
+          "tool_flood": 36.66,
+          "debug_loop": 32.89,
+          "long_horizon_recall": 40.12,
+          "topic_hopping": 35.21,
+          "instruction_drift": 38.97,
+          "mixed_chaos": 37.28
+        }
+      },
+      "heavy": {
+        "mean_return": 36.423,
+        "ci95": 0.584,
+        "sim_score": 100.0,
+        "vs_heuristic": [
+          11.022,
+          0.94
+        ],
+        "vs_v42_best": [
+          4.748,
+          0.43
+        ],
+        "success_rate": 0.9952,
+        "overflow_rate": 0.0,
+        "interventions_per_episode": 13.23,
+        "action_share": {
+          "NOOP": 0.6692,
+          "COMPACT": 0.0876,
+          "PRUNE_TOOLS": 0.0967,
+          "REINJECT_INSTRUCTIONS": 0.1154,
+          "CHECKPOINT_RESET": 0.0051,
+          "RETRIEVE_MEMORY": 0.0261
+        },
+        "family_return": {
+          "steady_dialogue": 40.2,
+          "tool_flood": 35.07,
+          "debug_loop": 32.83,
+          "long_horizon_recall": 38.72,
+          "topic_hopping": 33.71,
+          "instruction_drift": 38.75,
+          "mixed_chaos": 35.67
+        }
+      },
+      "drift": {
+        "mean_return": 36.534,
+        "ci95": 0.6,
+        "sim_score": 100.0,
+        "vs_heuristic": [
+          14.517,
+          0.984
+        ],
+        "vs_v42_best": [
+          5.536,
+          0.474
+        ],
+        "success_rate": 0.9905,
+        "overflow_rate": 0.0,
+        "interventions_per_episode": 14.04,
+        "action_share": {
+          "NOOP": 0.649,
+          "COMPACT": 0.0796,
+          "PRUNE_TOOLS": 0.0911,
+          "REINJECT_INSTRUCTIONS": 0.1465,
+          "CHECKPOINT_RESET": 0.0044,
+          "RETRIEVE_MEMORY": 0.0293
+        },
+        "family_return": {
+          "steady_dialogue": 40.17,
+          "tool_flood": 34.16,
+          "debug_loop": 32.66,
+          "long_horizon_recall": 39.12,
+          "topic_hopping": 34.5,
+          "instruction_drift": 38.02,
+          "mixed_chaos": 37.11
+        }
+      },
+      "buggy": {
+        "mean_return": 33.138,
+        "ci95": 0.774,
+        "sim_score": 100.0,
+        "vs_heuristic": [
+          13.01,
+          0.843
+        ],
+        "vs_v42_best": [
+          5.656,
+          0.55
+        ],
+        "success_rate": 0.9381,
+        "overflow_rate": 0.0,
+        "interventions_per_episode": 11.77,
+        "action_share": {
+          "NOOP": 0.7058,
+          "COMPACT": 0.0767,
+          "PRUNE_TOOLS": 0.0758,
+          "REINJECT_INSTRUCTIONS": 0.1121,
+          "CHECKPOINT_RESET": 0.0044,
+          "RETRIEVE_MEMORY": 0.0251
+        },
+        "family_return": {
+          "steady_dialogue": 37.02,
+          "tool_flood": 32.92,
+          "debug_loop": 28.28,
+          "long_horizon_recall": 36.17,
+          "topic_hopping": 29.72,
+          "instruction_drift": 35.45,
+          "mixed_chaos": 32.4
+        }
+      },
+      "recall": {
+        "mean_return": 36.57,
+        "ci95": 0.664,
+        "sim_score": 100.0,
+        "vs_heuristic": [
+          12.454,
+          0.939
+        ],
+        "vs_v42_best": [
+          5.84,
+          0.443
+        ],
+        "success_rate": 0.9762,
+        "overflow_rate": 0.0,
+        "interventions_per_episode": 12.52,
+        "action_share": {
+          "NOOP": 0.687,
+          "COMPACT": 0.0654,
+          "PRUNE_TOOLS": 0.0813,
+          "REINJECT_INSTRUCTIONS": 0.1121,
+          "CHECKPOINT_RESET": 0.0074,
+          "RETRIEVE_MEMORY": 0.0468
+        },
+        "family_return": {
+          "steady_dialogue": 40.44,
+          "tool_flood": 36.3,
+          "debug_loop": 30.61,
+          "long_horizon_recall": 39.27,
+          "topic_hopping": 33.91,
+          "instruction_drift": 38.16,
+          "mixed_chaos": 37.28
+        }
+      }
+    },
+    "v4.1 best": {
+      "main": {
+        "mean_return": 31.582,
+        "ci95": 0.386,
+        "sim_score": 74.64,
+        "vs_heuristic": [
+          5.658,
+          0.439
+        ],
+        "vs_v42_best": [
+          -1.421,
+          0.183
+        ],
+        "success_rate": 0.9384,
+        "overflow_rate": 0.0016,
+        "interventions_per_episode": 15.53,
+        "action_share": {
+          "NOOP": 0.6117,
+          "COMPACT": 0.0701,
+          "PRUNE_TOOLS": 0.12,
+          "REINJECT_INSTRUCTIONS": 0.1949,
+          "CHECKPOINT_RESET": 0.0002,
+          "RETRIEVE_MEMORY": 0.0031
+        },
+        "family_return": {
+          "steady_dialogue": 37.19,
+          "tool_flood": 30.06,
+          "debug_loop": 26.95,
+          "long_horizon_recall": 31.06,
+          "topic_hopping": 29.89,
+          "instruction_drift": 34.22,
+          "mixed_chaos": 31.7
+        },
+        "seed_means": [
+          31.558,
+          31.714,
+          31.473
+        ],
+        "seed_sd_return": 0.122
+      },
+      "heavy": {
+        "mean_return": 28.686,
+        "ci95": 1.066,
+        "sim_score": 64.9,
+        "vs_heuristic": [
+          3.285,
+          1.059
+        ],
+        "vs_v42_best": [
+          -2.989,
+          0.616
+        ],
+        "success_rate": 0.9143,
+        "overflow_rate": 0.0508,
+        "interventions_per_episode": 18.59,
+        "action_share": {
+          "NOOP": 0.5353,
+          "COMPACT": 0.1168,
+          "PRUNE_TOOLS": 0.1416,
+          "REINJECT_INSTRUCTIONS": 0.1988,
+          "CHECKPOINT_RESET": 0.0007,
+          "RETRIEVE_MEMORY": 0.0068
+        },
+        "family_return": {
+          "steady_dialogue": 36.02,
+          "tool_flood": 23.09,
+          "debug_loop": 25.85,
+          "long_horizon_recall": 26.4,
+          "topic_hopping": 27.98,
+          "instruction_drift": 33.02,
+          "mixed_chaos": 28.44
+        },
+        "seed_means": [
+          28.561,
+          28.766,
+          28.732
+        ],
+        "seed_sd_return": 0.11
+      },
+      "drift": {
+        "mean_return": 29.602,
+        "ci95": 0.933,
+        "sim_score": 76.13,
+        "vs_heuristic": [
+          7.586,
+          0.98
+        ],
+        "vs_v42_best": [
+          -1.396,
+          0.431
+        ],
+        "success_rate": 0.8984,
+        "overflow_rate": 0.0063,
+        "interventions_per_episode": 16.26,
+        "action_share": {
+          "NOOP": 0.5935,
+          "COMPACT": 0.0808,
+          "PRUNE_TOOLS": 0.1094,
+          "REINJECT_INSTRUCTIONS": 0.2133,
+          "CHECKPOINT_RESET": 0.0001,
+          "RETRIEVE_MEMORY": 0.0029
+        },
+        "family_return": {
+          "steady_dialogue": 36.45,
+          "tool_flood": 25.5,
+          "debug_loop": 26.05,
+          "long_horizon_recall": 29.55,
+          "topic_hopping": 28.6,
+          "instruction_drift": 31.51,
+          "mixed_chaos": 29.57
+        },
+        "seed_means": [
+          29.54,
+          29.784,
+          29.483
+        ],
+        "seed_sd_return": 0.16
+      },
+      "buggy": {
+        "mean_return": 26.017,
+        "ci95": 1.079,
+        "sim_score": 72.63,
+        "vs_heuristic": [
+          5.889,
+          1.022
+        ],
+        "vs_v42_best": [
+          -1.465,
+          0.45
+        ],
+        "success_rate": 0.7921,
+        "overflow_rate": 0.0079,
+        "interventions_per_episode": 16.57,
+        "action_share": {
+          "NOOP": 0.5858,
+          "COMPACT": 0.0862,
+          "PRUNE_TOOLS": 0.101,
+          "REINJECT_INSTRUCTIONS": 0.225,
+          "CHECKPOINT_RESET": 0.0003,
+          "RETRIEVE_MEMORY": 0.0017
+        },
+        "family_return": {
+          "steady_dialogue": 32.43,
+          "tool_flood": 25.24,
+          "debug_loop": 21.29,
+          "long_horizon_recall": 24.76,
+          "topic_hopping": 22.75,
+          "instruction_drift": 30.48,
+          "mixed_chaos": 25.15
+        },
+        "seed_means": [
+          26.053,
+          26.069,
+          25.93
+        ],
+        "seed_sd_return": 0.076
+      },
+      "recall": {
+        "mean_return": 28.113,
+        "ci95": 1.108,
+        "sim_score": 66.04,
+        "vs_heuristic": [
+          3.996,
+          1.086
+        ],
+        "vs_v42_best": [
+          -2.618,
+          0.595
+        ],
+        "success_rate": 0.8444,
+        "overflow_rate": 0.0,
+        "interventions_per_episode": 16.22,
+        "action_share": {
+          "NOOP": 0.5946,
+          "COMPACT": 0.0749,
+          "PRUNE_TOOLS": 0.1153,
+          "REINJECT_INSTRUCTIONS": 0.2095,
+          "CHECKPOINT_RESET": 0.0001,
+          "RETRIEVE_MEMORY": 0.0057
+        },
+        "family_return": {
+          "steady_dialogue": 35.55,
+          "tool_flood": 27.34,
+          "debug_loop": 18.91,
+          "long_horizon_recall": 26.95,
+          "topic_hopping": 28.08,
+          "instruction_drift": 31.75,
+          "mixed_chaos": 28.2
+        },
+        "seed_means": [
+          28.206,
+          28.342,
+          27.79
+        ],
+        "seed_sd_return": 0.288
+      }
+    },
+    "v4.2 best": {
+      "main": {
+        "mean_return": 33.003,
+        "ci95": 0.344,
+        "sim_score": 80.83,
+        "vs_heuristic": [
+          7.079,
+          0.405
+        ],
+        "vs_v42_best": [
+          0.0,
+          0.0
+        ],
+        "success_rate": 0.9641,
+        "overflow_rate": 0.0013,
+        "interventions_per_episode": 11.94,
+        "action_share": {
+          "NOOP": 0.7016,
+          "COMPACT": 0.0866,
+          "PRUNE_TOOLS": 0.041,
+          "REINJECT_INSTRUCTIONS": 0.1636,
+          "CHECKPOINT_RESET": 0.0,
+          "RETRIEVE_MEMORY": 0.0072
+        },
+        "family_return": {
+          "steady_dialogue": 37.58,
+          "tool_flood": 31.98,
+          "debug_loop": 28.16,
+          "long_horizon_recall": 34.84,
+          "topic_hopping": 30.7,
+          "instruction_drift": 34.77,
+          "mixed_chaos": 32.99
+        },
+        "seed_means": [
+          33.044,
+          33.011,
+          32.952
+        ],
+        "seed_sd_return": 0.047
+      },
+      "heavy": {
+        "mean_return": 31.675,
+        "ci95": 0.816,
+        "sim_score": 78.46,
+        "vs_heuristic": [
+          6.274,
+          0.914
+        ],
+        "vs_v42_best": [
+          0.0,
+          0.0
+        ],
+        "success_rate": 0.9381,
+        "overflow_rate": 0.0159,
+        "interventions_per_episode": 13.25,
+        "action_share": {
+          "NOOP": 0.6687,
+          "COMPACT": 0.0993,
+          "PRUNE_TOOLS": 0.0678,
+          "REINJECT_INSTRUCTIONS": 0.1523,
+          "CHECKPOINT_RESET": 0.0,
+          "RETRIEVE_MEMORY": 0.0119
+        },
+        "family_return": {
+          "steady_dialogue": 37.22,
+          "tool_flood": 28.34,
+          "debug_loop": 28.66,
+          "long_horizon_recall": 33.21,
+          "topic_hopping": 29.08,
+          "instruction_drift": 33.94,
+          "mixed_chaos": 31.27
+        },
+        "seed_means": [
+          31.611,
+          31.68,
+          31.734
+        ],
+        "seed_sd_return": 0.062
+      },
+      "drift": {
+        "mean_return": 30.998,
+        "ci95": 0.894,
+        "sim_score": 80.93,
+        "vs_heuristic": [
+          8.982,
+          0.916
+        ],
+        "vs_v42_best": [
+          0.0,
+          0.0
+        ],
+        "success_rate": 0.9175,
+        "overflow_rate": 0.0032,
+        "interventions_per_episode": 12.68,
+        "action_share": {
+          "NOOP": 0.683,
+          "COMPACT": 0.0947,
+          "PRUNE_TOOLS": 0.0349,
+          "REINJECT_INSTRUCTIONS": 0.1787,
+          "CHECKPOINT_RESET": 0.0,
+          "RETRIEVE_MEMORY": 0.0088
+        },
+        "family_return": {
+          "steady_dialogue": 36.66,
+          "tool_flood": 27.2,
+          "debug_loop": 26.56,
+          "long_horizon_recall": 33.1,
+          "topic_hopping": 29.62,
+          "instruction_drift": 32.2,
+          "mixed_chaos": 31.65
+        },
+        "seed_means": [
+          31.082,
+          30.874,
+          31.039
+        ],
+        "seed_sd_return": 0.11
+      },
+      "buggy": {
+        "mean_return": 27.482,
+        "ci95": 1.005,
+        "sim_score": 78.26,
+        "vs_heuristic": [
+          7.354,
+          0.933
+        ],
+        "vs_v42_best": [
+          0.0,
+          0.0
+        ],
+        "success_rate": 0.8286,
+        "overflow_rate": 0.0,
+        "interventions_per_episode": 13.18,
+        "action_share": {
+          "NOOP": 0.6705,
+          "COMPACT": 0.1108,
+          "PRUNE_TOOLS": 0.0277,
+          "REINJECT_INSTRUCTIONS": 0.1819,
+          "CHECKPOINT_RESET": 0.0,
+          "RETRIEVE_MEMORY": 0.0091
+        },
+        "family_return": {
+          "steady_dialogue": 32.57,
+          "tool_flood": 26.53,
+          "debug_loop": 22.97,
+          "long_horizon_recall": 28.85,
+          "topic_hopping": 23.44,
+          "instruction_drift": 31.36,
+          "mixed_chaos": 26.66
+        },
+        "seed_means": [
+          27.553,
+          27.595,
+          27.298
+        ],
+        "seed_sd_return": 0.161
+      },
+      "recall": {
+        "mean_return": 30.731,
+        "ci95": 0.877,
+        "sim_score": 76.56,
+        "vs_heuristic": [
+          6.614,
+          0.892
+        ],
+        "vs_v42_best": [
+          0.0,
+          0.0
+        ],
+        "success_rate": 0.9238,
+        "overflow_rate": 0.0,
+        "interventions_per_episode": 12.5,
+        "action_share": {
+          "NOOP": 0.6875,
+          "COMPACT": 0.0908,
+          "PRUNE_TOOLS": 0.0388,
+          "REINJECT_INSTRUCTIONS": 0.1637,
+          "CHECKPOINT_RESET": 0.0,
+          "RETRIEVE_MEMORY": 0.0192
+        },
+        "family_return": {
+          "steady_dialogue": 35.35,
+          "tool_flood": 30.11,
+          "debug_loop": 22.68,
+          "long_horizon_recall": 33.58,
+          "topic_hopping": 29.22,
+          "instruction_drift": 32.32,
+          "mixed_chaos": 31.86
+        },
+        "seed_means": [
+          30.941,
+          30.539,
+          30.713
+        ],
+        "seed_sd_return": 0.201
+      }
+    },
+    "v4.3 best": {
+      "main": {
+        "mean_return": 32.923,
+        "ci95": 0.342,
+        "sim_score": 80.49,
+        "vs_heuristic": [
+          7.0,
+          0.401
+        ],
+        "vs_v42_best": [
+          -0.079,
+          0.103
+        ],
+        "success_rate": 0.9698,
+        "overflow_rate": 0.0,
+        "interventions_per_episode": 13.31,
+        "action_share": {
+          "NOOP": 0.6671,
+          "COMPACT": 0.0963,
+          "PRUNE_TOOLS": 0.0586,
+          "REINJECT_INSTRUCTIONS": 0.1633,
+          "CHECKPOINT_RESET": 0.0,
+          "RETRIEVE_MEMORY": 0.0146
+        },
+        "family_return": {
+          "steady_dialogue": 37.38,
+          "tool_flood": 31.61,
+          "debug_loop": 27.91,
+          "long_horizon_recall": 35.27,
+          "topic_hopping": 30.56,
+          "instruction_drift": 34.88,
+          "mixed_chaos": 32.86
+        },
+        "seed_means": [
+          32.888,
+          32.904,
+          32.978
+        ],
+        "seed_sd_return": 0.048
+      },
+      "heavy": {
+        "mean_return": 31.667,
+        "ci95": 0.818,
+        "sim_score": 78.42,
+        "vs_heuristic": [
+          6.266,
+          0.895
+        ],
+        "vs_v42_best": [
+          -0.008,
+          0.242
+        ],
+        "success_rate": 0.9413,
+        "overflow_rate": 0.0238,
+        "interventions_per_episode": 14.54,
+        "action_share": {
+          "NOOP": 0.6364,
+          "COMPACT": 0.1063,
+          "PRUNE_TOOLS": 0.0741,
+          "REINJECT_INSTRUCTIONS": 0.1616,
+          "CHECKPOINT_RESET": 0.0,
+          "RETRIEVE_MEMORY": 0.0215
+        },
+        "family_return": {
+          "steady_dialogue": 36.94,
+          "tool_flood": 28.02,
+          "debug_loop": 28.29,
+          "long_horizon_recall": 33.92,
+          "topic_hopping": 29.06,
+          "instruction_drift": 34.28,
+          "mixed_chaos": 31.16
+        },
+        "seed_means": [
+          31.673,
+          31.587,
+          31.74
+        ],
+        "seed_sd_return": 0.077
+      },
+      "drift": {
+        "mean_return": 31.441,
+        "ci95": 0.845,
+        "sim_score": 82.46,
+        "vs_heuristic": [
+          9.425,
+          0.913
+        ],
+        "vs_v42_best": [
+          0.443,
+          0.298
+        ],
+        "success_rate": 0.9476,
+        "overflow_rate": 0.0,
+        "interventions_per_episode": 13.99,
+        "action_share": {
+          "NOOP": 0.6504,
+          "COMPACT": 0.1054,
+          "PRUNE_TOOLS": 0.0476,
+          "REINJECT_INSTRUCTIONS": 0.1792,
+          "CHECKPOINT_RESET": 0.0,
+          "RETRIEVE_MEMORY": 0.0174
+        },
+        "family_return": {
+          "steady_dialogue": 37.05,
+          "tool_flood": 27.98,
+          "debug_loop": 26.68,
+          "long_horizon_recall": 34.13,
+          "topic_hopping": 29.97,
+          "instruction_drift": 32.76,
+          "mixed_chaos": 31.52
+        },
+        "seed_means": [
+          31.388,
+          31.277,
+          31.658
+        ],
+        "seed_sd_return": 0.196
+      },
+      "buggy": {
+        "mean_return": 27.915,
+        "ci95": 0.985,
+        "sim_score": 79.93,
+        "vs_heuristic": [
+          7.787,
+          0.914
+        ],
+        "vs_v42_best": [
+          0.432,
+          0.38
+        ],
+        "success_rate": 0.8667,
+        "overflow_rate": 0.0,
+        "interventions_per_episode": 14.38,
+        "action_share": {
+          "NOOP": 0.6405,
+          "COMPACT": 0.1206,
+          "PRUNE_TOOLS": 0.0404,
+          "REINJECT_INSTRUCTIONS": 0.1833,
+          "CHECKPOINT_RESET": 0.0,
+          "RETRIEVE_MEMORY": 0.0153
+        },
+        "family_return": {
+          "steady_dialogue": 33.1,
+          "tool_flood": 26.68,
+          "debug_loop": 23.06,
+          "long_horizon_recall": 30.71,
+          "topic_hopping": 23.47,
+          "instruction_drift": 31.22,
+          "mixed_chaos": 27.16
+        },
+        "seed_means": [
+          28.05,
+          27.786,
+          27.908
+        ],
+        "seed_sd_return": 0.132
+      },
+      "recall": {
+        "mean_return": 30.613,
+        "ci95": 0.896,
+        "sim_score": 76.08,
+        "vs_heuristic": [
+          6.496,
+          0.904
+        ],
+        "vs_v42_best": [
+          -0.118,
+          0.29
+        ],
+        "success_rate": 0.9286,
+        "overflow_rate": 0.0032,
+        "interventions_per_episode": 14.0,
+        "action_share": {
+          "NOOP": 0.6499,
+          "COMPACT": 0.101,
+          "PRUNE_TOOLS": 0.0536,
+          "REINJECT_INSTRUCTIONS": 0.1652,
+          "CHECKPOINT_RESET": 0.0,
+          "RETRIEVE_MEMORY": 0.0304
+        },
+        "family_return": {
+          "steady_dialogue": 35.62,
+          "tool_flood": 29.23,
+          "debug_loop": 22.43,
+          "long_horizon_recall": 34.17,
+          "topic_hopping": 28.83,
+          "instruction_drift": 32.27,
+          "mixed_chaos": 31.74
+        },
+        "seed_means": [
+          30.397,
+          30.876,
+          30.565
+        ],
+        "seed_sd_return": 0.243
+      }
+    },
+    "v4.4 best": {
+      "main": {
+        "mean_return": 33.009,
+        "ci95": 0.347,
+        "sim_score": 80.86,
+        "vs_heuristic": [
+          7.086,
+          0.409
+        ],
+        "vs_v42_best": [
+          0.006,
+          0.096
+        ],
+        "success_rate": 0.9663,
+        "overflow_rate": 0.0,
+        "interventions_per_episode": 12.35,
+        "action_share": {
+          "NOOP": 0.6913,
+          "COMPACT": 0.0967,
+          "PRUNE_TOOLS": 0.0393,
+          "REINJECT_INSTRUCTIONS": 0.1622,
+          "CHECKPOINT_RESET": 0.0,
+          "RETRIEVE_MEMORY": 0.0105
+        },
+        "family_return": {
+          "steady_dialogue": 37.62,
+          "tool_flood": 32.04,
+          "debug_loop": 28.0,
+          "long_horizon_recall": 34.93,
+          "topic_hopping": 30.66,
+          "instruction_drift": 34.84,
+          "mixed_chaos": 32.98
+        },
+        "seed_means": [
+          33.039,
+          32.961,
+          33.027
+        ],
+        "seed_sd_return": 0.042
+      },
+      "heavy": {
+        "mean_return": 31.948,
+        "ci95": 0.733,
+        "sim_score": 79.7,
+        "vs_heuristic": [
+          6.546,
+          0.97
+        ],
+        "vs_v42_best": [
+          0.273,
+          0.314
+        ],
+        "success_rate": 0.9635,
+        "overflow_rate": 0.0063,
+        "interventions_per_episode": 13.76,
+        "action_share": {
+          "NOOP": 0.6559,
+          "COMPACT": 0.1197,
+          "PRUNE_TOOLS": 0.0538,
+          "REINJECT_INSTRUCTIONS": 0.1554,
+          "CHECKPOINT_RESET": 0.0,
+          "RETRIEVE_MEMORY": 0.0152
+        },
+        "family_return": {
+          "steady_dialogue": 37.21,
+          "tool_flood": 29.78,
+          "debug_loop": 29.19,
+          "long_horizon_recall": 32.86,
+          "topic_hopping": 29.2,
+          "instruction_drift": 34.48,
+          "mixed_chaos": 30.92
+        },
+        "seed_means": [
+          31.867,
+          32.006,
+          31.97
+        ],
+        "seed_sd_return": 0.072
+      },
+      "drift": {
+        "mean_return": 31.297,
+        "ci95": 0.842,
+        "sim_score": 81.96,
+        "vs_heuristic": [
+          9.28,
+          0.903
+        ],
+        "vs_v42_best": [
+          0.298,
+          0.253
+        ],
+        "success_rate": 0.9413,
+        "overflow_rate": 0.0,
+        "interventions_per_episode": 13.18,
+        "action_share": {
+          "NOOP": 0.6704,
+          "COMPACT": 0.107,
+          "PRUNE_TOOLS": 0.0325,
+          "REINJECT_INSTRUCTIONS": 0.1769,
+          "CHECKPOINT_RESET": 0.0,
+          "RETRIEVE_MEMORY": 0.0132
+        },
+        "family_return": {
+          "steady_dialogue": 36.91,
+          "tool_flood": 27.47,
+          "debug_loop": 26.87,
+          "long_horizon_recall": 33.7,
+          "topic_hopping": 30.13,
+          "instruction_drift": 32.47,
+          "mixed_chaos": 31.54
+        },
+        "seed_means": [
+          31.394,
+          31.203,
+          31.293
+        ],
+        "seed_sd_return": 0.096
+      },
+      "buggy": {
+        "mean_return": 27.765,
+        "ci95": 1.013,
+        "sim_score": 79.35,
+        "vs_heuristic": [
+          7.637,
+          0.954
+        ],
+        "vs_v42_best": [
+          0.282,
+          0.332
+        ],
+        "success_rate": 0.8508,
+        "overflow_rate": 0.0,
+        "interventions_per_episode": 13.6,
+        "action_share": {
+          "NOOP": 0.6601,
+          "COMPACT": 0.1212,
+          "PRUNE_TOOLS": 0.0281,
+          "REINJECT_INSTRUCTIONS": 0.1776,
+          "CHECKPOINT_RESET": 0.0,
+          "RETRIEVE_MEMORY": 0.013
+        },
+        "family_return": {
+          "steady_dialogue": 33.29,
+          "tool_flood": 27.07,
+          "debug_loop": 23.12,
+          "long_horizon_recall": 29.67,
+          "topic_hopping": 23.08,
+          "instruction_drift": 31.48,
+          "mixed_chaos": 26.63
+        },
+        "seed_means": [
+          27.64,
+          27.785,
+          27.869
+        ],
+        "seed_sd_return": 0.116
+      },
+      "recall": {
+        "mean_return": 30.967,
+        "ci95": 0.832,
+        "sim_score": 77.5,
+        "vs_heuristic": [
+          6.85,
+          0.915
+        ],
+        "vs_v42_best": [
+          0.236,
+          0.255
+        ],
+        "success_rate": 0.946,
+        "overflow_rate": 0.0,
+        "interventions_per_episode": 13.08,
+        "action_share": {
+          "NOOP": 0.6729,
+          "COMPACT": 0.1025,
+          "PRUNE_TOOLS": 0.0358,
+          "REINJECT_INSTRUCTIONS": 0.1614,
+          "CHECKPOINT_RESET": 0.0,
+          "RETRIEVE_MEMORY": 0.0274
+        },
+        "family_return": {
+          "steady_dialogue": 35.57,
+          "tool_flood": 30.39,
+          "debug_loop": 22.97,
+          "long_horizon_recall": 33.26,
+          "topic_hopping": 29.29,
+          "instruction_drift": 33.02,
+          "mixed_chaos": 32.27
+        },
+        "seed_means": [
+          30.991,
+          30.925,
+          30.984
+        ],
+        "seed_sd_return": 0.036
+      }
+    },
+    "v4.5 reference recipe (it. 0)": {
+      "main": {
+        "mean_return": 33.053,
+        "ci95": 0.341,
+        "sim_score": 81.05,
+        "vs_heuristic": [
+          7.13,
+          0.406
+        ],
+        "vs_v42_best": [
+          0.051,
+          0.091
+        ],
+        "success_rate": 0.9689,
+        "overflow_rate": 0.0003,
+        "interventions_per_episode": 12.4,
+        "action_share": {
+          "NOOP": 0.6899,
+          "COMPACT": 0.0935,
+          "PRUNE_TOOLS": 0.0461,
+          "REINJECT_INSTRUCTIONS": 0.1596,
+          "CHECKPOINT_RESET": 0.0,
+          "RETRIEVE_MEMORY": 0.0109
+        },
+        "family_return": {
+          "steady_dialogue": 37.54,
+          "tool_flood": 31.95,
+          "debug_loop": 28.08,
+          "long_horizon_recall": 35.36,
+          "topic_hopping": 30.74,
+          "instruction_drift": 34.86,
+          "mixed_chaos": 32.85
+        },
+        "seed_means": [
+          33.136,
+          33.085,
+          32.939
+        ],
+        "seed_sd_return": 0.103
+      },
+      "heavy": {
+        "mean_return": 31.716,
+        "ci95": 0.809,
+        "sim_score": 78.65,
+        "vs_heuristic": [
+          6.315,
+          0.884
+        ],
+        "vs_v42_best": [
+          0.041,
+          0.205
+        ],
+        "success_rate": 0.9444,
+        "overflow_rate": 0.019,
+        "interventions_per_episode": 13.63,
+        "action_share": {
+          "NOOP": 0.6592,
+          "COMPACT": 0.1055,
+          "PRUNE_TOOLS": 0.0658,
+          "REINJECT_INSTRUCTIONS": 0.1532,
+          "CHECKPOINT_RESET": 0.0,
+          "RETRIEVE_MEMORY": 0.0163
+        },
+        "family_return": {
+          "steady_dialogue": 37.11,
+          "tool_flood": 27.99,
+          "debug_loop": 28.76,
+          "long_horizon_recall": 33.58,
+          "topic_hopping": 29.4,
+          "instruction_drift": 34.14,
+          "mixed_chaos": 31.03
+        },
+        "seed_means": [
+          31.545,
+          31.788,
+          31.815
+        ],
+        "seed_sd_return": 0.149
+      },
+      "drift": {
+        "mean_return": 31.24,
+        "ci95": 0.865,
+        "sim_score": 81.77,
+        "vs_heuristic": [
+          9.224,
+          0.914
+        ],
+        "vs_v42_best": [
+          0.242,
+          0.249
+        ],
+        "success_rate": 0.9365,
+        "overflow_rate": 0.0032,
+        "interventions_per_episode": 13.26,
+        "action_share": {
+          "NOOP": 0.6686,
+          "COMPACT": 0.1036,
+          "PRUNE_TOOLS": 0.039,
+          "REINJECT_INSTRUCTIONS": 0.1754,
+          "CHECKPOINT_RESET": 0.0,
+          "RETRIEVE_MEMORY": 0.0134
+        },
+        "family_return": {
+          "steady_dialogue": 36.86,
+          "tool_flood": 27.75,
+          "debug_loop": 26.85,
+          "long_horizon_recall": 33.73,
+          "topic_hopping": 29.69,
+          "instruction_drift": 32.27,
+          "mixed_chaos": 31.53
+        },
+        "seed_means": [
+          31.244,
+          31.199,
+          31.277
+        ],
+        "seed_sd_return": 0.039
+      },
+      "buggy": {
+        "mean_return": 27.926,
+        "ci95": 0.995,
+        "sim_score": 79.97,
+        "vs_heuristic": [
+          7.798,
+          0.925
+        ],
+        "vs_v42_best": [
+          0.444,
+          0.293
+        ],
+        "success_rate": 0.8698,
+        "overflow_rate": 0.0,
+        "interventions_per_episode": 13.85,
+        "action_share": {
+          "NOOP": 0.6537,
+          "COMPACT": 0.1199,
+          "PRUNE_TOOLS": 0.0341,
+          "REINJECT_INSTRUCTIONS": 0.1794,
+          "CHECKPOINT_RESET": 0.0,
+          "RETRIEVE_MEMORY": 0.013
+        },
+        "family_return": {
+          "steady_dialogue": 33.05,
+          "tool_flood": 27.03,
+          "debug_loop": 22.73,
+          "long_horizon_recall": 30.19,
+          "topic_hopping": 23.89,
+          "instruction_drift": 31.72,
+          "mixed_chaos": 26.88
+        },
+        "seed_means": [
+          27.862,
+          27.985,
+          27.932
+        ],
+        "seed_sd_return": 0.062
+      },
+      "recall": {
+        "mean_return": 31.198,
+        "ci95": 0.833,
+        "sim_score": 78.43,
+        "vs_heuristic": [
+          7.081,
+          0.886
+        ],
+        "vs_v42_best": [
+          0.467,
+          0.27
+        ],
+        "success_rate": 0.9476,
+        "overflow_rate": 0.0032,
+        "interventions_per_episode": 13.02,
+        "action_share": {
+          "NOOP": 0.6746,
+          "COMPACT": 0.0977,
+          "PRUNE_TOOLS": 0.0436,
+          "REINJECT_INSTRUCTIONS": 0.157,
+          "CHECKPOINT_RESET": 0.0,
+          "RETRIEVE_MEMORY": 0.0271
+        },
+        "family_return": {
+          "steady_dialogue": 35.96,
+          "tool_flood": 30.68,
+          "debug_loop": 23.3,
+          "long_horizon_recall": 34.24,
+          "topic_hopping": 29.21,
+          "instruction_drift": 32.9,
+          "mixed_chaos": 32.09
+        },
+        "seed_means": [
+          31.485,
+          31.077,
+          31.032
+        ],
+        "seed_sd_return": 0.25
+      }
+    },
+    "v4.5 selected best (it. 3)": {
+      "main": {
+        "mean_return": 33.057,
+        "ci95": 0.34,
+        "sim_score": 81.07,
+        "vs_heuristic": [
+          7.134,
+          0.405
+        ],
+        "vs_v42_best": [
+          0.054,
+          0.085
+        ],
+        "success_rate": 0.9711,
+        "overflow_rate": 0.0,
+        "interventions_per_episode": 12.5,
+        "action_share": {
+          "NOOP": 0.6874,
+          "COMPACT": 0.0942,
+          "PRUNE_TOOLS": 0.048,
+          "REINJECT_INSTRUCTIONS": 0.1599,
+          "CHECKPOINT_RESET": 0.0,
+          "RETRIEVE_MEMORY": 0.0105
+        },
+        "family_return": {
+          "steady_dialogue": 37.57,
+          "tool_flood": 31.89,
+          "debug_loop": 28.27,
+          "long_horizon_recall": 35.19,
+          "topic_hopping": 30.64,
+          "instruction_drift": 34.89,
+          "mixed_chaos": 32.93
+        },
+        "seed_means": [
+          33.048,
+          33.137,
+          32.987
+        ],
+        "seed_sd_return": 0.075
+      },
+      "heavy": {
+        "mean_return": 31.753,
+        "ci95": 0.805,
+        "sim_score": 78.81,
+        "vs_heuristic": [
+          6.352,
+          0.893
+        ],
+        "vs_v42_best": [
+          0.078,
+          0.263
+        ],
+        "success_rate": 0.9476,
+        "overflow_rate": 0.0238,
+        "interventions_per_episode": 13.51,
+        "action_share": {
+          "NOOP": 0.6623,
+          "COMPACT": 0.1092,
+          "PRUNE_TOOLS": 0.0613,
+          "REINJECT_INSTRUCTIONS": 0.1519,
+          "CHECKPOINT_RESET": 0.0,
+          "RETRIEVE_MEMORY": 0.0152
+        },
+        "family_return": {
+          "steady_dialogue": 36.84,
+          "tool_flood": 28.13,
+          "debug_loop": 28.86,
+          "long_horizon_recall": 33.64,
+          "topic_hopping": 29.28,
+          "instruction_drift": 34.24,
+          "mixed_chaos": 31.28
+        },
+        "seed_means": [
+          31.848,
+          31.731,
+          31.681
+        ],
+        "seed_sd_return": 0.086
+      },
+      "drift": {
+        "mean_return": 31.23,
+        "ci95": 0.873,
+        "sim_score": 81.73,
+        "vs_heuristic": [
+          9.214,
+          0.905
+        ],
+        "vs_v42_best": [
+          0.232,
+          0.24
+        ],
+        "success_rate": 0.9365,
+        "overflow_rate": 0.0048,
+        "interventions_per_episode": 13.36,
+        "action_share": {
+          "NOOP": 0.6661,
+          "COMPACT": 0.105,
+          "PRUNE_TOOLS": 0.0396,
+          "REINJECT_INSTRUCTIONS": 0.176,
+          "CHECKPOINT_RESET": 0.0,
+          "RETRIEVE_MEMORY": 0.0133
+        },
+        "family_return": {
+          "steady_dialogue": 36.86,
+          "tool_flood": 27.74,
+          "debug_loop": 26.58,
+          "long_horizon_recall": 33.9,
+          "topic_hopping": 29.74,
+          "instruction_drift": 31.97,
+          "mixed_chaos": 31.82
+        },
+        "seed_means": [
+          31.285,
+          31.243,
+          31.164
+        ],
+        "seed_sd_return": 0.061
+      },
+      "buggy": {
+        "mean_return": 27.778,
+        "ci95": 1.009,
+        "sim_score": 79.4,
+        "vs_heuristic": [
+          7.65,
+          0.921
+        ],
+        "vs_v42_best": [
+          0.296,
+          0.246
+        ],
+        "success_rate": 0.8571,
+        "overflow_rate": 0.0,
+        "interventions_per_episode": 13.88,
+        "action_share": {
+          "NOOP": 0.653,
+          "COMPACT": 0.1224,
+          "PRUNE_TOOLS": 0.0333,
+          "REINJECT_INSTRUCTIONS": 0.1796,
+          "CHECKPOINT_RESET": 0.0,
+          "RETRIEVE_MEMORY": 0.0117
+        },
+        "family_return": {
+          "steady_dialogue": 33.02,
+          "tool_flood": 26.47,
+          "debug_loop": 22.71,
+          "long_horizon_recall": 30.01,
+          "topic_hopping": 23.87,
+          "instruction_drift": 31.76,
+          "mixed_chaos": 26.61
+        },
+        "seed_means": [
+          27.58,
+          28.004,
+          27.752
+        ],
+        "seed_sd_return": 0.213
+      },
+      "recall": {
+        "mean_return": 31.035,
+        "ci95": 0.851,
+        "sim_score": 77.78,
+        "vs_heuristic": [
+          6.919,
+          0.892
+        ],
+        "vs_v42_best": [
+          0.304,
+          0.24
+        ],
+        "success_rate": 0.946,
+        "overflow_rate": 0.0016,
+        "interventions_per_episode": 13.11,
+        "action_share": {
+          "NOOP": 0.6722,
+          "COMPACT": 0.0985,
+          "PRUNE_TOOLS": 0.0456,
+          "REINJECT_INSTRUCTIONS": 0.1579,
+          "CHECKPOINT_RESET": 0.0,
+          "RETRIEVE_MEMORY": 0.0258
+        },
+        "family_return": {
+          "steady_dialogue": 35.7,
+          "tool_flood": 30.24,
+          "debug_loop": 23.19,
+          "long_horizon_recall": 33.89,
+          "topic_hopping": 29.1,
+          "instruction_drift": 32.85,
+          "mixed_chaos": 32.29
+        },
+        "seed_means": [
+          30.895,
+          31.259,
+          30.952
+        ],
+        "seed_sd_return": 0.196
+      }
+    },
+    "v4.5 confirmed best (it. 10)": {
+      "main": {
+        "mean_return": 33.098,
+        "ci95": 0.338,
+        "sim_score": 81.25,
+        "vs_heuristic": [
+          7.174,
+          0.405
+        ],
+        "vs_v42_best": [
+          0.095,
+          0.085
+        ],
+        "success_rate": 0.9708,
+        "overflow_rate": 0.001,
+        "interventions_per_episode": 12.41,
+        "action_share": {
+          "NOOP": 0.6897,
+          "COMPACT": 0.0921,
+          "PRUNE_TOOLS": 0.0475,
+          "REINJECT_INSTRUCTIONS": 0.1602,
+          "CHECKPOINT_RESET": 0.0,
+          "RETRIEVE_MEMORY": 0.0105
+        },
+        "family_return": {
+          "steady_dialogue": 37.66,
+          "tool_flood": 32.14,
+          "debug_loop": 28.35,
+          "long_horizon_recall": 35.1,
+          "topic_hopping": 30.66,
+          "instruction_drift": 34.87,
+          "mixed_chaos": 32.89
+        },
+        "seed_means": [
+          33.18,
+          33.084,
+          33.03
+        ],
+        "seed_sd_return": 0.076
+      },
+      "heavy": {
+        "mean_return": 31.803,
+        "ci95": 0.805,
+        "sim_score": 79.04,
+        "vs_heuristic": [
+          6.401,
+          0.91
+        ],
+        "vs_v42_best": [
+          0.128,
+          0.239
+        ],
+        "success_rate": 0.946,
+        "overflow_rate": 0.0159,
+        "interventions_per_episode": 13.61,
+        "action_share": {
+          "NOOP": 0.6598,
+          "COMPACT": 0.1103,
+          "PRUNE_TOOLS": 0.0622,
+          "REINJECT_INSTRUCTIONS": 0.1521,
+          "CHECKPOINT_RESET": 0.0,
+          "RETRIEVE_MEMORY": 0.0156
+        },
+        "family_return": {
+          "steady_dialogue": 36.97,
+          "tool_flood": 28.82,
+          "debug_loop": 28.85,
+          "long_horizon_recall": 33.82,
+          "topic_hopping": 28.88,
+          "instruction_drift": 34.25,
+          "mixed_chaos": 31.02
+        },
+        "seed_means": [
+          31.742,
+          31.826,
+          31.84
+        ],
+        "seed_sd_return": 0.053
+      },
+      "drift": {
+        "mean_return": 31.136,
+        "ci95": 0.894,
+        "sim_score": 81.41,
+        "vs_heuristic": [
+          9.12,
+          0.903
+        ],
+        "vs_v42_best": [
+          0.138,
+          0.227
+        ],
+        "success_rate": 0.927,
+        "overflow_rate": 0.0032,
+        "interventions_per_episode": 13.23,
+        "action_share": {
+          "NOOP": 0.6693,
+          "COMPACT": 0.1033,
+          "PRUNE_TOOLS": 0.0392,
+          "REINJECT_INSTRUCTIONS": 0.175,
+          "CHECKPOINT_RESET": 0.0,
+          "RETRIEVE_MEMORY": 0.0132
+        },
+        "family_return": {
+          "steady_dialogue": 36.95,
+          "tool_flood": 27.66,
+          "debug_loop": 26.51,
+          "long_horizon_recall": 33.73,
+          "topic_hopping": 29.44,
+          "instruction_drift": 31.74,
+          "mixed_chaos": 31.93
+        },
+        "seed_means": [
+          31.059,
+          31.168,
+          31.182
+        ],
+        "seed_sd_return": 0.067
+      },
+      "buggy": {
+        "mean_return": 27.817,
+        "ci95": 1.022,
+        "sim_score": 79.55,
+        "vs_heuristic": [
+          7.689,
+          0.948
+        ],
+        "vs_v42_best": [
+          0.335,
+          0.288
+        ],
+        "success_rate": 0.8492,
+        "overflow_rate": 0.0,
+        "interventions_per_episode": 13.72,
+        "action_share": {
+          "NOOP": 0.657,
+          "COMPACT": 0.1192,
+          "PRUNE_TOOLS": 0.0332,
+          "REINJECT_INSTRUCTIONS": 0.178,
+          "CHECKPOINT_RESET": 0.0,
+          "RETRIEVE_MEMORY": 0.0126
+        },
+        "family_return": {
+          "steady_dialogue": 33.34,
+          "tool_flood": 26.86,
+          "debug_loop": 23.08,
+          "long_horizon_recall": 29.44,
+          "topic_hopping": 23.45,
+          "instruction_drift": 31.69,
+          "mixed_chaos": 26.86
+        },
+        "seed_means": [
+          27.876,
+          27.875,
+          27.7
+        ],
+        "seed_sd_return": 0.101
+      },
+      "recall": {
+        "mean_return": 30.986,
+        "ci95": 0.835,
+        "sim_score": 77.58,
+        "vs_heuristic": [
+          6.869,
+          0.901
+        ],
+        "vs_v42_best": [
+          0.255,
+          0.251
+        ],
+        "success_rate": 0.9413,
+        "overflow_rate": 0.0016,
+        "interventions_per_episode": 13.15,
+        "action_share": {
+          "NOOP": 0.6712,
+          "COMPACT": 0.0969,
+          "PRUNE_TOOLS": 0.0466,
+          "REINJECT_INSTRUCTIONS": 0.1588,
+          "CHECKPOINT_RESET": 0.0,
+          "RETRIEVE_MEMORY": 0.0264
+        },
+        "family_return": {
+          "steady_dialogue": 35.73,
+          "tool_flood": 30.14,
+          "debug_loop": 23.47,
+          "long_horizon_recall": 33.9,
+          "topic_hopping": 29.16,
+          "instruction_drift": 32.65,
+          "mixed_chaos": 31.85
+        },
+        "seed_means": [
+          31.194,
+          31.079,
+          30.684
+        ],
+        "seed_sd_return": 0.267
+      }
+    }
+  },
+  "latency_ms": {
+    "v4.1 best": [
+      0.42,
+      0.407,
+      0.403
+    ],
+    "v4.2 best": [
+      0.363,
+      0.306,
+      0.343
+    ],
+    "v4.3 best": [
+      0.364,
+      0.358,
+      0.368
+    ],
+    "v4.4 best": [
+      0.357,
+      0.341,
+      0.381
+    ],
+    "v4.5 reference recipe (it. 0)": [
+      0.297,
+      0.34,
+      0.326
+    ],
+    "v4.5 selected best (it. 3)": [
+      0.347,
+      0.337,
+      0.27
+    ],
+    "v4.5 confirmed best (it. 10)": [
+      0.365,
+      0.393,
+      0.282
+    ]
+  },
+  "runtime_seconds": 250
+}

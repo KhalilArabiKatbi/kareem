@@ -1,0 +1,424 @@
+{
+  "scale_sim_per_return": 4.414,
+  "P-C": {
+    "agreement_v2at8_vs_v2at32": 0.6988,
+    "regret_of_v2at8_under_v2at32": 0.0414
+  },
+  "P-F_seed_sd_return": 0.123,
+  "P-F_seed_sd_sim": 0.54,
+  "runs": {
+    "base_v2_soft": {
+      "seeds": 5,
+      "mean_return": 32.463,
+      "delta_return_vs_base": 0.0,
+      "se_return": 0.0,
+      "delta_sim": 0.0,
+      "t": null,
+      "per_seed_mean_return": [
+        32.31,
+        32.406,
+        32.64,
+        32.448,
+        32.513
+      ],
+      "family": {
+        "steady_dialogue": 37.72,
+        "tool_flood": 31.38,
+        "debug_loop": 27.07,
+        "long_horizon_recall": 34.26,
+        "topic_hopping": 30.39,
+        "instruction_drift": 35.14,
+        "mixed_chaos": 31.29
+      }
+    },
+    "v2_soft_tau0.5": {
+      "seeds": 3,
+      "mean_return": 32.594,
+      "delta_return_vs_base": 0.131,
+      "se_return": 0.084,
+      "delta_sim": 0.58,
+      "t": 1.56,
+      "per_seed_mean_return": [
+        32.541,
+        32.528,
+        32.714
+      ],
+      "family": {
+        "steady_dialogue": 37.7,
+        "tool_flood": 31.63,
+        "debug_loop": 27.25,
+        "long_horizon_recall": 34.63,
+        "topic_hopping": 30.54,
+        "instruction_drift": 35.09,
+        "mixed_chaos": 31.32
+      }
+    },
+    "v2_soft_tau2.0": {
+      "seeds": 3,
+      "mean_return": 32.407,
+      "delta_return_vs_base": -0.057,
+      "se_return": 0.08,
+      "delta_sim": -0.25,
+      "t": -0.7,
+      "per_seed_mean_return": [
+        32.26,
+        32.456,
+        32.504
+      ],
+      "family": {
+        "steady_dialogue": 37.83,
+        "tool_flood": 31.36,
+        "debug_loop": 27.22,
+        "long_horizon_recall": 34.34,
+        "topic_hopping": 30.06,
+        "instruction_drift": 34.99,
+        "mixed_chaos": 31.05
+      }
+    },
+    "v2_soft_tau4.0": {
+      "seeds": 3,
+      "mean_return": 32.296,
+      "delta_return_vs_base": -0.167,
+      "se_return": 0.086,
+      "delta_sim": -0.74,
+      "t": -1.94,
+      "per_seed_mean_return": [
+        31.924,
+        32.471,
+        32.493
+      ],
+      "family": {
+        "steady_dialogue": 37.68,
+        "tool_flood": 30.88,
+        "debug_loop": 27.45,
+        "long_horizon_recall": 34.05,
+        "topic_hopping": 30.08,
+        "instruction_drift": 35.04,
+        "mixed_chaos": 30.88
+      }
+    },
+    "v2_advantage": {
+      "seeds": 3,
+      "mean_return": 32.511,
+      "delta_return_vs_base": 0.047,
+      "se_return": 0.096,
+      "delta_sim": 0.21,
+      "t": 0.49,
+      "per_seed_mean_return": [
+        32.532,
+        32.573,
+        32.427
+      ],
+      "family": {
+        "steady_dialogue": 37.81,
+        "tool_flood": 31.68,
+        "debug_loop": 27.7,
+        "long_horizon_recall": 33.7,
+        "topic_hopping": 30.57,
+        "instruction_drift": 35.0,
+        "mixed_chaos": 31.11
+      }
+    },
+    "v2_hard": {
+      "seeds": 3,
+      "mean_return": 32.217,
+      "delta_return_vs_base": -0.246,
+      "se_return": 0.107,
+      "delta_sim": -1.09,
+      "t": -2.31,
+      "per_seed_mean_return": [
+        32.209,
+        32.229,
+        32.213
+      ],
+      "family": {
+        "steady_dialogue": 37.67,
+        "tool_flood": 31.26,
+        "debug_loop": 26.61,
+        "long_horizon_recall": 34.3,
+        "topic_hopping": 30.25,
+        "instruction_drift": 34.63,
+        "mixed_chaos": 30.79
+      }
+    },
+    "v1_soft": {
+      "seeds": 3,
+      "mean_return": 31.818,
+      "delta_return_vs_base": -0.646,
+      "se_return": 0.125,
+      "delta_sim": -2.85,
+      "t": -5.17,
+      "per_seed_mean_return": [
+        31.886,
+        31.764,
+        31.803
+      ],
+      "family": {
+        "steady_dialogue": 37.56,
+        "tool_flood": 29.77,
+        "debug_loop": 26.63,
+        "long_horizon_recall": 32.95,
+        "topic_hopping": 29.66,
+        "instruction_drift": 35.28,
+        "mixed_chaos": 30.88
+      }
+    },
+    "v2_soft_ensemble5": {
+      "seeds": 1,
+      "mean_return": 32.638,
+      "delta_return_vs_base": 0.174,
+      "se_return": 0.126,
+      "delta_sim": 0.77,
+      "t": 1.39,
+      "per_seed_mean_return": [
+        32.638
+      ],
+      "family": {
+        "steady_dialogue": 37.84,
+        "tool_flood": 31.6,
+        "debug_loop": 27.51,
+        "long_horizon_recall": 34.73,
+        "topic_hopping": 30.28,
+        "instruction_drift": 34.99,
+        "mixed_chaos": 31.52
+      }
+    },
+    "teacher_v2f32": {
+      "seeds": 3,
+      "mean_return": 32.513,
+      "delta_return_vs_base": 0.05,
+      "se_return": 0.087,
+      "delta_sim": 0.22,
+      "t": 0.57,
+      "per_seed_mean_return": [
+        32.516,
+        32.559,
+        32.464
+      ],
+      "family": {
+        "steady_dialogue": 37.72,
+        "tool_flood": 30.98,
+        "debug_loop": 27.6,
+        "long_horizon_recall": 34.41,
+        "topic_hopping": 30.21,
+        "instruction_drift": 35.27,
+        "mixed_chaos": 31.4
+      }
+    },
+    "teacher_t2": {
+      "seeds": 3,
+      "mean_return": 31.547,
+      "delta_return_vs_base": -0.917,
+      "se_return": 0.152,
+      "delta_sim": -4.05,
+      "t": -6.03,
+      "per_seed_mean_return": [
+        31.604,
+        31.425,
+        31.611
+      ],
+      "family": {
+        "steady_dialogue": 37.39,
+        "tool_flood": 29.93,
+        "debug_loop": 26.17,
+        "long_horizon_recall": 34.49,
+        "topic_hopping": 28.47,
+        "instruction_drift": 33.99,
+        "mixed_chaos": 30.38
+      }
+    },
+    "dagger_v2_soft": {
+      "seeds": 3,
+      "mean_return": 32.805,
+      "delta_return_vs_base": 0.341,
+      "se_return": 0.099,
+      "delta_sim": 1.51,
+      "t": 3.45,
+      "per_seed_mean_return": [
+        32.878,
+        32.657,
+        32.879
+      ],
+      "family": {
+        "steady_dialogue": 37.93,
+        "tool_flood": 31.58,
+        "debug_loop": 27.87,
+        "long_horizon_recall": 35.12,
+        "topic_hopping": 30.03,
+        "instruction_drift": 35.26,
+        "mixed_chaos": 31.84
+      }
+    },
+    "teacher_t4_student_rollout": {
+      "seeds": 3,
+      "mean_return": 32.702,
+      "delta_return_vs_base": 0.239,
+      "se_return": 0.149,
+      "delta_sim": 1.06,
+      "t": 1.6,
+      "per_seed_mean_return": [
+        32.504,
+        32.899,
+        32.705
+      ],
+      "family": {
+        "steady_dialogue": 37.46,
+        "tool_flood": 31.56,
+        "debug_loop": 27.34,
+        "long_horizon_recall": 36.21,
+        "topic_hopping": 30.07,
+        "instruction_drift": 34.82,
+        "mixed_chaos": 31.46
+      }
+    },
+    "t4_hard": {
+      "seeds": 3,
+      "mean_return": 32.688,
+      "delta_return_vs_base": 0.225,
+      "se_return": 0.14,
+      "delta_sim": 0.99,
+      "t": 1.6,
+      "per_seed_mean_return": [
+        32.581,
+        32.756,
+        32.727
+      ],
+      "family": {
+        "steady_dialogue": 37.95,
+        "tool_flood": 31.43,
+        "debug_loop": 26.82,
+        "long_horizon_recall": 35.75,
+        "topic_hopping": 30.13,
+        "instruction_drift": 35.27,
+        "mixed_chaos": 31.48
+      }
+    },
+    "combo_dagger_tau05": {
+      "seeds": 3,
+      "mean_return": 32.89,
+      "delta_return_vs_base": 0.426,
+      "se_return": 0.094,
+      "delta_sim": 1.88,
+      "t": 4.53,
+      "per_seed_mean_return": [
+        32.952,
+        32.839,
+        32.877
+      ],
+      "family": {
+        "steady_dialogue": 38.02,
+        "tool_flood": 31.67,
+        "debug_loop": 27.95,
+        "long_horizon_recall": 35.28,
+        "topic_hopping": 30.47,
+        "instruction_drift": 35.04,
+        "mixed_chaos": 31.8
+      }
+    },
+    "combo_dagger_t4": {
+      "seeds": 3,
+      "mean_return": 32.122,
+      "delta_return_vs_base": -0.341,
+      "se_return": 0.153,
+      "delta_sim": -1.51,
+      "t": -2.22,
+      "per_seed_mean_return": [
+        31.883,
+        32.281,
+        32.202
+      ],
+      "family": {
+        "steady_dialogue": 36.94,
+        "tool_flood": 31.22,
+        "debug_loop": 26.55,
+        "long_horizon_recall": 35.53,
+        "topic_hopping": 29.61,
+        "instruction_drift": 34.1,
+        "mixed_chaos": 30.91
+      }
+    },
+    "combo_dagger_t4_tau05": {
+      "seeds": 3,
+      "mean_return": 32.215,
+      "delta_return_vs_base": -0.248,
+      "se_return": 0.152,
+      "delta_sim": -1.09,
+      "t": -1.63,
+      "per_seed_mean_return": [
+        31.872,
+        32.5,
+        32.273
+      ],
+      "family": {
+        "steady_dialogue": 36.98,
+        "tool_flood": 31.18,
+        "debug_loop": 26.51,
+        "long_horizon_recall": 35.57,
+        "topic_hopping": 29.87,
+        "instruction_drift": 34.4,
+        "mixed_chaos": 31.0
+      }
+    },
+    "combo_dagger_tau05_ens3": {
+      "seeds": 1,
+      "mean_return": 32.991,
+      "delta_return_vs_base": 0.527,
+      "se_return": 0.128,
+      "delta_sim": 2.33,
+      "t": 4.13,
+      "per_seed_mean_return": [
+        32.991
+      ],
+      "family": {
+        "steady_dialogue": 37.98,
+        "tool_flood": 31.92,
+        "debug_loop": 28.1,
+        "long_horizon_recall": 35.72,
+        "topic_hopping": 30.44,
+        "instruction_drift": 34.99,
+        "mixed_chaos": 31.78
+      }
+    },
+    "combo_dagger_t4_ens3": {
+      "seeds": 1,
+      "mean_return": 32.216,
+      "delta_return_vs_base": -0.247,
+      "se_return": 0.166,
+      "delta_sim": -1.09,
+      "t": -1.49,
+      "per_seed_mean_return": [
+        32.216
+      ],
+      "family": {
+        "steady_dialogue": 36.93,
+        "tool_flood": 31.32,
+        "debug_loop": 26.76,
+        "long_horizon_recall": 35.63,
+        "topic_hopping": 29.5,
+        "instruction_drift": 34.35,
+        "mixed_chaos": 31.02
+      }
+    },
+    "combo_dagger_t4_tau05_ens3": {
+      "seeds": 1,
+      "mean_return": 32.426,
+      "delta_return_vs_base": -0.037,
+      "se_return": 0.179,
+      "delta_sim": -0.16,
+      "t": -0.21,
+      "per_seed_mean_return": [
+        32.426
+      ],
+      "family": {
+        "steady_dialogue": 37.17,
+        "tool_flood": 31.58,
+        "debug_loop": 26.62,
+        "long_horizon_recall": 35.76,
+        "topic_hopping": 29.89,
+        "instruction_drift": 34.52,
+        "mixed_chaos": 31.45
+      }
+    }
+  },
+  "dev_set": "280 scenarios, seeds 70000+ (disjoint from training and evaluation)"
+}

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Context Health Factory — Model Versions &amp; the Best Model</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif; color: #17202a; background: #fff; }
+  .page { width: 210mm; height: 296.5mm; page-break-after: always; position: relative; overflow: hidden; background: #fff; padding: 9mm 11mm 8mm; }
+  .page:last-child { page-break-after: auto; }
+  .phead { border-bottom: 2.5px solid #17202a; padding-bottom: 6px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: baseline; }
+  .phead h1 { font-size: 15px; letter-spacing: .5px; }
+  .phead .no { font-size: 9px; color: #7f8c9b; font-family: Consolas, monospace; }
+  h2 { font-size: 10.5px; letter-spacing: 1.2px; color: #4a5568; margin: 10px 0 6px; }
+  .box { border: 1px solid #cbd5e0; border-radius: 4px; padding: 7px 10px; font-size: 9px; line-height: 1.45; background: #fff; }
+  .box.hl { background: #f0f7ff; border-color: #3182ce; }
+  .box .t { font-weight: 700; font-size: 9px; color: #2d3748; letter-spacing: .3px; }
+  .cols { display: flex; gap: 10px; }
+  .cols > * { flex: 1; }
+  table.tb { width: 100%; border-collapse: collapse; font-size: 8.2px; }
+  .tb th { background: #17202a; color: #fff; padding: 3px 5px; text-align: left; font-weight: 600; }
+  .tb td { border: 1px solid #cbd5e0; padding: 2.5px 5px; vertical-align: top; line-height: 1.35; }
+  .tb tr.sel td { background: #fef9e7; }
+  .tb tr.con td { background: #f0fff4; }
+  .mono { font-family: Consolas, monospace; }
+  .small { font-size: 8px; color: #4a5568; }
+  pre.tree { font-family: Consolas, monospace; font-size: 7.6px; line-height: 1.42; background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 4px; padding: 6px 9px; white-space: pre; }
+  .footer { position: absolute; bottom: 5mm; left: 11mm; right: 11mm; font-size: 7.5px; color: #a0aec0; display: flex; justify-content: space-between; border-top: 1px solid #edf2f7; padding-top: 4px; }
+  svg text { font-family: "Segoe UI", Arial, sans-serif; }
+  svg .mono { font-family: Consolas, monospace; }
+  .chip { display: inline-block; border: 1px solid #cbd5e0; border-radius: 10px; padding: 2px 8px; font-size: 8.5px; margin: 2px 2px; background: #f7fafc; }
+  .step { border: 1.5px solid #4a5568; border-radius: 6px; padding: 6px 9px; margin-bottom: 6px; font-size: 8.8px; line-height: 1.45; position: relative; }
+  .step .n { position: absolute; left: -11px; top: -9px; width: 20px; height: 20px; border-radius: 50%; background: #17202a; color: #fff; font-size: 10px; font-weight: 700; text-align: center; line-height: 20px; }
+  .step .t { font-weight: 700; letter-spacing: .3px; }
+</style>
+</head>
+<body>
+
+<!-- ============================== PAGE 1 : VERSIONS + SCORE CHART ============================== -->
+<div class="page">
+  <div class="phead"><h1>MODEL VERSIONS &amp; THE BEST MODEL</h1><span class="no">01 / 03 · what the run built</span></div>
+
+  <div class="box hl" style="margin-bottom:8px"><span class="t">Every closed iteration is a model version.</span>
+  Your run closed <b>12 iterations in 6 waves</b> (K=2 per wave) before halting on a score plateau. Each one left a complete, versioned model on disk —
+  its code, its config, its scores. One model, three names: an <b>iteration number</b>, a <b>coordinate hash</b>, a <b>fingerprint</b>.</div>
+
+  <h2>THE SCOREBOARD — ALL 12 VERSIONS, REAL SCORES</h2>
+  <svg viewBox="0 0 1000 352" style="width:100%; display:block;">
+    <!-- wave bands -->
+    <rect x="50" y="24" width="155" height="252" fill="#f7fafc"/><rect x="360" y="24" width="155" height="252" fill="#f7fafc"/><rect x="670" y="24" width="155" height="252" fill="#f7fafc"/>
+    <!-- wave labels -->
+    <text x="127" y="18" font-size="8" fill="#a0aec0" text-anchor="middle">WAVE 1</text>
+    <text x="282" y="18" font-size="8" fill="#a0aec0" text-anchor="middle">WAVE 2</text>
+    <text x="437" y="18" font-size="8" fill="#a0aec0" text-anchor="middle">WAVE 3</text>
+    <text x="592" y="18" font-size="8" fill="#a0aec0" text-anchor="middle">WAVE 4</text>
+    <text x="747" y="18" font-size="8" fill="#a0aec0" text-anchor="middle">WAVE 5</text>
+    <text x="902" y="18" font-size="8" fill="#a0aec0" text-anchor="middle">WAVE 6</text>
+    <!-- grid lines: 77,79,81,83  (y = 260 - (s-76)*30.67) -->
+    <line x1="50" y1="229.3" x2="980" y2="229.3" stroke="#e2e8f0" stroke-width="1"/><text x="46" y="232.3" font-size="8" fill="#a0aec0" text-anchor="end" class="mono">77</text>
+    <line x1="50" y1="168.0" x2="980" y2="168.0" stroke="#e2e8f0" stroke-width="1"/><text x="46" y="171" font-size="8" fill="#a0aec0" text-anchor="end" class="mono">79</text>
+    <line x1="50" y1="106.7" x2="980" y2="106.7" stroke="#e2e8f0" stroke-width="1"/><text x="46" y="109.7" font-size="8" fill="#a0aec0" text-anchor="end" class="mono">81</text>
+    <line x1="50" y1="45.3" x2="980" y2="45.3" stroke="#e2e8f0" stroke-width="1"/><text x="46" y="48.3" font-size="8" fill="#a0aec0" text-anchor="end" class="mono">83</text>
+    <line x1="50" y1="260" x2="980" y2="260" stroke="#4a5568" stroke-width="1.5"/>
+    <!-- judge bars (width 44, centered on slot) -->
+    <g fill="#4a6fa5">
+      <rect x="66.75" y="106.7" width="44" height="153.3"/><rect x="144.25" y="106.7" width="44" height="153.3"/>
+      <rect x="221.75" y="106.7" width="44" height="153.3"/><rect x="376.75" y="106.7" width="44" height="153.3"/>
+      <rect x="609.25" y="229.3" width="44" height="30.7" fill="#b91c1c" opacity="0.75"/>
+      <rect x="686.75" y="106.7" width="44" height="153.3"/><rect x="764.25" y="106.7" width="44" height="153.3"/>
+      <rect x="919.25" y="168.0" width="44" height="92"/>
+    </g>
+    <!-- the four 82-scorers -->
+    <rect x="299.25" y="76.0" width="44" height="184" fill="#b7791f"/>
+    <rect x="454.25" y="76.0" width="44" height="184" fill="#4a6fa5"/>
+    <rect x="531.75" y="76.0" width="44" height="184" fill="#4a6fa5"/>
+    <rect x="841.75" y="76.0" width="44" height="184" fill="#4a6fa5"/>
+    <!-- selected best frame on 3, confirmed frame on 10 -->
+    <rect x="296.25" y="73.0" width="50" height="190" fill="none" stroke="#b7791f" stroke-width="2.5" rx="3"/>
+    <rect x="838.75" y="73.0" width="50" height="190" fill="none" stroke="#2f855a" stroke-width="2.5" rx="3"/>
+    <text x="321" y="56" font-size="8.5" fill="#b7791f" text-anchor="middle" font-weight="bold">SELECTED BEST</text>
+    <text x="864" y="56" font-size="8.5" fill="#2f855a" text-anchor="middle" font-weight="bold">CONFIRMED BEST</text>
+    <!-- sim score line + dots -->
+    <polyline points="88.75,103.6 166.25,112.2 243.75,94.7 321.25,68.4 398.75,112.2 476.25,100.1 553.75,102.0 631.25,229.3 708.75,103.6 786.25,104.8 863.75,91.3 941.25,101.8"
+      fill="none" stroke="#e53e3e" stroke-width="1.5" opacity="0.85"/>
+    <g fill="#e53e3e">
+      <circle cx="88.75" cy="103.6" r="3"/><circle cx="166.25" cy="112.2" r="3"/><circle cx="243.75" cy="94.7" r="3"/><circle cx="321.25" cy="68.4" r="3"/>
+      <circle cx="398.75" cy="112.2" r="3"/><circle cx="476.25" cy="100.1" r="3"/><circle cx="553.75" cy="102.0" r="3"/><circle cx="631.25" cy="229.3" r="3"/>
+      <circle cx="708.75" cy="103.6" r="3"/><circle cx="786.25" cy="104.8" r="3"/><circle cx="863.75" cy="91.3" r="3"/><circle cx="941.25" cy="101.8" r="3"/>
+    </g>
+    <!-- iteration labels -->
+    <g font-size="8.5" fill="#4a5568" text-anchor="middle" class="mono">
+      <text x="88.75" y="272">0</text><text x="166.25" y="272">1</text><text x="243.75" y="272">2</text><text x="321.25" y="272">3</text>
+      <text x="398.75" y="272">4</text><text x="476.25" y="272">5</text><text x="553.75" y="272">6</text><text x="631.25" y="272">7</text>
+      <text x="708.75" y="272">8</text><text x="786.25" y="272">9</text><text x="863.75" y="272">10</text><text x="941.25" y="272">11</text>
+    </g>
+    <text x="631.25" y="284" font-size="7.5" fill="#b91c1c" text-anchor="middle">← the dip: teacher-v1 ablation (paper §007)</text>
+    <!-- legend -->
+    <rect x="60" y="292" width="14" height="10" fill="#4a6fa5"/><text x="78" y="300.5" font-size="8.5">judge score (0–100, anchored ±3 to sim)</text>
+    <line x1="310" y1="297" x2="336" y2="297" stroke="#e53e3e" stroke-width="1.5"/><circle cx="323" cy="297" r="3" fill="#e53e3e"/>
+    <text x="341" y="300.5" font-size="8.5">sim_score (deterministic simulator)</text>
+    <text x="60" y="322" font-size="8" fill="#718096">axis starts at 76 · zero poisoned iterations · halt reason: “score plateau: best of last 10 iterations = 82, best before = 81; improvement ≤ 2.0”</text>
+  </svg>
+
+  <div class="cols" style="margin-top:6px">
+    <div class="box">
+      <span class="t">ONE MODEL, THREE NAMES</span><br>
+      <span class="mono" style="font-size:8.2px">
+      exp_003&#9;&#9;← folder + iteration number<br>
+      hash dee2d34d02e4&#9;← the coordinate (knob settings)<br>
+      fpr b605fd4bc030…&#9;← the built model itself</span><br>
+      <span class="small">Coordinates can repeat ideas; fingerprints can't. Dedupe runs on fingerprints, so two versions are never secretly the same model.</span>
+    </div>
+    <div class="box">
+      <span class="t">WHERE VERSIONS LIVE</span>
+      <pre class="tree" style="margin-top:4px">workspace/
+  experiments/exp_000 … exp_011/   ← one folder per version
+      model.py · config.json · judge.json · sim_stdout.log
+  best_model.py            ← copy of the selected champion (#3)
+  best_model_confirmed.py  ← copy of the hidden-exam winner (#10)
+  deploy/                  ← what ships: weights + runtime + ID card</pre>
+    </div>
+  </div>
+
+  <h2 style="margin-top:10px">THE LIFE OF ONE VERSION</h2>
+  <div style="display:flex; gap:5px; align-items:stretch; font-size:8.2px; line-height:1.4;">
+    <div class="box" style="flex:1"><span class="t">1 · COORDINATE</span><br>the Meta picks knob settings from the state space menu</div>
+    <div style="align-self:center; color:#a0aec0; font-size:12px">→</div>
+    <div class="box" style="flex:1"><span class="t">2 · WORKER</span><br>writes <span class="mono">model.py</span> honouring every knob</div>
+    <div style="align-self:center; color:#a0aec0; font-size:12px">→</div>
+    <div class="box" style="flex:1"><span class="t">3 · FINGERPRINT</span><br>hash of features + architecture + training config — duplicate check</div>
+    <div style="align-self:center; color:#a0aec0; font-size:12px">→</div>
+    <div class="box" style="flex:1"><span class="t">4 · SIMULATOR</span><br>deterministic training → <span class="mono">sim_score</span>, the ground truth</div>
+    <div style="align-self:center; color:#a0aec0; font-size:12px">→</div>
+    <div class="box" style="flex:1"><span class="t">5 · JUDGE</span><br>reads the log, scores within ±3 of sim</div>
+    <div style="align-self:center; color:#a0aec0; font-size:12px">→</div>
+    <div class="box" style="flex:1"><span class="t">6 · VERSION</span><br><span class="mono">exp_NNN/</span> folder + ledger row + paper section</div>
+  </div>
+
+  <div class="footer"><span>context-health factory — model versions &amp; best model</span><span>all numbers from workspace/factory_state.json · confirmation.json · best_config.json</span></div>
+</div>
+
+<!-- ============================== PAGE 2 : SELECTION + CONFIRMATION ============================== -->
+<div class="page">
+  <div class="phead"><h1>HOW THE CHAMPION IS CROWNED — TWICE</h1><span class="no">02 / 03 · selection &amp; confirmation</span></div>
+
+  <div class="cols">
+    <div style="flex:0 0 44%">
+      <h2>THE FOUR GATES</h2>
+      <div class="step"><span class="n">1</span><span class="t">ANCHORED SCORING</span><br>
+        The Judge reads the sim log and scores 0–100, but must stay within <b>±3 of the deterministic sim_score</b> — otherwise the answer is rejected and retried. Opinions can't drift from the machine.</div>
+      <div class="step"><span class="n">2</span><span class="t">RUNNING BEST</span><br>
+        After each iteration, Python compares: higher judge score wins; tie → higher sim_score. Iteration 3 (82 / sim 82.28) beat 5 (82 / 81.95) and 6 (82 / 81.89) on the tie-break. Every win copies the model to <span class="mono">best_model.py</span>.</div>
+      <div class="step"><span class="n">3</span><span class="t">TIE SET AT HALT</span><br>
+        Picking the max of 12 noisy scores rewards luck (winner's curse). So at halt, every version within <b>2 standard errors</b> of the champion's sim_score becomes a candidate — here, 6 versions tied statistically.</div>
+      <div class="step"><span class="n">4</span><span class="t">THE HIDDEN EXAM</span><br>
+        Each candidate is retrained and replayed on <b>200 fresh scenarios (seeds 95000+)</b> never used during selection. New data, same deterministic simulator. The result is written to <span class="mono">confirmation.json</span>.</div>
+      <div class="box hl"><span class="t">WHY TWO CROWNS?</span> The spec's answer to "which is best" must be the judge-score rule (reproducible by definition). The evidence answer comes from the hidden exam. The factory reports both — and tells you when they disagree.</div>
+    </div>
+    <div>
+      <h2>CONFIRMATION.JSON — THE REAL RESULTS</h2>
+      <table class="tb">
+        <tr><th>version</th><th>judge</th><th>eval sim</th><th>hidden-exam sim</th><th>hidden return</th><th>Δ vs #3</th></tr>
+        <tr class="sel"><td class="mono">exp_003</td><td>82</td><td>82.28</td><td>81.16</td><td>32.88</td><td>—</td></tr>
+        <tr><td class="mono">exp_005</td><td>82</td><td>81.95</td><td>80.99</td><td>32.84</td><td>−0.04</td></tr>
+        <tr><td class="mono">exp_006</td><td>82</td><td>81.89</td><td>80.40</td><td>32.70</td><td>−0.18</td></tr>
+        <tr class="con"><td class="mono">exp_010</td><td>82</td><td>81.50</td><td><b>81.37</b></td><td><b>32.93</b></td><td><b>+0.05</b></td></tr>
+        <tr><td class="mono">exp_002</td><td>81</td><td>81.39</td><td>80.91</td><td>32.82</td><td>−0.06</td></tr>
+        <tr><td class="mono">exp_011</td><td>79</td><td>81.16</td><td>81.21</td><td>32.89</td><td>+0.01</td></tr>
+      </table>
+      <div class="box" style="margin-top:7px"><span class="t">THE TWIST</span><br>
+      The judge crowned <b>#3</b>. The hidden exam crowned <b>#10</b> (81.37 vs 81.16). The margin is small — 0.21 sim points, within noise — but that is exactly the point: the exam exists so the final answer is <i>measured</i>, not inherited from selection luck.</div>
+      <div class="box" style="margin-top:7px"><span class="t">WHICH FILE DO I USE?</span><br>
+      <span class="mono">best_model.py</span> — #3, the spec's answer (highest judge score, tie → sim).<br>
+      <span class="mono">best_model_confirmed.py</span> — #10, the hidden-exam answer.<br>
+      <span class="mono">deploy/</span> — ships <b>#10</b>: the evidence winner.</div>
+      <div class="box" style="margin-top:7px"><span class="t">READ THE NOTE</span><br>
+      <span class="small mono">“The selected best (highest judge score) is Iteration 003; the confirmed best on the hidden set is Iteration 010.”</span></div>
+    </div>
+  </div>
+
+  <div class="footer"><span>context-health factory — model versions &amp; best model</span><span>confirmation set: 200 hidden scenarios, seeds 95000+, never used for selection</span></div>
+</div>
+
+<!-- ============================== PAGE 3 : ABSOLUTE SCALE + CHAMPION CARD ============================== -->
+<div class="page">
+  <div class="phead"><h1>WHERE THE CHAMPION STANDS</h1><span class="no">03 / 03 · the absolute scale</span></div>
+
+  <h2>MEAN RETURN vs THE FIXED LANDMARKS (computed before any model trained)</h2>
+  <svg viewBox="0 0 1000 330" style="width:100%; display:block;">
+    <!-- x(v) = 70 + (v+10)*17.6 ; zero line at 246 -->
+    <line x1="246" y1="14" x2="246" y2="290" stroke="#4a5568" stroke-width="1.5"/>
+    <text x="246" y="304" font-size="8" fill="#a0aec0" text-anchor="middle" class="mono">0</text>
+    <text x="70" y="304" font-size="8" fill="#a0aec0" text-anchor="middle" class="mono">−10</text>
+    <text x="598" y="304" font-size="8" fill="#a0aec0" text-anchor="middle" class="mono">+20</text>
+    <text x="950" y="304" font-size="8" fill="#a0aec0" text-anchor="middle" class="mono">+40</text>
+    <!-- rows: y centers 36, 82, 128, 174, 220, 266 ; bar h 30 -->
+    <text x="60" y="31" font-size="8.5" fill="#718096">clairvoyant (perfect-info ceiling)</text>
+    <rect x="246" y="24" width="660.4" height="24" fill="#a0aec0" rx="2"/><text x="914" y="40" font-size="8.5" class="mono" fill="#4a5568">37.52</text>
+    <text x="60" y="77" font-size="8.5" fill="#b7791f" font-weight="bold">#3 — selected best (eval)</text>
+    <rect x="246" y="70" width="589.8" height="24" fill="#b7791f" rx="2"/><text x="843" y="86" font-size="8.5" class="mono" fill="#4a5568">33.51</text>
+    <text x="60" y="123" font-size="8.5" fill="#2f855a" font-weight="bold">#10 — confirmed best (hidden exam)</text>
+    <rect x="246" y="116" width="579.6" height="24" fill="#2f855a" rx="2"/><text x="833" y="132" font-size="8.5" class="mono" fill="#4a5568">32.93</text>
+    <text x="60" y="169" font-size="8.5" fill="#718096">teacher v2 (its own teacher)</text>
+    <rect x="246" y="162" width="565.6" height="24" fill="#90cdf4" rx="2"/><text x="819" y="178" font-size="8.5" class="mono" fill="#4a5568">32.14</text>
+    <text x="60" y="215" font-size="8.5" fill="#718096">oracle (one-step lookahead)</text>
+    <rect x="246" y="208" width="558.5" height="24" fill="#90cdf4" rx="2"/><text x="812" y="224" font-size="8.5" class="mono" fill="#4a5568">31.73</text>
+    <text x="60" y="261" font-size="8.5" fill="#718096">heuristic (hand-written rules)</text>
+    <rect x="246" y="254" width="461" height="24" fill="#90cdf4" rx="2"/><text x="714" y="270" font-size="8.5" class="mono" fill="#4a5568">26.20</text>
+    <text x="60" y="261" font-size="8.5" fill="#718096"></text>
+    <!-- noop negative bar -->
+    <text x="60" y="307" font-size="8.5" fill="#718096"></text>
+    <rect x="118.4" y="274" width="127.6" height="14" fill="#e53e3e" opacity="0.6" rx="2"/><text x="110" y="285" font-size="8" class="mono" fill="#b91c1c" text-anchor="end">noop −7.25</text>
+    <text x="70" y="322" font-size="8.5" fill="#4a5568">the factory's model beats its own teacher (+0.8), the one-step oracle (+1.2 on eval) — gap to the perfect-info ceiling: −4.0</text>
+  </svg>
+
+  <div class="cols" style="margin-top:4px">
+    <div>
+      <h2>CHAMPION CARD — exp_003</h2>
+      <table class="tb">
+        <tr><th>knob</th><th>setting</th></tr>
+        <tr><td class="mono">features_recipe</td><td>reference_35 (35 features)</td></tr>
+        <tr><td class="mono">hidden_layers</td><td>[64, 64] — 6,854 params</td></tr>
+        <tr><td class="mono">teacher</td><td>v2 (two-step lookahead)</td></tr>
+        <tr><td class="mono">target_recipe</td><td>soft, temperature 0.5</td></tr>
+        <tr><td class="mono">data_recipe</td><td>behaviour + self, 84 DAgger episodes</td></tr>
+        <tr><td class="mono">decision_calibration</td><td>noop_margin_down (−0.75 NOOP bias)</td></tr>
+        <tr><td class="mono">ensemble_seeds</td><td>3</td></tr>
+        <tr><td class="mono">optim_recipe</td><td>reference (adamw, lr 5e-4, 30 epochs)</td></tr>
+      </table>
+      <div style="margin-top:5px">
+        <span class="chip">success rate 98%</span><span class="chip">overflow 0.0</span><span class="chip">val_acc 59.6%</span><span class="chip">train≈val → no overfit</span>
+      </div>
+    </div>
+    <div>
+      <h2>WHAT SHIPS — workspace/deploy/</h2>
+      <pre class="tree">deploy/
+  intervention_policy.pt   ← trained weights (iteration 10)
+  policy_model.py          ← the model class
+  policy_runtime.py        ← inference wrapper
+  policy_card.json         ← the ID card</pre>
+      <div class="box" style="margin-top:6px"><span class="t">THE ID CARD SAYS</span><br>
+      <span class="small">iteration 10 · eval sim 81.5 · hidden-exam sim 81.37 · 35 named features · 6 actions ·
+      <b>parity check: all 50 replay turns identical between simulator and runtime</b> · trained in the deterministic synthetic simulator (sim-to-real caveats in deploy/README.md).</span></div>
+      <div class="box hl" style="margin-top:6px"><span class="t">THE RUN IN NUMBERS</span><br>
+      <span class="small">12 versions · 6 waves · 0 poisoned · 57 LLM calls · <b>$7.42 total</b> · halted by the plateau rule, not by a human.</span></div>
+    </div>
+  </div>
+
+  <div class="footer"><span>context-health factory — model versions &amp; best model</span><span>sources: factory_state.json · best_config.json · confirmation.json · deploy/policy_card.json</span></div>
+</div>
+
+</body>
+</html>

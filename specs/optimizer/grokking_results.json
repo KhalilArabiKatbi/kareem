@@ -1,0 +1,818 @@
+[
+  {
+    "recipe": "experiments/_archived/20260929-043805/exp_007/model.py",
+    "weight_decay": 0.0,
+    "seconds": 161.6,
+    "curve": [
+      {
+        "step": 500,
+        "epochs": 14.8,
+        "loss": 1.6799,
+        "train_acc": 0.5943,
+        "val_acc": 0.5993,
+        "val_regret": 0.0939,
+        "weight_norm": 7.2,
+        "dev_return": 32.388
+      },
+      {
+        "step": 1000,
+        "epochs": 29.6,
+        "loss": 1.6824,
+        "train_acc": 0.6135,
+        "val_acc": 0.6021,
+        "val_regret": 0.0887,
+        "weight_norm": 7.48,
+        "dev_return": 32.336
+      },
+      {
+        "step": 2000,
+        "epochs": 59.3,
+        "loss": 1.6842,
+        "train_acc": 0.6285,
+        "val_acc": 0.5931,
+        "val_regret": 0.094,
+        "weight_norm": 8.24,
+        "dev_return": 32.337
+      },
+      {
+        "step": 3000,
+        "epochs": 88.9,
+        "loss": 1.6806,
+        "train_acc": 0.633,
+        "val_acc": 0.5792,
+        "val_regret": 0.0937,
+        "weight_norm": 8.97,
+        "dev_return": 32.39
+      },
+      {
+        "step": 5000,
+        "epochs": 148.1,
+        "loss": 1.6763,
+        "train_acc": 0.6419,
+        "val_acc": 0.5639,
+        "val_regret": 0.1029,
+        "weight_norm": 10.12,
+        "dev_return": 32.479
+      },
+      {
+        "step": 8000,
+        "epochs": 237.0,
+        "loss": 1.6693,
+        "train_acc": 0.6521,
+        "val_acc": 0.5632,
+        "val_regret": 0.1053,
+        "weight_norm": 11.42,
+        "dev_return": 32.459
+      },
+      {
+        "step": 12000,
+        "epochs": 355.6,
+        "loss": 1.6739,
+        "train_acc": 0.6562,
+        "val_acc": 0.5514,
+        "val_regret": 0.1087,
+        "weight_norm": 12.65,
+        "dev_return": 32.38
+      },
+      {
+        "step": 20000,
+        "epochs": 592.6,
+        "loss": 1.6771,
+        "train_acc": 0.67,
+        "val_acc": 0.5549,
+        "val_regret": 0.1101,
+        "weight_norm": 14.17,
+        "dev_return": 32.329
+      },
+      {
+        "step": 30000,
+        "epochs": 888.9,
+        "loss": 1.6738,
+        "train_acc": 0.6846,
+        "val_acc": 0.5674,
+        "val_regret": 0.1079,
+        "weight_norm": 15.29,
+        "dev_return": 31.982
+      },
+      {
+        "step": 50000,
+        "epochs": 1481.5,
+        "loss": 1.6775,
+        "train_acc": 0.6846,
+        "val_acc": 0.541,
+        "val_regret": 0.1232,
+        "weight_norm": 16.58,
+        "dev_return": 32.136
+      },
+      {
+        "step": 75000,
+        "epochs": 2222.2,
+        "loss": 1.6707,
+        "train_acc": 0.6944,
+        "val_acc": 0.5431,
+        "val_regret": 0.1237,
+        "weight_norm": 17.74,
+        "dev_return": 32.087
+      },
+      {
+        "step": 100000,
+        "epochs": 2963.0,
+        "loss": 1.6758,
+        "train_acc": 0.6953,
+        "val_acc": 0.5521,
+        "val_regret": 0.1175,
+        "weight_norm": 18.78,
+        "dev_return": 31.888
+      }
+    ],
+    "verdict": {
+      "best_early_step": 3000,
+      "best_early_return": 32.39,
+      "best_late_step": 12000,
+      "best_late_return": 32.38,
+      "late_minus_early": -0.01,
+      "se": 0.193,
+      "grokking_like": false
+    }
+  },
+  {
+    "recipe": "experiments/_archived/20260929-043805/exp_007/model.py",
+    "weight_decay": 0.01,
+    "seconds": 159.5,
+    "curve": [
+      {
+        "step": 500,
+        "epochs": 14.8,
+        "loss": 1.6799,
+        "train_acc": 0.5943,
+        "val_acc": 0.5993,
+        "val_regret": 0.0939,
+        "weight_norm": 7.19,
+        "dev_return": 32.567
+      },
+      {
+        "step": 1000,
+        "epochs": 29.6,
+        "loss": 1.6824,
+        "train_acc": 0.6135,
+        "val_acc": 0.6028,
+        "val_regret": 0.0877,
+        "weight_norm": 7.45,
+        "dev_return": 32.519
+      },
+      {
+        "step": 2000,
+        "epochs": 59.3,
+        "loss": 1.6843,
+        "train_acc": 0.6303,
+        "val_acc": 0.5958,
+        "val_regret": 0.0916,
+        "weight_norm": 8.19,
+        "dev_return": 32.287
+      },
+      {
+        "step": 3000,
+        "epochs": 88.9,
+        "loss": 1.6805,
+        "train_acc": 0.633,
+        "val_acc": 0.5813,
+        "val_regret": 0.0969,
+        "weight_norm": 8.89,
+        "dev_return": 32.274
+      },
+      {
+        "step": 5000,
+        "epochs": 148.1,
+        "loss": 1.6767,
+        "train_acc": 0.6403,
+        "val_acc": 0.5715,
+        "val_regret": 0.1003,
+        "weight_norm": 9.94,
+        "dev_return": 32.398
+      },
+      {
+        "step": 8000,
+        "epochs": 237.0,
+        "loss": 1.6695,
+        "train_acc": 0.6465,
+        "val_acc": 0.5549,
+        "val_regret": 0.1082,
+        "weight_norm": 11.05,
+        "dev_return": 32.397
+      },
+      {
+        "step": 12000,
+        "epochs": 355.6,
+        "loss": 1.6743,
+        "train_acc": 0.6616,
+        "val_acc": 0.5528,
+        "val_regret": 0.1079,
+        "weight_norm": 12.1,
+        "dev_return": 32.48
+      },
+      {
+        "step": 20000,
+        "epochs": 592.6,
+        "loss": 1.6768,
+        "train_acc": 0.6718,
+        "val_acc": 0.5556,
+        "val_regret": 0.1078,
+        "weight_norm": 13.47,
+        "dev_return": 32.398
+      },
+      {
+        "step": 30000,
+        "epochs": 888.9,
+        "loss": 1.674,
+        "train_acc": 0.6809,
+        "val_acc": 0.5437,
+        "val_regret": 0.1188,
+        "weight_norm": 14.49,
+        "dev_return": 32.17
+      },
+      {
+        "step": 50000,
+        "epochs": 1481.5,
+        "loss": 1.677,
+        "train_acc": 0.6964,
+        "val_acc": 0.5451,
+        "val_regret": 0.1204,
+        "weight_norm": 15.62,
+        "dev_return": 32.267
+      },
+      {
+        "step": 75000,
+        "epochs": 2222.2,
+        "loss": 1.6704,
+        "train_acc": 0.6953,
+        "val_acc": 0.5396,
+        "val_regret": 0.1229,
+        "weight_norm": 16.37,
+        "dev_return": 32.25
+      },
+      {
+        "step": 100000,
+        "epochs": 2963.0,
+        "loss": 1.6755,
+        "train_acc": 0.6911,
+        "val_acc": 0.5146,
+        "val_regret": 0.1284,
+        "weight_norm": 16.84,
+        "dev_return": 31.859
+      }
+    ],
+    "verdict": {
+      "best_early_step": 500,
+      "best_early_return": 32.567,
+      "best_late_step": 12000,
+      "best_late_return": 32.48,
+      "late_minus_early": -0.087,
+      "se": 0.202,
+      "grokking_like": false
+    }
+  },
+  {
+    "recipe": "experiments/_archived/20260929-043805/exp_007/model.py",
+    "weight_decay": 0.1,
+    "seconds": 159.1,
+    "curve": [
+      {
+        "step": 500,
+        "epochs": 14.8,
+        "loss": 1.68,
+        "train_acc": 0.5947,
+        "val_acc": 0.6021,
+        "val_regret": 0.0936,
+        "weight_norm": 7.06,
+        "dev_return": 32.487
+      },
+      {
+        "step": 1000,
+        "epochs": 29.6,
+        "loss": 1.6824,
+        "train_acc": 0.6135,
+        "val_acc": 0.6042,
+        "val_regret": 0.088,
+        "weight_norm": 7.21,
+        "dev_return": 32.237
+      },
+      {
+        "step": 2000,
+        "epochs": 59.3,
+        "loss": 1.6845,
+        "train_acc": 0.6275,
+        "val_acc": 0.5965,
+        "val_regret": 0.0912,
+        "weight_norm": 7.75,
+        "dev_return": 32.345
+      },
+      {
+        "step": 3000,
+        "epochs": 88.9,
+        "loss": 1.681,
+        "train_acc": 0.6288,
+        "val_acc": 0.5799,
+        "val_regret": 0.0938,
+        "weight_norm": 8.26,
+        "dev_return": 32.351
+      },
+      {
+        "step": 5000,
+        "epochs": 148.1,
+        "loss": 1.6767,
+        "train_acc": 0.6359,
+        "val_acc": 0.5743,
+        "val_regret": 0.1004,
+        "weight_norm": 9.02,
+        "dev_return": 32.498
+      },
+      {
+        "step": 8000,
+        "epochs": 237.0,
+        "loss": 1.6702,
+        "train_acc": 0.6451,
+        "val_acc": 0.5667,
+        "val_regret": 0.1019,
+        "weight_norm": 9.81,
+        "dev_return": 32.38
+      },
+      {
+        "step": 12000,
+        "epochs": 355.6,
+        "loss": 1.6742,
+        "train_acc": 0.6534,
+        "val_acc": 0.5653,
+        "val_regret": 0.1031,
+        "weight_norm": 10.55,
+        "dev_return": 32.434
+      },
+      {
+        "step": 20000,
+        "epochs": 592.6,
+        "loss": 1.6778,
+        "train_acc": 0.6668,
+        "val_acc": 0.5694,
+        "val_regret": 0.1042,
+        "weight_norm": 11.49,
+        "dev_return": 32.326
+      },
+      {
+        "step": 30000,
+        "epochs": 888.9,
+        "loss": 1.6745,
+        "train_acc": 0.674,
+        "val_acc": 0.5632,
+        "val_regret": 0.1086,
+        "weight_norm": 12.24,
+        "dev_return": 32.131
+      },
+      {
+        "step": 50000,
+        "epochs": 1481.5,
+        "loss": 1.6776,
+        "train_acc": 0.6834,
+        "val_acc": 0.5583,
+        "val_regret": 0.1101,
+        "weight_norm": 13.14,
+        "dev_return": 32.061
+      },
+      {
+        "step": 75000,
+        "epochs": 2222.2,
+        "loss": 1.6716,
+        "train_acc": 0.6838,
+        "val_acc": 0.5493,
+        "val_regret": 0.1096,
+        "weight_norm": 13.73,
+        "dev_return": 32.338
+      },
+      {
+        "step": 100000,
+        "epochs": 2963.0,
+        "loss": 1.6767,
+        "train_acc": 0.688,
+        "val_acc": 0.5444,
+        "val_regret": 0.1127,
+        "weight_norm": 14.03,
+        "dev_return": 32.123
+      }
+    ],
+    "verdict": {
+      "best_early_step": 500,
+      "best_early_return": 32.487,
+      "best_late_step": 12000,
+      "best_late_return": 32.434,
+      "late_minus_early": -0.053,
+      "se": 0.202,
+      "grokking_like": false
+    }
+  },
+  {
+    "recipe": "experiments/exp_005/model.py",
+    "weight_decay": 0.0,
+    "seconds": 263.7,
+    "curve": [
+      {
+        "step": 500,
+        "epochs": 59.3,
+        "loss": 1.5801,
+        "train_acc": 0.6229,
+        "val_acc": 0.5903,
+        "val_regret": 0.0969,
+        "weight_norm": 8.64,
+        "dev_return": 32.777
+      },
+      {
+        "step": 1000,
+        "epochs": 118.5,
+        "loss": 1.5725,
+        "train_acc": 0.6413,
+        "val_acc": 0.5847,
+        "val_regret": 0.0988,
+        "weight_norm": 10.4,
+        "dev_return": 32.862
+      },
+      {
+        "step": 2000,
+        "epochs": 237.0,
+        "loss": 1.5657,
+        "train_acc": 0.66,
+        "val_acc": 0.5562,
+        "val_regret": 0.1169,
+        "weight_norm": 12.95,
+        "dev_return": 32.462
+      },
+      {
+        "step": 3000,
+        "epochs": 355.6,
+        "loss": 1.5628,
+        "train_acc": 0.6774,
+        "val_acc": 0.5597,
+        "val_regret": 0.1129,
+        "weight_norm": 14.45,
+        "dev_return": 32.218
+      },
+      {
+        "step": 5000,
+        "epochs": 592.6,
+        "loss": 1.57,
+        "train_acc": 0.6912,
+        "val_acc": 0.5569,
+        "val_regret": 0.1162,
+        "weight_norm": 16.33,
+        "dev_return": 31.863
+      },
+      {
+        "step": 8000,
+        "epochs": 948.1,
+        "loss": 1.5578,
+        "train_acc": 0.7043,
+        "val_acc": 0.5493,
+        "val_regret": 0.1207,
+        "weight_norm": 18.13,
+        "dev_return": 31.797
+      },
+      {
+        "step": 12000,
+        "epochs": 1422.2,
+        "loss": 1.5588,
+        "train_acc": 0.7128,
+        "val_acc": 0.5444,
+        "val_regret": 0.1243,
+        "weight_norm": 19.68,
+        "dev_return": 31.678
+      },
+      {
+        "step": 20000,
+        "epochs": 2370.4,
+        "loss": 1.5564,
+        "train_acc": 0.7176,
+        "val_acc": 0.5444,
+        "val_regret": 0.1309,
+        "weight_norm": 21.36,
+        "dev_return": 31.677
+      },
+      {
+        "step": 30000,
+        "epochs": 3555.6,
+        "loss": 1.5559,
+        "train_acc": 0.7221,
+        "val_acc": 0.534,
+        "val_regret": 0.1384,
+        "weight_norm": 22.72,
+        "dev_return": 31.658
+      },
+      {
+        "step": 50000,
+        "epochs": 5925.9,
+        "loss": 1.5537,
+        "train_acc": 0.7294,
+        "val_acc": 0.5201,
+        "val_regret": 0.1401,
+        "weight_norm": 24.91,
+        "dev_return": 31.453
+      },
+      {
+        "step": 75000,
+        "epochs": 8888.9,
+        "loss": 1.5552,
+        "train_acc": 0.7343,
+        "val_acc": 0.5181,
+        "val_regret": 0.144,
+        "weight_norm": 26.94,
+        "dev_return": 31.453
+      },
+      {
+        "step": 100000,
+        "epochs": 11851.9,
+        "loss": 1.5514,
+        "train_acc": 0.7339,
+        "val_acc": 0.5215,
+        "val_regret": 0.1407,
+        "weight_norm": 28.75,
+        "dev_return": 31.727
+      }
+    ],
+    "verdict": {
+      "best_early_step": 1000,
+      "best_early_return": 32.862,
+      "best_late_step": 100000,
+      "best_late_return": 31.727,
+      "late_minus_early": -1.135,
+      "se": 0.198,
+      "grokking_like": false
+    }
+  },
+  {
+    "recipe": "experiments/exp_005/model.py",
+    "weight_decay": 0.01,
+    "seconds": 263.3,
+    "curve": [
+      {
+        "step": 500,
+        "epochs": 59.3,
+        "loss": 1.5801,
+        "train_acc": 0.6213,
+        "val_acc": 0.5903,
+        "val_regret": 0.0969,
+        "weight_norm": 8.6,
+        "dev_return": 32.817
+      },
+      {
+        "step": 1000,
+        "epochs": 118.5,
+        "loss": 1.5727,
+        "train_acc": 0.6409,
+        "val_acc": 0.5882,
+        "val_regret": 0.0991,
+        "weight_norm": 10.33,
+        "dev_return": 32.633
+      },
+      {
+        "step": 2000,
+        "epochs": 237.0,
+        "loss": 1.5659,
+        "train_acc": 0.6633,
+        "val_acc": 0.5694,
+        "val_regret": 0.1084,
+        "weight_norm": 12.89,
+        "dev_return": 32.623
+      },
+      {
+        "step": 3000,
+        "epochs": 355.6,
+        "loss": 1.5626,
+        "train_acc": 0.6778,
+        "val_acc": 0.5646,
+        "val_regret": 0.1156,
+        "weight_norm": 14.39,
+        "dev_return": 32.23
+      },
+      {
+        "step": 5000,
+        "epochs": 592.6,
+        "loss": 1.5692,
+        "train_acc": 0.694,
+        "val_acc": 0.5569,
+        "val_regret": 0.1256,
+        "weight_norm": 16.55,
+        "dev_return": 32.164
+      },
+      {
+        "step": 8000,
+        "epochs": 948.1,
+        "loss": 1.5575,
+        "train_acc": 0.706,
+        "val_acc": 0.5458,
+        "val_regret": 0.1312,
+        "weight_norm": 18.31,
+        "dev_return": 32.117
+      },
+      {
+        "step": 12000,
+        "epochs": 1422.2,
+        "loss": 1.5588,
+        "train_acc": 0.7072,
+        "val_acc": 0.5299,
+        "val_regret": 0.1368,
+        "weight_norm": 19.66,
+        "dev_return": 31.969
+      },
+      {
+        "step": 20000,
+        "epochs": 2370.4,
+        "loss": 1.557,
+        "train_acc": 0.7144,
+        "val_acc": 0.5368,
+        "val_regret": 0.1375,
+        "weight_norm": 21.36,
+        "dev_return": 31.801
+      },
+      {
+        "step": 30000,
+        "epochs": 3555.6,
+        "loss": 1.5559,
+        "train_acc": 0.7235,
+        "val_acc": 0.5222,
+        "val_regret": 0.1411,
+        "weight_norm": 23.41,
+        "dev_return": 31.812
+      },
+      {
+        "step": 50000,
+        "epochs": 5925.9,
+        "loss": 1.5544,
+        "train_acc": 0.7289,
+        "val_acc": 0.5306,
+        "val_regret": 0.1376,
+        "weight_norm": 24.89,
+        "dev_return": 31.622
+      },
+      {
+        "step": 75000,
+        "epochs": 8888.9,
+        "loss": 1.556,
+        "train_acc": 0.7308,
+        "val_acc": 0.5306,
+        "val_regret": 0.1341,
+        "weight_norm": 25.31,
+        "dev_return": 31.766
+      },
+      {
+        "step": 100000,
+        "epochs": 11851.9,
+        "loss": 1.5513,
+        "train_acc": 0.7377,
+        "val_acc": 0.5319,
+        "val_regret": 0.1361,
+        "weight_norm": 25.84,
+        "dev_return": 31.679
+      }
+    ],
+    "verdict": {
+      "best_early_step": 500,
+      "best_early_return": 32.817,
+      "best_late_step": 12000,
+      "best_late_return": 31.969,
+      "late_minus_early": -0.849,
+      "se": 0.192,
+      "grokking_like": false
+    }
+  },
+  {
+    "recipe": "experiments/exp_005/model.py",
+    "weight_decay": 0.1,
+    "seconds": 260.0,
+    "curve": [
+      {
+        "step": 500,
+        "epochs": 59.3,
+        "loss": 1.5805,
+        "train_acc": 0.6199,
+        "val_acc": 0.5882,
+        "val_regret": 0.097,
+        "weight_norm": 8.28,
+        "dev_return": 32.78
+      },
+      {
+        "step": 1000,
+        "epochs": 118.5,
+        "loss": 1.5726,
+        "train_acc": 0.6406,
+        "val_acc": 0.5903,
+        "val_regret": 0.0977,
+        "weight_norm": 9.76,
+        "dev_return": 32.412
+      },
+      {
+        "step": 2000,
+        "epochs": 237.0,
+        "loss": 1.5665,
+        "train_acc": 0.6627,
+        "val_acc": 0.5694,
+        "val_regret": 0.11,
+        "weight_norm": 11.83,
+        "dev_return": 32.49
+      },
+      {
+        "step": 3000,
+        "epochs": 355.6,
+        "loss": 1.5646,
+        "train_acc": 0.6661,
+        "val_acc": 0.5632,
+        "val_regret": 0.1096,
+        "weight_norm": 12.9,
+        "dev_return": 32.475
+      },
+      {
+        "step": 5000,
+        "epochs": 592.6,
+        "loss": 1.5714,
+        "train_acc": 0.6867,
+        "val_acc": 0.5604,
+        "val_regret": 0.1126,
+        "weight_norm": 14.3,
+        "dev_return": 32.144
+      },
+      {
+        "step": 8000,
+        "epochs": 948.1,
+        "loss": 1.5591,
+        "train_acc": 0.6951,
+        "val_acc": 0.5479,
+        "val_regret": 0.1125,
+        "weight_norm": 15.56,
+        "dev_return": 32.275
+      },
+      {
+        "step": 12000,
+        "epochs": 1422.2,
+        "loss": 1.5616,
+        "train_acc": 0.702,
+        "val_acc": 0.5472,
+        "val_regret": 0.1154,
+        "weight_norm": 16.71,
+        "dev_return": 32.158
+      },
+      {
+        "step": 20000,
+        "epochs": 2370.4,
+        "loss": 1.5594,
+        "train_acc": 0.7083,
+        "val_acc": 0.5403,
+        "val_regret": 0.1188,
+        "weight_norm": 17.8,
+        "dev_return": 31.793
+      },
+      {
+        "step": 30000,
+        "epochs": 3555.6,
+        "loss": 1.5593,
+        "train_acc": 0.7096,
+        "val_acc": 0.5361,
+        "val_regret": 0.1226,
+        "weight_norm": 18.44,
+        "dev_return": 31.952
+      },
+      {
+        "step": 50000,
+        "epochs": 5925.9,
+        "loss": 1.5571,
+        "train_acc": 0.7133,
+        "val_acc": 0.5389,
+        "val_regret": 0.1154,
+        "weight_norm": 19.12,
+        "dev_return": 31.901
+      },
+      {
+        "step": 75000,
+        "epochs": 8888.9,
+        "loss": 1.559,
+        "train_acc": 0.7206,
+        "val_acc": 0.5257,
+        "val_regret": 0.1261,
+        "weight_norm": 19.53,
+        "dev_return": 31.909
+      },
+      {
+        "step": 100000,
+        "epochs": 11851.9,
+        "loss": 1.554,
+        "train_acc": 0.7204,
+        "val_acc": 0.5333,
+        "val_regret": 0.1169,
+        "weight_norm": 19.8,
+        "dev_return": 31.825
+      }
+    ],
+    "verdict": {
+      "best_early_step": 500,
+      "best_early_return": 32.78,
+      "best_late_step": 12000,
+      "best_late_return": 32.158,
+      "late_minus_early": -0.622,
+      "se": 0.186,
+      "grokking_like": false
+    }
+  }
+]

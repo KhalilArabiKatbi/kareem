@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Factory — Flows &amp; States, Plainly Drawn</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: #e8e6e1; }
+  body { font-family: "Segoe UI", system-ui, -apple-system, sans-serif; color: #26303b; }
+  .page { width: 210mm; height: 297mm; margin: 0 auto; background: #fbfaf6; position: relative;
+          overflow: hidden; page-break-after: always; padding: 12mm 14mm 16mm; }
+  .page:last-child { page-break-after: auto; }
+
+  .kicker { font-size: 8.5px; letter-spacing: 2.2px; color: #8a8577; font-weight: 700; }
+  h1 { font-size: 24px; letter-spacing: .4px; color: #1c2733; margin-top: 2.5mm; font-weight: 800; }
+  .sub { font-size: 11px; color: #5b6470; margin-top: 1.6mm; line-height: 1.45; }
+  .rule { height: 3px; background: #1c2733; width: 34mm; margin-top: 4mm; }
+
+  .sec { margin-top: 6mm; }
+  .sec-t { font-size: 12.5px; font-weight: 800; letter-spacing: 1.6px; color: #1c2733; }
+  .sec-t .n { color: #b3541e; }
+  .sec-c { font-size: 9px; color: #8a8577; margin-top: 1mm; letter-spacing: .3px; }
+
+  svg { display: block; width: 100%; height: auto; margin-top: 2.5mm; }
+  svg text { font-family: "Segoe UI", system-ui, sans-serif; }
+
+  .close-note { margin-top: 6mm; background: #1c2733; color: #f3f0e8; border-radius: 1.5mm;
+                padding: 3.5mm 4.5mm; font-size: 9.8px; line-height: 1.55; }
+  .close-note b { color: #f0b429; }
+
+  .foot { position: absolute; bottom: 6mm; left: 14mm; right: 14mm; display: flex;
+          justify-content: space-between; font-size: 8.5px; color: #8a8577; }
+</style>
+</head>
+<body>
+
+<!-- ================= PAGE 1 — THE FLOW ================= -->
+<section class="page">
+  <div class="kicker">CONTEXT HEALTH FACTORY &middot; FLOWS &amp; STATES, PLAINLY DRAWN</div>
+  <h1>THE FLOW OF ONE ROUND</h1>
+  <div class="sub">The same cooking show as before &mdash; now drawn. Follow the arrows: every stop a dish
+  passes through, in order, and the loop that keeps the show going.</div>
+  <div class="rule"></div>
+
+  <div class="sec">
+    <div class="sec-t"><span class="n">1 &middot;</span> ONE ROUND, TOP TO BOTTOM <span style="font-weight:400; letter-spacing:.4px; color:#5b6470;">&mdash; in the code: one &ldquo;wave&rdquo;</span></div>
+    <svg viewBox="0 0 1000 920">
+      <defs>
+        <marker id="m-d" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#1c2733"/></marker>
+        <marker id="m-g" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#16a34a"/></marker>
+        <marker id="m-o" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#ea580c"/></marker>
+        <marker id="m-r" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#dc2626"/></marker>
+      </defs>
+
+      <!-- showrunner -->
+      <rect x="250" y="10" width="500" height="54" rx="6" fill="#1c2733"/>
+      <text x="500" y="33" font-size="15" font-weight="800" fill="#ffffff" text-anchor="middle" letter-spacing="1.5">THE SHOWRUNNER</text>
+      <text x="500" y="51" font-size="9.5" fill="#c9c4b8" text-anchor="middle">runs everything &middot; keeps the scorebook &middot; does all the paperwork</text>
+      <line x1="500" y1="64" x2="500" y2="98" stroke="#1c2733" stroke-width="2" marker-end="url(#m-d)"/>
+
+      <!-- 1 plan -->
+      <rect x="280" y="100" width="440" height="64" rx="6" fill="#eef4ff" stroke="#2563eb" stroke-width="2"/>
+      <text x="296" y="126" font-size="12.5" font-weight="800" fill="#1d4ed8" letter-spacing="1">1 &middot; PLAN</text>
+      <text x="296" y="146" font-size="9.5" fill="#3d4652">the coach studies every past score and picks a few ideas (2&ndash;4)</text>
+
+      <text x="60" y="182" font-size="11" font-weight="800" fill="#b3541e" letter-spacing="1">2 &middot; COOK &amp; TASTE &mdash; every dish, at the same time</text>
+      <line x1="500" y1="164" x2="500" y2="196" stroke="#1c2733" stroke-width="2" marker-end="url(#m-d)"/>
+
+      <!-- lane A -->
+      <rect x="40" y="200" width="440" height="290" rx="8" fill="#fffdf7" stroke="#d8d3c4"/>
+      <text x="60" y="221" font-size="11" font-weight="800" fill="#8a6d3b" letter-spacing="1">DISH A &mdash; one idea</text>
+      <rect x="110" y="240" width="300" height="58" rx="6" fill="#ffffff" stroke="#ea580c" stroke-width="2"/>
+      <text x="260" y="264" font-size="11.5" font-weight="800" fill="#c2410c" text-anchor="middle" letter-spacing="1">THE COOK</text>
+      <text x="260" y="283" font-size="9" fill="#3d4652" text-anchor="middle">cooks the dish</text>
+      <line x1="260" y1="298" x2="260" y2="324" stroke="#1c2733" stroke-width="2" marker-end="url(#m-d)"/>
+      <rect x="110" y="326" width="300" height="58" rx="6" fill="#ffffff" stroke="#64748b" stroke-width="2"/>
+      <text x="260" y="350" font-size="10.5" font-weight="800" fill="#475569" text-anchor="middle" letter-spacing="1">THE TASTING MACHINE</text>
+      <text x="260" y="369" font-size="9" fill="#3d4652" text-anchor="middle">prints the objective score &mdash; no opinions</text>
+      <line x1="260" y1="384" x2="260" y2="410" stroke="#1c2733" stroke-width="2" marker-end="url(#m-d)"/>
+      <rect x="110" y="412" width="300" height="58" rx="6" fill="#ffffff" stroke="#0f766e" stroke-width="2"/>
+      <text x="260" y="436" font-size="11.5" font-weight="800" fill="#0f766e" text-anchor="middle" letter-spacing="1">THE CRITIC</text>
+      <text x="260" y="455" font-size="9" fill="#3d4652" text-anchor="middle">scores 0&ndash;100 &middot; must stay within 3 of the machine</text>
+      <line x1="260" y1="490" x2="260" y2="504" stroke="#8a8577" stroke-width="2" marker-end="url(#m-d)"/>
+
+      <!-- lane B -->
+      <rect x="520" y="200" width="440" height="290" rx="8" fill="#fffdf7" stroke="#d8d3c4"/>
+      <text x="540" y="221" font-size="11" font-weight="800" fill="#8a6d3b" letter-spacing="1">DISH B &mdash; another idea</text>
+      <rect x="590" y="240" width="300" height="58" rx="6" fill="#ffffff" stroke="#ea580c" stroke-width="2"/>
+      <text x="740" y="264" font-size="11.5" font-weight="800" fill="#c2410c" text-anchor="middle" letter-spacing="1">THE COOK</text>
+      <text x="740" y="283" font-size="9" fill="#3d4652" text-anchor="middle">cooks the dish</text>
+      <line x1="740" y1="298" x2="740" y2="324" stroke="#1c2733" stroke-width="2" marker-end="url(#m-d)"/>
+      <rect x="590" y="326" width="300" height="58" rx="6" fill="#ffffff" stroke="#64748b" stroke-width="2"/>
+      <text x="740" y="350" font-size="10.5" font-weight="800" fill="#475569" text-anchor="middle" letter-spacing="1">THE TASTING MACHINE</text>
+      <text x="740" y="369" font-size="9" fill="#3d4652" text-anchor="middle">prints the objective score &mdash; no opinions</text>
+      <line x1="740" y1="384" x2="740" y2="410" stroke="#1c2733" stroke-width="2" marker-end="url(#m-d)"/>
+      <rect x="590" y="412" width="300" height="58" rx="6" fill="#ffffff" stroke="#0f766e" stroke-width="2"/>
+      <text x="740" y="436" font-size="11.5" font-weight="800" fill="#0f766e" text-anchor="middle" letter-spacing="1">THE CRITIC</text>
+      <text x="740" y="455" font-size="9" fill="#3d4652" text-anchor="middle">scores 0&ndash;100 &middot; must stay within 3 of the machine</text>
+      <line x1="740" y1="490" x2="740" y2="504" stroke="#8a8577" stroke-width="2" marker-end="url(#m-d)"/>
+
+      <!-- barrier -->
+      <rect x="40" y="506" width="920" height="36" rx="6" fill="#f3f0e8" stroke="#8a8577" stroke-dasharray="5 4"/>
+      <text x="500" y="529" font-size="10.5" fill="#5b6470" text-anchor="middle">the showrunner waits for EVERY dish &mdash; only then does the round move on</text>
+      <line x1="500" y1="542" x2="500" y2="574" stroke="#1c2733" stroke-width="2" marker-end="url(#m-d)"/>
+
+      <!-- 3 record -->
+      <rect x="250" y="576" width="500" height="58" rx="6" fill="#f1f5f9" stroke="#334155" stroke-width="2"/>
+      <text x="266" y="600" font-size="12" font-weight="800" fill="#334155" letter-spacing="1">3 &middot; RECORD</text>
+      <text x="266" y="620" font-size="9.5" fill="#3d4652">every score goes into the scorebook &middot; the best dish becomes the champion</text>
+      <line x1="500" y1="634" x2="500" y2="662" stroke="#1c2733" stroke-width="2" marker-end="url(#m-d)"/>
+
+      <!-- 4 write up -->
+      <rect x="250" y="664" width="500" height="54" rx="6" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+      <text x="266" y="687" font-size="12" font-weight="800" fill="#15803d" letter-spacing="1">4 &middot; WRITE UP</text>
+      <text x="266" y="706" font-size="9.5" fill="#3d4652">the writer adds one chapter per dish to the cookbook</text>
+      <line x1="500" y1="718" x2="500" y2="748" stroke="#1c2733" stroke-width="2" marker-end="url(#m-d)"/>
+
+      <!-- 5 decide -->
+      <polygon points="380,830 500,764 620,830 500,896" fill="#fff7ed" stroke="#b3541e" stroke-width="2"/>
+      <text x="500" y="826" font-size="11.5" font-weight="800" fill="#9a3412" text-anchor="middle" letter-spacing="1">5 &middot; DECIDE</text>
+      <text x="500" y="846" font-size="9.5" fill="#3d4652" text-anchor="middle">are we done?</text>
+
+      <!-- yes -->
+      <line x1="620" y1="830" x2="700" y2="830" stroke="#16a34a" stroke-width="2" marker-end="url(#m-g)"/>
+      <text x="632" y="822" font-size="9.5" font-weight="700" fill="#15803d">yes</text>
+      <rect x="710" y="800" width="250" height="60" rx="6" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+      <text x="835" y="825" font-size="11" font-weight="800" fill="#15803d" text-anchor="middle" letter-spacing="1">FINISH</text>
+      <text x="835" y="844" font-size="9" fill="#3d4652" text-anchor="middle">champion crowned &middot; cookbook complete</text>
+
+      <!-- no loop -->
+      <polyline points="380,830 24,830 24,132 280,132" fill="none" stroke="#1c2733" stroke-width="2" marker-end="url(#m-d)"/>
+      <text transform="rotate(-90 13 481)" x="13" y="481" font-size="9" fill="#5b6470" text-anchor="middle">no &mdash; the next round begins &middot; the coach knows everything so far</text>
+    </svg>
+  </div>
+
+  <div class="foot"><span>Context Health Factory &mdash; flows &amp; states, plainly drawn</span><span>1 / 3</span></div>
+</section>
+
+<!-- ================= PAGE 2 — THE STATES ================= -->
+<section class="page">
+  <div class="kicker">CONTEXT HEALTH FACTORY &middot; FLOWS &amp; STATES, PLAINLY DRAWN</div>
+  <h1>THE STATES &mdash; WHERE THINGS CAN BE</h1>
+  <div class="sub">A &ldquo;state&rdquo; is just a labelled box a thing can sit in, and arrows are the only ways
+  out. Three pictures cover the whole factory: the show, the round, the dish.</div>
+  <div class="rule"></div>
+
+  <div class="sec">
+    <div class="sec-t"><span class="n">2 &middot;</span> THE SHOW <span style="font-weight:400; letter-spacing:.4px; color:#5b6470;">&mdash; in the code: the run</span></div>
+    <svg viewBox="0 0 1000 292">
+      <circle cx="28" cy="140" r="7" fill="#1c2733"/>
+      <line x1="35" y1="140" x2="66" y2="140" stroke="#1c2733" stroke-width="2" marker-end="url(#m-d)"/>
+      <rect x="70" y="100" width="260" height="80" rx="8" fill="#ffffff" stroke="#1c2733" stroke-width="2"/>
+      <text x="200" y="132" font-size="13" font-weight="800" fill="#1c2733" text-anchor="middle" letter-spacing="1.2">RUNNING</text>
+      <text x="200" y="154" font-size="9.5" fill="#5b6470" text-anchor="middle">rounds keep going</text>
+
+      <rect x="640" y="20" width="330" height="64" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+      <text x="660" y="44" font-size="12" font-weight="800" fill="#15803d" letter-spacing="1">FINISHED</text>
+      <text x="660" y="64" font-size="9" fill="#3d4652">a finish line was hit &mdash; the champion is crowned</text>
+
+      <rect x="640" y="114" width="330" height="64" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/>
+      <text x="660" y="138" font-size="12" font-weight="800" fill="#c2410c" letter-spacing="1">PAUSED</text>
+      <text x="660" y="158" font-size="9" fill="#3d4652">the phone line died &mdash; restart and it carries on</text>
+
+      <rect x="640" y="208" width="330" height="64" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+      <text x="660" y="232" font-size="12" font-weight="800" fill="#b91c1c" letter-spacing="1">STOPPED EARLY</text>
+      <text x="660" y="252" font-size="9" fill="#3d4652">a safety rule was broken &mdash; everything halts</text>
+
+      <polyline points="330,116 430,116 430,52 640,52" fill="none" stroke="#16a34a" stroke-width="2" marker-end="url(#m-g)"/>
+      <text x="336" y="106" font-size="9" fill="#15803d">a finish line is reached</text>
+      <polyline points="330,146 640,146" fill="none" stroke="#ea580c" stroke-width="2" marker-end="url(#m-o)"/>
+      <text x="336" y="136" font-size="9" fill="#c2410c">the phone line dies (or you press Ctrl-C)</text>
+      <polyline points="330,176 470,176 470,240 640,240" fill="none" stroke="#dc2626" stroke-width="2" marker-end="url(#m-r)"/>
+      <text x="336" y="166" font-size="9" fill="#b91c1c">a safety rule is broken</text>
+
+      <polyline points="700,114 700,8 140,8 140,100" fill="none" stroke="#ea580c" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#m-o)"/>
+      <text x="250" y="18" font-size="9" fill="#c2410c">restart = pick up exactly where it stopped</text>
+    </svg>
+  </div>
+
+  <div class="sec">
+    <div class="sec-t"><span class="n">3 &middot;</span> THE ROUND <span style="font-weight:400; letter-spacing:.4px; color:#5b6470;">&mdash; in the code: a wave &middot; always the same five stops, in order</span></div>
+    <svg viewBox="0 0 1000 230">
+      <rect x="16" y="80" width="172" height="64" rx="8" fill="#eef4ff" stroke="#2563eb" stroke-width="2"/>
+      <text x="102" y="106" font-size="11" font-weight="800" fill="#1d4ed8" text-anchor="middle">1 &middot; PLAN</text>
+      <text x="102" y="126" font-size="8.3" fill="#3d4652" text-anchor="middle">the coach picks ideas</text>
+      <line x1="188" y1="112" x2="212" y2="112" stroke="#1c2733" stroke-width="2" marker-end="url(#m-d)"/>
+
+      <rect x="212" y="80" width="172" height="64" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/>
+      <text x="298" y="106" font-size="11" font-weight="800" fill="#c2410c" text-anchor="middle">2 &middot; COOK &amp; TASTE</text>
+      <text x="298" y="126" font-size="8.3" fill="#3d4652" text-anchor="middle">cook &rarr; taste &rarr; score &middot; &le;3 tries</text>
+      <line x1="384" y1="112" x2="408" y2="112" stroke="#1c2733" stroke-width="2" marker-end="url(#m-d)"/>
+
+      <rect x="408" y="80" width="172" height="64" rx="8" fill="#f1f5f9" stroke="#334155" stroke-width="2"/>
+      <text x="494" y="106" font-size="11" font-weight="800" fill="#334155" text-anchor="middle">3 &middot; RECORD</text>
+      <text x="494" y="126" font-size="8.3" fill="#3d4652" text-anchor="middle">every score into the book</text>
+      <line x1="580" y1="112" x2="604" y2="112" stroke="#1c2733" stroke-width="2" marker-end="url(#m-d)"/>
+
+      <rect x="604" y="80" width="172" height="64" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+      <text x="690" y="106" font-size="11" font-weight="800" fill="#15803d" text-anchor="middle">4 &middot; WRITE UP</text>
+      <text x="690" y="126" font-size="8.3" fill="#3d4652" text-anchor="middle">one chapter per dish</text>
+      <line x1="776" y1="112" x2="800" y2="112" stroke="#1c2733" stroke-width="2" marker-end="url(#m-d)"/>
+
+      <rect x="800" y="80" width="172" height="64" rx="8" fill="#fff7ed" stroke="#b3541e" stroke-width="2"/>
+      <text x="886" y="106" font-size="11" font-weight="800" fill="#9a3412" text-anchor="middle">5 &middot; DECIDE</text>
+      <text x="886" y="126" font-size="8.3" fill="#3d4652" text-anchor="middle">done?</text>
+
+      <polyline points="886,80 886,40 102,40 102,80" fill="none" stroke="#1c2733" stroke-width="2" marker-end="url(#m-d)"/>
+      <text x="350" y="32" font-size="9" fill="#5b6470">not done &mdash; the next round begins</text>
+
+      <polyline points="102,144 102,196 886,196 886,144" fill="none" stroke="#dc2626" stroke-width="2" marker-end="url(#m-r)"/>
+      <text x="350" y="188" font-size="9" fill="#b91c1c">if the plan itself fails &mdash; the round still closes properly (every dish is skipped)</text>
+    </svg>
+  </div>
+
+  <div class="sec">
+    <div class="sec-t"><span class="n">4 &middot;</span> THE DISH <span style="font-weight:400; letter-spacing:.4px; color:#5b6470;">&mdash; in the code: an iteration &middot; every idea lives one of these two lives</span></div>
+    <svg viewBox="0 0 1000 240">
+      <rect x="16" y="90" width="160" height="64" rx="8" fill="#ffffff" stroke="#64748b" stroke-width="2"/>
+      <text x="96" y="114" font-size="11.5" font-weight="800" fill="#475569" text-anchor="middle" letter-spacing="1">WAITING</text>
+      <text x="96" y="134" font-size="8.5" fill="#5b6470" text-anchor="middle">one of the coach&rsquo;s ideas</text>
+      <line x1="176" y1="122" x2="216" y2="122" stroke="#1c2733" stroke-width="2" marker-end="url(#m-d)"/>
+
+      <rect x="220" y="90" width="300" height="64" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/>
+      <text x="370" y="112" font-size="11.5" font-weight="800" fill="#c2410c" text-anchor="middle" letter-spacing="1">IN THE KITCHEN</text>
+      <text x="370" y="133" font-size="8.5" fill="#3d4652" text-anchor="middle">cooked, tasted, scored &mdash; up to three tries</text>
+
+      <rect x="660" y="26" width="310" height="60" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+      <text x="680" y="50" font-size="11.5" font-weight="800" fill="#15803d" letter-spacing="1">SCORED</text>
+      <text x="680" y="68" font-size="8.5" fill="#3d4652">into the scorebook &middot; maybe the new champion</text>
+
+      <rect x="660" y="150" width="310" height="60" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+      <text x="680" y="174" font-size="11.5" font-weight="800" fill="#b91c1c" letter-spacing="1">DISQUALIFIED</text>
+      <text x="680" y="192" font-size="8.5" fill="#3d4652">three strikes &mdash; politely written off</text>
+
+      <polyline points="520,104 590,104 590,56 660,56" fill="none" stroke="#16a34a" stroke-width="2" marker-end="url(#m-g)"/>
+      <text x="526" y="94" font-size="8.5" fill="#15803d">it worked</text>
+      <polyline points="520,140 590,140 590,180 660,180" fill="none" stroke="#dc2626" stroke-width="2" marker-end="url(#m-r)"/>
+      <text x="526" y="132" font-size="8.5" fill="#b91c1c">third strike</text>
+
+      <polyline points="330,154 330,206 280,206 280,154" fill="none" stroke="#ea580c" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#m-o)"/>
+      <text x="344" y="200" font-size="8.5" fill="#c2410c">a fumble? cook it again</text>
+    </svg>
+  </div>
+
+  <div class="foot"><span>Context Health Factory &mdash; flows &amp; states, plainly drawn</span><span>2 / 3</span></div>
+</section>
+
+<!-- ================= PAGE 3 — HANDOFF + LADDER ================= -->
+<section class="page">
+  <div class="kicker">CONTEXT HEALTH FACTORY &middot; FLOWS &amp; STATES, PLAINLY DRAWN</div>
+  <h1>WHAT CARRIES FORWARD</h1>
+  <div class="sub">Rounds aren&rsquo;t isolated &mdash; each one hands four things to the next. And when someone
+  fumbles, the showrunner doesn&rsquo;t panic: it just calls in more experience, one rung at a time.</div>
+  <div class="rule"></div>
+
+  <div class="sec">
+    <div class="sec-t"><span class="n">5 &middot;</span> WHAT EACH ROUND HANDS TO THE NEXT</div>
+    <svg viewBox="0 0 1000 310">
+      <rect x="16" y="40" width="230" height="92" rx="8" fill="#f1f5f9" stroke="#334155" stroke-width="2"/>
+      <text x="131" y="66" font-size="10.5" font-weight="800" fill="#334155" text-anchor="middle" letter-spacing="1">THE SCOREBOOK</text>
+      <text x="131" y="88" font-size="8.5" fill="#3d4652" text-anchor="middle">every dish, every score,</text>
+      <text x="131" y="102" font-size="8.5" fill="#3d4652" text-anchor="middle">every round so far</text>
+      <line x1="131" y1="132" x2="131" y2="192" stroke="#1c2733" stroke-width="2" marker-end="url(#m-d)"/>
+
+      <rect x="262" y="40" width="230" height="92" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+      <text x="377" y="66" font-size="10.5" font-weight="800" fill="#15803d" text-anchor="middle" letter-spacing="1">THE CHAMPION CARD</text>
+      <text x="377" y="88" font-size="8.5" fill="#3d4652" text-anchor="middle">the current best recipe &mdash;</text>
+      <text x="377" y="102" font-size="8.5" fill="#3d4652" text-anchor="middle">the bar to beat</text>
+      <line x1="377" y1="132" x2="377" y2="192" stroke="#1c2733" stroke-width="2" marker-end="url(#m-d)"/>
+
+      <rect x="508" y="40" width="230" height="92" rx="8" fill="#fffbeb" stroke="#d97706" stroke-width="2"/>
+      <text x="623" y="66" font-size="10.5" font-weight="800" fill="#b45309" text-anchor="middle" letter-spacing="1">THE REPORT CARD</text>
+      <text x="623" y="88" font-size="8.5" fill="#3d4652" text-anchor="middle">recent scores &mdash; is it still</text>
+      <text x="623" y="102" font-size="8.5" fill="#3d4652" text-anchor="middle">improving, or stuck?</text>
+      <line x1="623" y1="132" x2="623" y2="192" stroke="#1c2733" stroke-width="2" marker-end="url(#m-d)"/>
+
+      <rect x="754" y="40" width="230" height="92" rx="8" fill="#f0fdfa" stroke="#0f766e" stroke-width="2"/>
+      <text x="869" y="66" font-size="10.5" font-weight="800" fill="#0f766e" text-anchor="middle" letter-spacing="1">THE COOKBOOK</text>
+      <text x="869" y="88" font-size="8.5" fill="#3d4652" text-anchor="middle">the story of the search,</text>
+      <text x="869" y="102" font-size="8.5" fill="#3d4652" text-anchor="middle">written so far</text>
+      <line x1="869" y1="132" x2="869" y2="192" stroke="#1c2733" stroke-width="2" marker-end="url(#m-d)"/>
+
+      <rect x="145" y="196" width="710" height="64" rx="8" fill="#eef4ff" stroke="#2563eb" stroke-width="2"/>
+      <text x="500" y="222" font-size="12" font-weight="800" fill="#1d4ed8" text-anchor="middle" letter-spacing="1.2">THE NEXT ROUND</text>
+      <text x="500" y="242" font-size="9.5" fill="#3d4652" text-anchor="middle">the coach reads all four before choosing the next ideas</text>
+
+      <text x="500" y="292" font-size="9.5" fill="#5b6470" text-anchor="middle">the showrunner reads the same four to decide whether the show is over</text>
+    </svg>
+  </div>
+
+  <div class="sec">
+    <div class="sec-t"><span class="n">6 &middot;</span> THE STAND-IN LADDER <span style="font-weight:400; letter-spacing:.4px; color:#5b6470;">&mdash; in the code: L0 &rarr; L3</span></div>
+    <svg viewBox="0 0 1000 344">
+      <rect x="16" y="240" width="220" height="64" rx="8" fill="#fffdf7" stroke="#b3541e" stroke-width="2"/>
+      <text x="126" y="266" font-size="10.5" font-weight="800" fill="#9a3412" text-anchor="middle">RUNG 1 &middot; the regular</text>
+      <text x="126" y="286" font-size="8.3" fill="#3d4652" text-anchor="middle">quick and cheap &mdash; first try</text>
+
+      <polyline points="120,240 120,202 262,202" fill="none" stroke="#b3541e" stroke-width="2" marker-end="url(#m-o)"/>
+      <text x="140" y="194" font-size="8.5" fill="#9a3412">fumbles again</text>
+
+      <rect x="262" y="170" width="220" height="64" rx="8" fill="#fff7ed" stroke="#b3541e" stroke-width="2"/>
+      <text x="372" y="196" font-size="10.5" font-weight="800" fill="#9a3412" text-anchor="middle">RUNG 2 &middot; full focus</text>
+      <text x="372" y="216" font-size="8.3" fill="#3d4652" text-anchor="middle">same cook, maximum care</text>
+
+      <polyline points="366,170 366,132 508,132" fill="none" stroke="#b3541e" stroke-width="2" marker-end="url(#m-o)"/>
+      <text x="386" y="124" font-size="8.5" fill="#9a3412">fumbles again</text>
+
+      <rect x="508" y="100" width="220" height="64" rx="8" fill="#ffedd5" stroke="#b3541e" stroke-width="2"/>
+      <text x="618" y="126" font-size="10.5" font-weight="800" fill="#9a3412" text-anchor="middle">RUNG 3 &middot; the veteran</text>
+      <text x="618" y="146" font-size="8.3" fill="#3d4652" text-anchor="middle">a more experienced stand-in</text>
+
+      <polyline points="612,100 612,62 754,62" fill="none" stroke="#b3541e" stroke-width="2" marker-end="url(#m-o)"/>
+      <text x="632" y="54" font-size="8.5" fill="#9a3412">fumbles again</text>
+
+      <rect x="754" y="30" width="220" height="64" rx="8" fill="#fed7aa" stroke="#b3541e" stroke-width="2"/>
+      <text x="864" y="56" font-size="10.5" font-weight="800" fill="#9a3412" text-anchor="middle">RUNG 4 &middot; veteran + focus</text>
+      <text x="864" y="76" font-size="8.3" fill="#3d4652" text-anchor="middle">the ceiling &mdash; nobody higher</text>
+
+      <text x="16" y="332" font-size="9.5" fill="#5b6470">every fumble climbs one rung &mdash; rung 4 is the ceiling &middot; each new dish starts back at the bottom</text>
+    </svg>
+  </div>
+
+  <div class="close-note">
+    <b>That&rsquo;s the whole factory.</b> Rounds of ideas flowing through the same five stops, three simple
+    state pictures telling you where anything can be, four things carried from round to round, and one
+    golden rule: performers never touch the paperwork. Everything else you&rsquo;ll meet in the code is detail.
+  </div>
+
+  <div class="foot"><span>Context Health Factory &mdash; flows &amp; states, plainly drawn</span><span>3 / 3</span></div>
+</section>
+
+</body>
+</html>

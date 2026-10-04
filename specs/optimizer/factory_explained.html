@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Factory, Explained Simply</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: #e8e6e1; }
+  body { font-family: "Segoe UI", system-ui, -apple-system, sans-serif; color: #26303b; }
+  .page { width: 210mm; height: 297mm; margin: 0 auto; background: #fbfaf6; position: relative;
+          overflow: hidden; page-break-after: always; padding: 12mm 14mm 16mm; }
+  .page:last-child { page-break-after: auto; }
+
+  .kicker { font-size: 8.5px; letter-spacing: 2.2px; color: #8a8577; font-weight: 700; }
+  h1 { font-size: 25px; letter-spacing: .4px; color: #1c2733; margin-top: 2.5mm; font-weight: 800; }
+  .sub { font-size: 11px; color: #5b6470; margin-top: 1.6mm; line-height: 1.45; }
+  .rule { height: 3px; background: #1c2733; width: 34mm; margin-top: 4mm; }
+
+  .sec { margin-top: 6.5mm; }
+  .sec-t { font-size: 12.5px; font-weight: 800; letter-spacing: 1.6px; color: #1c2733; }
+  .sec-t .n { color: #b3541e; }
+  .lead { font-size: 10.5px; line-height: 1.55; color: #3d4652; margin-top: 2.2mm; }
+
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 3.5mm; margin-top: 3.5mm; }
+  .card { background: #fff; border: 1px solid #e6e2d6; border-left: 4px solid var(--c);
+          border-radius: 1.2mm; padding: 2.8mm 3.5mm; }
+  .card h3 { font-size: 10px; letter-spacing: 1.4px; color: var(--c); font-weight: 800; }
+  .card p { font-size: 9.8px; line-height: 1.45; margin-top: 1.2mm; color: #3d4652; }
+
+  .steps { margin-top: 3.5mm; }
+  .step { display: flex; gap: 4mm; position: relative; padding-bottom: 4.2mm; }
+  .step:last-child { padding-bottom: 0; }
+  .step::before { content: ""; position: absolute; left: 3.5mm; top: 7.5mm; bottom: 0;
+                  width: 1.5px; background: #d8d3c4; }
+  .step:last-child::before { display: none; }
+  .num { width: 7mm; height: 7mm; border-radius: 50%; background: #1c2733; color: #fff;
+         font-size: 10.5px; font-weight: 700; display: flex; align-items: center;
+         justify-content: center; flex: none; position: relative; z-index: 1; }
+  .step h4 { font-size: 10.8px; font-weight: 800; letter-spacing: 1.1px; color: #1c2733; padding-top: .8mm; }
+  .step p { font-size: 9.8px; line-height: 1.5; color: #3d4652; margin-top: .8mm; }
+
+  .chip { display: inline-block; padding: .3mm 1.8mm; border-radius: 2.2mm; font-size: 8.2px;
+          font-weight: 700; letter-spacing: .5px; color: #fff; }
+  .c-coach { background: #2563eb; } .c-cook { background: #ea580c; }
+  .c-mach { background: #64748b; } .c-crit { background: #0f766e; } .c-wr { background: #16a34a; }
+
+  .story { background: #fff; border: 1px solid #e6e2d6; border-left: 4px solid #b3541e;
+           border-radius: 1.2mm; padding: 3.2mm 4mm; margin-top: 3.5mm; }
+  .story p { font-size: 9.8px; line-height: 1.55; color: #3d4652; margin-bottom: 1.8mm; }
+  .story p:last-child { margin-bottom: 0; }
+  .story b { color: #1c2733; }
+
+  .item { display: flex; gap: 3mm; margin-top: 2.6mm; }
+  .item .dot { width: 2.6mm; height: 2.6mm; border-radius: 50%; background: #b3541e;
+               margin-top: 1.1mm; flex: none; }
+  .item p { font-size: 9.8px; line-height: 1.5; color: #3d4652; }
+  .item b { color: #1c2733; }
+
+  .end { display: flex; gap: 3mm; margin-top: 2.4mm; align-items: flex-start; }
+  .end .n { font-size: 14px; font-weight: 800; color: #b3541e; width: 5mm; flex: none; line-height: 1.1; }
+  .end p { font-size: 9.8px; line-height: 1.5; color: #3d4652; }
+  .end b { color: #1c2733; }
+
+  .golden { margin-top: 6.5mm; background: #1c2733; color: #f3f0e8; border-radius: 1.5mm;
+            padding: 3.8mm 4.5mm; }
+  .golden h3 { font-size: 11px; letter-spacing: 1.8px; color: #f0b429; font-weight: 800; }
+  .golden p { font-size: 9.8px; line-height: 1.55; margin-top: 1.6mm; }
+
+  .maps { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; margin-top: 3mm; }
+  table.map { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #e6e2d6; }
+  .map td { font-size: 9px; padding: 1.6mm 2.2mm; border-bottom: 1px solid #eee9dc;
+            vertical-align: top; line-height: 1.35; }
+  .map tr:last-child td { border-bottom: none; }
+  .map .a { font-weight: 700; color: #1c2733; white-space: nowrap; }
+  .map .b { color: #5b6470; }
+
+  .foot { position: absolute; bottom: 6mm; left: 14mm; right: 14mm; display: flex;
+          justify-content: space-between; font-size: 8.5px; color: #8a8577; }
+</style>
+</head>
+<body>
+
+<!-- ================= PAGE 1 ================= -->
+<section class="page">
+  <div class="kicker">CONTEXT HEALTH FACTORY &middot; PLAIN-LANGUAGE EDITION</div>
+  <h1>THE FACTORY, EXPLAINED SIMPLY</h1>
+  <div class="sub">No code, no jargon. Just a cooking show that runs itself.</div>
+  <div class="rule"></div>
+
+  <p class="lead">Forget code for a minute. Picture a <b>cooking competition that runs itself</b>:
+  a coach picks which recipe ideas to try, cooks make the dishes, a machine tastes them, a critic
+  scores them, and a writer publishes the cookbook &mdash; round after round, until a clear winner
+  emerges. That is exactly what the factory does. The &ldquo;recipes&rdquo; are small neural-network
+  designs and the &ldquo;tasting&rdquo; is a training run. Meet the cast.</p>
+
+  <div class="sec">
+    <div class="sec-t"><span class="n">1 &middot;</span> THE CAST</div>
+    <div class="cards">
+      <div class="card" style="--c:#334155">
+        <h3>THE SHOWRUNNER</h3>
+        <p>The one program in charge. It runs the schedule, keeps the official scorebook, and does
+        every bit of paperwork &mdash; nobody else is allowed to write anything down.</p>
+      </div>
+      <div class="card" style="--c:#2563eb">
+        <h3>THE COACH</h3>
+        <p>A strategist. Before each round, he studies every past score and picks which recipe
+        ideas are worth trying next.</p>
+      </div>
+      <div class="card" style="--c:#ea580c">
+        <h3>THE COOK</h3>
+        <p>A builder. Given one recipe idea from the coach, he actually cooks the dish.</p>
+      </div>
+      <div class="card" style="--c:#64748b">
+        <h3>THE TASTING MACHINE</h3>
+        <p>Not a person at all. It tastes the dish and prints an objective score &mdash; same dish,
+        same score, every time. No moods, no favorites.</p>
+      </div>
+      <div class="card" style="--c:#0f766e">
+        <h3>THE CRITIC</h3>
+        <p>A scorer with opinions. He rates each dish from 0 to 100, but must stay within 3 points
+        of the machine&rsquo;s score. He can nudge, never invent.</p>
+      </div>
+      <div class="card" style="--c:#16a34a">
+        <h3>THE WRITER</h3>
+        <p>The storyteller. After each round she writes a short chapter about every dish for the
+        cookbook the show is publishing.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-t"><span class="n">2 &middot;</span> ONE ROUND, START TO FINISH</div>
+    <div class="steps">
+      <div class="step">
+        <div class="num">1</div>
+        <div>
+          <h4>PLAN</h4>
+          <p><span class="chip c-coach">COACH</span> reviews everything tried so far and proposes a
+          few recipe ideas for this round &mdash; usually two to four.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="num">2</div>
+        <div>
+          <h4>COOK &amp; TASTE</h4>
+          <p>All dishes are made at the same time, and each one goes through the same little line:
+          <span class="chip c-cook">COOK cooks it</span> &rarr; <span class="chip c-mach">MACHINE tastes it</span>
+          &rarr; <span class="chip c-crit">CRITIC scores it</span>.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="num">3</div>
+        <div>
+          <h4>RECORD</h4>
+          <p>The showrunner writes every score into the official scorebook, in order. A dish that
+          beats the all-time best becomes the new <b>champion</b> &mdash; its recipe card goes on the wall.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="num">4</div>
+        <div>
+          <h4>WRITE UP</h4>
+          <p><span class="chip c-wr">WRITER</span> adds one short chapter per dish to the cookbook,
+          so the story of the search keeps growing.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="num">5</div>
+        <div>
+          <h4>DECIDE</h4>
+          <p>The showrunner asks: <b>are we done?</b> (The three finish lines are on page 2.) If not,
+          the next round begins &mdash; and the coach plans it knowing every score that came before.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot"><span>Context Health Factory &mdash; explained simply</span><span>1 / 2</span></div>
+</section>
+
+<!-- ================= PAGE 2 ================= -->
+<section class="page">
+  <div class="kicker">CONTEXT HEALTH FACTORY &middot; PLAIN-LANGUAGE EDITION</div>
+  <h1>A ROUND UP CLOSE &mdash; AND HOW IT ENDS</h1>
+  <div class="sub">Same show, closer look: one real-feeling round, the mishaps, the finish lines, and the one rule behind it all.</div>
+  <div class="rule"></div>
+
+  <div class="sec">
+    <div class="sec-t"><span class="n">3 &middot;</span> A SAMPLE ROUND</div>
+    <div class="story">
+      <p><b>Round 7.</b> The coach notices wider cakes have been scoring well lately, so this
+      round&rsquo;s two ideas are: <b>&ldquo;the classic cake, exactly as before&rdquo;</b> and
+      <b>&ldquo;a wider version of it&rdquo;</b>.</p>
+      <p>The cook bakes both. The machine tastes them: <b>71.2</b> and <b>78.5</b>.</p>
+      <p>The critic, staying within his 3 points, scores them <b>70</b> and <b>79</b>.</p>
+      <p>79 beats the old record of 76 &mdash; the wide cake becomes the <b>new champion</b>, and its
+      recipe card goes on the wall.</p>
+      <p>The writer adds two chapters. The showrunner checks the finish lines: none met.
+      <b>Round 8 begins</b> &mdash; and the coach now knows that wider cakes work.</p>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-t"><span class="n">4 &middot;</span> WHEN THINGS GO WRONG</div>
+    <div class="item"><div class="dot"></div>
+      <p><b>A fumble.</b> If a performer returns a nonsensical answer or a broken dish, the
+      showrunner simply asks again. Keep failing, and a more experienced stand-in finishes that one
+      task. Nothing else changes.</p></div>
+    <div class="item"><div class="dot"></div>
+      <p><b>Three strikes.</b> If one dish fails three times in a row, it is disqualified: noted in
+      the scorebook, written off politely in the cookbook, and the round carries on without it.</p></div>
+    <div class="item"><div class="dot"></div>
+      <p><b>The phone line dies.</b> If the show cannot reach its performers at all, it pauses on the
+      spot. Restart it later and it picks up exactly where it left off &mdash; nothing lost, nothing redone.</p></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-t"><span class="n">5 &middot;</span> THE THREE FINISH LINES <span style="font-weight:400; letter-spacing:.4px; color:#5b6470;">&mdash; any one ends the show</span></div>
+    <div class="end"><div class="n">1</div>
+      <p><b>Round limit.</b> The maximum number of rounds is reached.</p></div>
+    <div class="end"><div class="n">2</div>
+      <p><b>Out of ideas.</b> The coach has not proposed a genuinely new kind of recipe in 10 rounds.</p></div>
+    <div class="end"><div class="n">3</div>
+      <p><b>Ceiling reached.</b> The champion&rsquo;s score has not improved in 10 rounds.</p></div>
+  </div>
+
+  <div class="golden">
+    <h3>THE ONE GOLDEN RULE</h3>
+    <p>Performers never touch the paperwork. The coach, cook, critic and writer only answer questions.
+    The showrunner checks every answer, throws out the bad ones, and writes everything down personally.
+    That is why the show is trustworthy: run it twice and the same dishes get the same scores &mdash;
+    the only unpredictable part is what the performers come up with.</p>
+  </div>
+
+  <div class="sec">
+    <div class="sec-t"><span class="n">6 &middot;</span> BACK TO REALITY <span style="font-weight:400; letter-spacing:.4px; color:#5b6470;">&mdash; what everyone is called in the actual system</span></div>
+    <div class="maps">
+      <table class="map">
+        <tr><td class="a">the showrunner</td><td class="b">run_factory.py &mdash; the main program</td></tr>
+        <tr><td class="a">the coach</td><td class="b">the Meta agent</td></tr>
+        <tr><td class="a">the cook</td><td class="b">the Worker agent</td></tr>
+        <tr><td class="a">the tasting machine</td><td class="b">the Simulator (no AI involved)</td></tr>
+        <tr><td class="a">the critic</td><td class="b">the Judge agent</td></tr>
+        <tr><td class="a">the writer</td><td class="b">the Doc agent</td></tr>
+      </table>
+      <table class="map">
+        <tr><td class="a">one round</td><td class="b">a wave</td></tr>
+        <tr><td class="a">one dish</td><td class="b">an iteration</td></tr>
+        <tr><td class="a">the scorebook</td><td class="b">factory_state.json</td></tr>
+        <tr><td class="a">the champion&rsquo;s card</td><td class="b">best_config.json</td></tr>
+        <tr><td class="a">the cookbook</td><td class="b">the research paper</td></tr>
+        <tr><td class="a">a disqualified dish</td><td class="b">a &ldquo;poisoned&rdquo; iteration</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="foot"><span>Context Health Factory &mdash; explained simply</span><span>2 / 2</span></div>
+</section>
+
+</body>
+</html>

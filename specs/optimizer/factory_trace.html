@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Context Health Factory — One Run, Function by Function</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Segoe UI", system-ui, sans-serif; color: #1a2332; background: #fff; }
+  .page { width: 210mm; height: 296.5mm; page-break-after: always; position: relative;
+          padding: 9mm 11mm 11mm; overflow: hidden; background: #fff; }
+  .page:last-child { page-break-after: avoid; }
+  .pageno { position: absolute; bottom: 6mm; right: 11mm; font-size: 8.5px; color: #94a3b8; }
+  .footer { position: absolute; bottom: 6mm; left: 11mm; font-size: 8.5px; color: #94a3b8; }
+
+  h1 { font-size: 21px; font-weight: 800; letter-spacing: -0.3px; margin-bottom: 2px; }
+  h1 .thin { font-weight: 300; color: #64748b; }
+  h2 { font-size: 12.5px; font-weight: 700; color: #0f172a; margin: 10px 0 4px;
+       text-transform: uppercase; letter-spacing: 0.8px; }
+  h2 .n { color: #2563eb; }
+  .sub { font-size: 10px; color: #475569; margin-bottom: 6px; line-height: 1.45; }
+  .rule { height: 3px; background: linear-gradient(90deg,#2563eb 0 40%,#e2e8f0 40% 100%); margin: 6px 0 8px; }
+
+  /* ------- trace tree ------- */
+  .tree { font-family: "Consolas", "Cascadia Mono", monospace; font-size: 8.4px; line-height: 1.32; }
+  .fn { font-weight: 700; color: #0f172a; }
+  .file { color: #94a3b8; font-size: 7.6px; }
+  .desc { font-family: "Segoe UI", system-ui, sans-serif; color: #475569; font-size: 8.6px; }
+  .w { color: #0369a1; font-weight: 700; font-size: 7.6px; }
+  .r { color: #7c3aed; font-weight: 700; font-size: 7.6px; }
+  .llm { display: inline-block; background: #dcfce7; color: #166534; border-radius: 2px;
+         padding: 0 3px; font-size: 7.2px; font-weight: 700; font-family: "Segoe UI", sans-serif; }
+  .sim { display: inline-block; background: #fef3c7; color: #92400e; border-radius: 2px;
+         padding: 0 3px; font-size: 7.2px; font-weight: 700; font-family: "Segoe UI", sans-serif; }
+  .thr { display: inline-block; background: #ffedd5; color: #9a3412; border-radius: 2px;
+         padding: 0 3px; font-size: 7.2px; font-weight: 700; font-family: "Segoe UI", sans-serif; }
+  .ph { display: inline-block; border-radius: 2px; padding: 0 4px; font-size: 7.4px; font-weight: 800;
+        font-family: "Segoe UI", sans-serif; color: #fff; }
+  .pA { background: #3b82f6; } .pB { background: #f59e0b; } .pC { background: #14b8a6; }
+  .pD { background: #22c55e; } .pE { background: #8b5cf6; } .pB2 { background: #6b7280; }
+
+  .band { border-radius: 4px; padding: 4px 7px 5px; margin: 6px 0 4px; }
+  .band .bt { font-size: 9.5px; font-weight: 800; margin-bottom: 2px; }
+  .bA { background: #eff6ff; border-left: 4px solid #3b82f6; } .bA .bt { color: #1d4ed8; }
+  .bB { background: #fffbeb; border-left: 4px solid #f59e0b; } .bB .bt { color: #b45309; }
+  .bC { background: #f0fdfa; border-left: 4px solid #14b8a6; } .bC .bt { color: #0f766e; }
+  .bD { background: #f0fdf4; border-left: 4px solid #22c55e; } .bD .bt { color: #15803d; }
+  .bE { background: #f5f3ff; border-left: 4px solid #8b5cf6; } .bE .bt { color: #6d28d9; }
+  .bG { background: #f8fafc; border-left: 4px solid #64748b; } .bG .bt { color: #334155; }
+  .bR { background: #fef2f2; border-left: 4px solid #ef4444; } .bR .bt { color: #b91c1c; }
+
+  .note { font-size: 8.6px; color: #475569; line-height: 1.42; margin: 4px 0; }
+  .note b { color: #0f172a; }
+
+  table { border-collapse: collapse; width: 100%; font-size: 8.7px; margin: 4px 0; }
+  th { background: #0f172a; color: #fff; text-align: left; padding: 3px 6px; font-weight: 600; }
+  td { border: 1px solid #e2e8f0; padding: 3px 6px; vertical-align: top; line-height: 1.35; }
+  tr:nth-child(even) td { background: #f8fafc; }
+  .mono { font-family: "Consolas", monospace; font-size: 8.2px; }
+  code { font-family: "Consolas", monospace; font-size: 8.2px; background: #f1f5f9;
+         padding: 0 3px; border-radius: 2px; color: #0f172a; }
+</style>
+</head>
+<body>
+
+<!-- ============================== PAGE 1 ============================== -->
+<div class="page">
+  <h1>ONE RUN, FUNCTION BY FUNCTION <span class="thin">— the complete call tree</span></h1>
+  <div class="sub">This document follows a single run of the factory in time order, top to bottom. Every box below is a real function;
+  indentation means "called by the function above". Read it like a map: find a name here, then open that function in the code.</div>
+  <div class="rule"></div>
+
+  <h2><span class="n">0.</span> How to read this</h2>
+  <div class="note">
+    <b>Indentation = "called by".</b> Order on the page = order in time. <span class="llm">LLM</span> = an AI agent is called here
+    (the only places AI is involved). <span class="sim">SUBPROCESS</span> = a separate Python process is spawned.
+    <span class="thr">THREADS</span> = work fans out to parallel threads. <span class="w">writes</span> / <span class="r">reads</span> = files touched.
+    Everything else is plain Python in the main thread — which is most of it, by design.
+  </div>
+
+  <h2><span class="n">1.</span> Boot — from your command to a ready workspace</h2>
+  <div class="band bG"><div class="bt">main() <span class="file">run_factory.py:1073</span> — the entry point. Parses flags, initialises if needed, runs the orchestrator, converts exceptions to exit codes.</div>
+  <div class="tree">
+<div><span class="fn">main(argv)</span> <span class="file">run_factory.py:1073</span> <span class="desc">— parse --max-iterations, --parallel, --fresh, --sim-timeout</span></div>
+<div>├─ <i>(before main, at import: if not already inside .venv, re-exec the same script with .venv's python — torch lives there; lines 25–32)</i></div>
+<div>├─ <span class="fn">is_initialized()</span> <span class="file">init_workspace.py:29</span> <span class="desc">— True if state_space.json AND factory_state.json both exist</span></div>
+<div>├─ <span class="fn">initialize(fresh)</span> <span class="file">init_workspace.py:33</span> <span class="desc">— runs only with --fresh or on the very first run (details below)</span></div>
+<div>├─ <span class="fn">FactoryOrchestrator(max_iterations, …)</span> <span class="file">run_factory.py:105</span> <span class="desc">— loads the world:</span></div>
+<div>│&nbsp;&nbsp;├─ <span class="fn">read_json(FACTORY_STATE_PATH)</span> <span class="file">state_store.py:10</span> <span class="r">reads</span> <span class="desc">factory_state.json — the scorebook</span></div>
+<div>│&nbsp;&nbsp;├─ <span class="fn">StateSpace(read_json(STATE_SPACE_PATH))</span> <span class="file">state_space.py:100</span> <span class="r">reads</span> <span class="desc">state_space.json — the search space + ledger</span></div>
+<div>│&nbsp;&nbsp;├─ <span class="fn">ModelRouter()</span> <span class="file">router.py:108</span> <span class="desc">— the L0–L3 model ladder + rules R1–R6</span></div>
+<div>│&nbsp;&nbsp;├─ <span class="fn">IsolationGuard(state["canaries"])</span> <span class="file">isolation.py:33</span> <span class="desc">— per-experiment leak detection</span></div>
+<div>│&nbsp;&nbsp;├─ <span class="fn">ClaudeCLIClient(log)</span> <span class="file">llm_client.py</span> <span class="desc">— the one door to the LLM (claude CLI)</span></div>
+<div>│&nbsp;&nbsp;└─ <span class="fn">AgentRunner(llm, router, guard, usage_cb, log)</span> <span class="file">agents.py:84</span> <span class="desc">— every agent call in the run passes through this</span></div>
+<div>└─ <span class="fn">orch.run()</span> <span class="file">run_factory.py:191</span> <span class="desc">— the main loop (page 2). Wrapped in try/except:</span></div>
+<div>&nbsp;&nbsp;&nbsp;├─ <span class="desc">MacroFail → log + </span><span class="w">writes</span> <span class="desc">workspace/macro_fail.json → exit code 2 (abort, do not resume)</span></div>
+<div>&nbsp;&nbsp;&nbsp;├─ <span class="desc">InfraUnavailable → save_state() → exit code 3 (pause; rerun the same command to resume)</span></div>
+<div>&nbsp;&nbsp;&nbsp;└─ <span class="desc">KeyboardInterrupt → save_state() → exit code 130 (pause, resumable)</span></div>
+  </div></div>
+
+  <div class="band bG"><div class="bt">initialize() <span class="file">init_workspace.py:33</span> — first run only (or --fresh). Builds the workspace from the seed.</div>
+  <div class="tree">
+<div>├─ <span class="desc">--fresh: move any existing workspace to experiments/_archived/&lt;timestamp&gt;</span></div>
+<div>├─ <span class="desc">copy the seed </span><span class="w">writes</span> <span class="desc">factory/templates/state_space_seed.json → workspace/state_space.json (one dimension: hidden_layers, one value [64,64])</span></div>
+<div>├─ <span class="desc">copy the paper skeleton </span><span class="w">writes</span> <span class="desc">→ workspace/research_paper.md</span></div>
+<div>├─ <span class="w">writes</span> <span class="desc">workspace/best_config.json + workspace/last_judge.json (empty placeholders)</span></div>
+<div>├─ <span class="fn">protect_ai_docs()</span> <span class="file">init_workspace.py:23</span> <span class="desc">— mark ai_docs/ read-only</span></div>
+<div>└─ <span class="fn">write_json(FACTORY_STATE_PATH, new_factory_state(ai_docs_checksum()))</span></div>
+<div>&nbsp;&nbsp;&nbsp;└─ <span class="fn">new_factory_state()</span> <span class="file">state_store.py:30</span> <span class="w">writes</span> <span class="desc">factory_state.json: next_iteration=0, empty iterations/scores/poisoned, best=None, llm_usage={calls:0, cost:0}, ai_docs_checksum</span></div>
+  </div></div>
+
+  <h2><span class="n">2.</span> The cast behind the curtain (called from everywhere, shown once)</h2>
+  <table>
+    <tr><th style="width:34%">Helper</th><th style="width:14%">Lives in</th><th>What it does</th></tr>
+    <tr><td class="mono">read_json / write_json / write_text</td><td class="mono">state_store.py</td><td>Every file read/write in the system goes through these three. JSON with a default on read; atomic-ish writes.</td></tr>
+    <tr><td class="mono">AgentRunner.run(call, rlog)</td><td class="mono">agents.py:91</td><td>The one function that talks to an LLM (full anatomy on page 4). Render prompt → route → call → validate → retry.</td></tr>
+    <tr><td class="mono">ModelRouter.route(ctx)</td><td class="mono">router.py:113</td><td>Decides which model + effort each call gets (rules R1–R6, ladder L0–L3).</td></tr>
+    <tr><td class="mono">EscalationTracker.escalate(agent)</td><td class="mono">router.py:96</td><td>Per-iteration counter: each failure bumps that agent one rung up the ladder (cap L3).</td></tr>
+    <tr><td class="mono">IsolationGuard.check(...)</td><td class="mono">isolation.py:37</td><td>Scans the outgoing prompt for canary tokens / foreign experiment ids. A leak is a MacroFail — run aborted.</td></tr>
+    <tr><td class="mono">StateSpace.apply_wave_proposal(...)</td><td class="mono">state_space.py:113</td><td>The Meta validator: checks mutations are legal, coordinates in-domain and unvisited; returns the new space + coordinate hashes.</td></tr>
+  </table>
+
+  <div class="footer">Context Health Factory — one run, function by function</div>
+  <div class="pageno">1 / 5</div>
+</div>
+
+<!-- ============================== PAGE 2 ============================== -->
+<div class="page">
+  <h1><span class="thin">The main loop and</span> PHASE A <span class="thin">— Meta proposes the wave</span></h1>
+  <div class="rule"></div>
+
+  <h2><span class="n">3.</span> run() — the loop itself is tiny</h2>
+  <div class="band bG"><div class="bt">FactoryOrchestrator.run() <span class="file">run_factory.py:191</span> — check stop conditions, run one wave, check the circuit breaker. Repeat.</div>
+  <div class="tree">
+<div><span class="fn">run()</span> <span class="file">run_factory.py:191</span></div>
+<div>├─ <span class="desc">already halted? log and exit 0 (a finished factory stays finished; use --fresh to restart)</span></div>
+<div>├─ <span class="fn">preflight()</span> <span class="file">run_factory.py:148</span> <span class="desc">— runs once per process start:</span></div>
+<div>│&nbsp;&nbsp;├─ <span class="desc">required dirs exist (ai_docs, prompts, templates) — else MacroFail</span></div>
+<div>│&nbsp;&nbsp;├─ <span class="desc">ai_docs checksum unchanged since init — else ReadOnlyViolation → MacroFail</span></div>
+<div>│&nbsp;&nbsp;├─ <span class="fn">sim_harness.ensure_cache()</span> <span class="file">simulator/harness.py:27</span> <span class="desc">— build the scenario cache if missing</span></div>
+<div>│&nbsp;&nbsp;├─ <span class="fn">sim_harness.warm_up()</span> <span class="file">simulator/harness.py:116</span> <span class="desc">— import torch + load cache once, so no simulation pays the cold start</span></div>
+<div>│&nbsp;&nbsp;├─ <span class="fn">load_cache()["baselines"]</span> <span class="desc">→ store mean baseline returns in state["baselines"]</span></div>
+<div>│&nbsp;&nbsp;└─ <span class="desc">crash recovery: experiments numbered ≥ next_iteration are leftovers of an interrupted wave → move to _aborted/, restore .snapshots/*before_NNN.json, rebuild guard, </span><span class="w">writes</span> <span class="desc">state</span></div>
+<div>└─ <span class="desc">loop forever:</span></div>
+<div>&nbsp;&nbsp;&nbsp;├─ <span class="fn">done_checker.check(state, max_iterations)</span> <span class="file">done_checker.py:7</span> <span class="desc">— Python decides, before any agent runs. Returns a reason string or None:</span></div>
+<div>&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;├─ <span class="desc">"max-iterations reached (N/50)"</span></div>
+<div>&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;├─ <span class="desc">"state space stagnant: no dimension added in the last 10 iterations…"</span></div>
+<div>&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;└─ <span class="desc">"score plateau: best of last 10 iterations = X, best before = Y; improvement &lt;= 2.0"</span></div>
+<div>&nbsp;&nbsp;&nbsp;├─ <span class="desc">reason → </span><span class="fn">halt(reason)</span> <span class="file">run_factory.py:1002</span> <span class="desc">(page 5) → exit 0</span></div>
+<div>&nbsp;&nbsp;&nbsp;├─ <span class="desc">no reason → </span><span class="fn">run_wave()</span> <span class="file">run_factory.py:232</span> <span class="desc">(the rest of this document)</span></div>
+<div>&nbsp;&nbsp;&nbsp;└─ <span class="fn">_circuit_breaker()</span> <span class="file">run_factory.py:206</span> <span class="desc">— if the last 2 waves were entirely poisoned by ONE error type: that's a systematic fault, not bad luck → raise InfraUnavailable (pause, resumable)</span></div>
+  </div></div>
+
+  <h2><span class="n">4.</span> run_wave() — setup</h2>
+  <div class="band bG"><div class="bt">run_wave() <span class="file">run_factory.py:232</span> — one wave = K iterations sharing one Meta proposal. Phases A→E.</div>
+  <div class="tree">
+<div>├─ <span class="desc">start = state["next_iteration"]; width = min(parallel, remaining budget); indices = [start … start+width-1]</span></div>
+<div>├─ <span class="w">writes</span> <span class="desc">.snapshots/state_space.before_NNN.json + factory_state.before_NNN.json — the undo point for crash recovery</span></div>
+<div>├─ <span class="desc">WaveContext(wave, last_judge_score, meta_invalid_streak) — the shared inputs to routing</span></div>
+<div>└─ <span class="fn">_new_member(start)</span> <span class="file">run_factory.py:225</span> <span class="desc">— mkdir exp_NNN/prompts/, mint a canary (leak token), create the Member record (status "open")</span> <span class="w">writes</span> <span class="desc">state["canaries"]</span></div>
+  </div></div>
+
+  <div class="band bA"><div class="bt"><span class="ph pA">A</span>&nbsp; phase_meta(lead, indices, wctx) <span class="file">run_factory.py:304</span> — ONE Meta call proposes mutations + K coordinates for the whole wave. Serial. Up to 3 attempts.</div>
+  <div class="tree">
+<div>├─ <span class="desc">payload: ITERATION, WAVE_SIZE, STATE_SPACE, BEST_CONFIG, LAST_JUDGE (all sanitized), REFILL_NOTE=""</span></div>
+<div>├─ <span class="desc">for attempt in 0..2:</span></div>
+<div>│&nbsp;&nbsp;├─ <span class="fn">runner.run(AgentCall(agent="meta", validator=…, on_failure=…), lead.rlog)</span> <span class="llm">LLM</span> <span class="file">agents.py:91</span></div>
+<div>│&nbsp;&nbsp;│&nbsp;&nbsp;└─ <span class="desc">validator = </span><span class="fn">space.apply_wave_proposal(out, indices)</span> <span class="file">state_space.py:113</span> <span class="desc">— legal mutations? coordinates in-domain, unvisited? → new space + hashes</span></div>
+<div>│&nbsp;&nbsp;├─ <span class="desc">MicroFail → record in attempts.json, </span><span class="fn">esc.escalate("meta")</span> <span class="desc">(+1 rung), on_failure bumps meta_invalid_streak, try again</span></div>
+<div>│&nbsp;&nbsp;├─ <span class="desc">OSError → InfraUnavailable (pause, never poison). Other surprise → stage_error_meta_aN.txt + HarnessStageError (a MicroFail)</span></div>
+<div>│&nbsp;&nbsp;└─ <span class="desc">success → meta_invalid_streak = 0, adopt new space </span><span class="w">writes</span> <span class="desc">state_space.json; if a dimension was added: last_dimension_added_iteration = start</span></div>
+<div>├─ <span class="desc">all 3 attempts failed → lead.status = "poisoned", return None → wave closes early with only the lead (poison bookkeeping + poison section, then phase E)</span></div>
+<div>└─ <span class="fn">_fan_out_meta(lead, members, proposal)</span> <span class="file">run_factory.py:368</span></div>
+<div>&nbsp;&nbsp;&nbsp;├─ <span class="w">writes</span> <span class="desc">exp_NNN/next_coordinate.json for every member: coordinate, hash, hypothesis, wave position, mutations applied</span></div>
+<div>&nbsp;&nbsp;&nbsp;├─ <span class="desc">copies the lead's Meta routing entries into each member's router_log (the wave's one Meta call belongs to everyone's history)</span></div>
+<div>&nbsp;&nbsp;&nbsp;└─ <span class="w">writes</span> <span class="desc">exp_lead/meta.json (the raw proposal)</span></div>
+  </div></div>
+
+  <div class="footer">Context Health Factory — one run, function by function</div>
+  <div class="pageno">2 / 5</div>
+</div>
+
+<!-- ============================== PAGE 3 ============================== -->
+<div class="page">
+  <h1>PHASE B <span class="thin">— build, fingerprint, simulate, judge (parallel)</span></h1>
+  <div class="rule"></div>
+
+  <div class="band bB"><div class="bt"><span class="ph pB">B1</span>&nbsp; _parallel(member_core, BUILD_STAGES) <span class="file">run_factory.py:286</span> <span class="thr">THREADS</span> — one thread per member, stages ("worker","fingerprint"). Threads only compute; no shared state is written here.</div>
+  <div class="tree">
+<div>├─ <span class="fn">_parallel(fn, members)</span> <span class="desc">— ThreadPoolExecutor, join in iteration order, re-raise the first macro/infra error after ALL threads finish</span></div>
+<div>└─ <span class="fn">member_core(m, stages)</span> <span class="file">run_factory.py:393</span> <span class="desc">— the 3-attempt retry machine for one iteration:</span></div>
+<div>&nbsp;&nbsp;&nbsp;├─ <span class="desc">while consecutive_fails &lt; 3: run each stage not already in m.memo (finished stages are memoised — a retry never redoes them)</span></div>
+<div>&nbsp;&nbsp;&nbsp;├─ <span class="desc">MicroFail → </span><span class="fn">_record_failure()</span> <span class="file">run_factory.py:521</span> <span class="w">writes</span> <span class="desc">attempts.json, escalate the failing agent +1 rung; if SimulatorError/WorkerCodeError: forget worker+fingerprint memo, keep the error text as RETRY_ERROR for the next worker prompt</span></div>
+<div>&nbsp;&nbsp;&nbsp;├─ <span class="desc">all stages done (with judge) → m.status = "ready"</span></div>
+<div>&nbsp;&nbsp;&nbsp;└─ <span class="desc">3 fails → m.status = "poisoned" (the wave continues; this iteration is skipped)</span></div>
+  </div></div>
+
+  <div class="band bB"><div class="bt">stage_worker(m, attempt, last_score) <span class="file">run_factory.py:548</span> — the Worker writes model.py.</div>
+  <div class="tree">
+<div>├─ <span class="fn">_ai_docs()</span> <span class="file">run_factory.py:533</span> <span class="r">reads</span> <span class="desc">ai_docs/*.md — the domain knowledge every worker sees</span></div>
+<div>├─ <span class="desc">payload: COORDINATE, DIMENSIONS (definitions of the dims in this coordinate), AI_DOCS, RETRY_ERROR (only after a failed attempt)</span></div>
+<div>├─ <span class="fn">runner.run(AgentCall(agent="worker", validator=…))</span> <span class="llm">LLM</span> <span class="desc">— validator = </span><span class="fn">check_model_source(model_py)</span> <span class="file">code_guard.py</span> <span class="desc">— the static gate: required functions present, no banned constructs</span></div>
+<div>└─ <span class="w">writes</span> <span class="desc">model.py (with attribution header), config.json (coordinate, hypothesis, sha256 of model.py, static-gate report), worker.json</span></div>
+  </div></div>
+
+  <div class="band bB"><div class="bt">stage_fingerprint(m) <span class="file">run_factory.py:429</span> — what did the worker actually build?</div>
+  <div class="tree">
+<div>└─ <span class="fn">sim_harness.run_fingerprint(m.d, m.canary)</span> <span class="sim">SUBPROCESS</span> <span class="file">simulator/harness.py:72</span> <span class="desc">— loads model.py in a clean subprocess, extracts features/architecture/init/training/loss as a hash; also applies the validity gates so a silently broken model fails HERE, before simulation time is spent</span> <span class="w">writes</span> <span class="desc">fingerprint.json</span></div>
+  </div></div>
+
+  <div class="band bG"><div class="bt"><span class="ph pB2">B2</span>&nbsp; _dedupe(members) <span class="file">run_factory.py:435</span> — serial, main thread, iteration order. Two models with the same fingerprint are the same model — don't pay for it twice.</div>
+  <div class="tree">
+<div>├─ <span class="desc">for each member: fingerprint already seen (this run's state["fingerprints"] or an earlier wave member)?</span></div>
+<div>├─ <span class="desc">yes, and refills &lt; 2 → </span><span class="fn">_refill(m, dup, members)</span> <span class="file">run_factory.py:457</span> <span class="llm">LLM</span> <span class="desc">— ask Meta for ONE replacement coordinate (mutations forbidden); rejected coordinate saved as next_coordinate.rejected_k.json; rebuild memo; re-run B1 stages for this member</span></div>
+<div>└─ <span class="desc">refill failed or cap reached → m.duplicate_of = dup (still simulated — but flagged as a functional duplicate)</span></div>
+  </div></div>
+
+  <div class="band bB"><div class="bt"><span class="ph pB">B3</span>&nbsp; _parallel(member_core, CORE_STAGES) <span class="thr">THREADS</span> — same retry machine, now with stages ("worker","fingerprint","simulate","judge"); worker+fingerprint come from memo instantly.</div>
+  <div class="tree">
+<div>├─ <span class="fn">stage_simulate(m)</span> <span class="file">run_factory.py:604</span></div>
+<div>│&nbsp;&nbsp;└─ <span class="fn">sim_harness.run_simulator(m.d, canary, timeout)</span> <span class="sim">SUBPROCESS</span> <span class="file">simulator/harness.py:31</span> <span class="desc">— trains the model over 50 turns in a separate process with fixed env (PYTHONHASHSEED=0, no GPU). Then the harness validates the OUTPUT: exactly 50 ordered TURN lines, canary present, SUMMARY line, sim_score in [0,100]. Any violation → SimulatorError (a MicroFail — the worker gets another attempt).</span> <span class="w">writes</span> <span class="desc">simulation.log, sim_metrics.json</span></div>
+<div>└─ <span class="fn">stage_judge(m, attempt, last_score)</span> <span class="file">run_factory.py:611</span></div>
+<div>&nbsp;&nbsp;&nbsp;├─ <span class="desc">payload: CONFIG (config.json minus the hypothesis — withheld so it can't bias the score), SIMULATION_LOG</span> <span class="r">reads</span></div>
+<div>&nbsp;&nbsp;&nbsp;├─ <span class="fn">runner.run(AgentCall(agent="judge", validator=…))</span> <span class="llm">LLM</span> <span class="desc">— validator: score must be an int, and |score − sim_score| ≤ 3 (the anchor rule — the Judge grades the log, but may not drift from the machine)</span></div>
+<div>&nbsp;&nbsp;&nbsp;└─ <span class="w">writes</span> <span class="desc">judge.json = the verdict + a _harness block (sim_score, anchor_delta, tolerance)</span></div>
+  </div></div>
+
+  <div class="note"><b>Why memoised stages matter:</b> if the judge rejects attempt 2, the retry reuses the memoised worker, fingerprint and simulate results — only the judge stage re-runs. If the simulator says the code is broken, worker+fingerprint are forgotten and only those rebuild. Retries are surgical, never a full redo.</div>
+
+  <div class="footer">Context Health Factory — one run, function by function</div>
+  <div class="pageno">3 / 5</div>
+</div>
+
+<!-- ============================== PAGE 4 ============================== -->
+<div class="page">
+  <h1><span class="thin">Inside</span> AgentRunner.run <span class="thin">+</span> PHASE C <span class="thin">— the serial update</span></h1>
+  <div class="rule"></div>
+
+  <h2><span class="n">5.</span> AgentRunner.run() — every LLM call, anywhere, goes through this</h2>
+  <div class="band bG"><div class="bt">AgentRunner.run(call, router_log) <span class="file">agents.py:91</span> — prompt → route → guard → call → validate → (in-step retry). This is the only place the factory talks to an AI.</div>
+  <div class="tree">
+<div>├─ <span class="fn">render(user_template, payload)</span> <span class="file">agents.py:54</span> <span class="r">reads</span> <span class="desc">prompts/&lt;agent&gt;.system.md + &lt;agent&gt;.user.md from disk</span></div>
+<div>├─ <span class="desc">schema = schemas.BY_NAME[(agent, purpose)] — the JSON contract for this call</span></div>
+<div>└─ <span class="desc">step-retry loop (STEP_RETRIES+1 tries, in place):</span></div>
+<div>&nbsp;&nbsp;&nbsp;├─ <span class="fn">router.route(ctx)</span> <span class="file">router.py:113</span> <span class="desc">— which model + effort? (R1 baseline, R3 quality, R4 complexity, R6 escalation, R2 step-retry effort bump, R5 fable-only-format)</span></div>
+<div>&nbsp;&nbsp;&nbsp;├─ <span class="fn">guard.check(...)</span> <span class="file">isolation.py:37</span> <span class="desc">— scan the outgoing prompt for canaries / foreign experiments. Leak → MacroFail, run over.</span></div>
+<div>&nbsp;&nbsp;&nbsp;├─ <span class="w">writes</span> <span class="desc">prompts/&lt;agent&gt;_&lt;purpose&gt;_aN_rM.md — the exact routed prompt, on disk, auditable</span></div>
+<div>&nbsp;&nbsp;&nbsp;├─ <span class="fn">llm.call(decision, system, prompt, schema)</span> <span class="llm">LLM</span> <span class="file">llm_client.py</span> <span class="desc">— the actual API call (claude CLI)</span></div>
+<div>&nbsp;&nbsp;&nbsp;├─ <span class="w">writes</span> <span class="desc">prompts/….response.json (raw response + cost) · usage_cb → state["llm_usage"]</span></div>
+<div>&nbsp;&nbsp;&nbsp;├─ <span class="fn">extract_json()</span> <span class="file">agents.py:62</span> <span class="desc">→ </span><span class="fn">scrub_foreign()</span> <span class="file">isolation.py:88</span> <span class="desc">— parse the JSON; replace any foreign experiment mentions with "a prior experiment"</span></div>
+<div>&nbsp;&nbsp;&nbsp;├─ <span class="desc">jsonschema.validate(out, schema) → then the stage's own validator (the ones you saw in phases A and B)</span></div>
+<div>&nbsp;&nbsp;&nbsp;├─ <span class="desc">rejected → router_log.record("failed"), on_failure(), append the rejection to the prompt, retry with effort bumped (R2)</span></div>
+<div>&nbsp;&nbsp;&nbsp;└─ <span class="desc">accepted → router_log.record("ok"), return the JSON. All step-retries exhausted → raise the error to the stage's retry machine (page 3)</span></div>
+  </div></div>
+
+  <div class="note"><b>Two retry levels, don't confuse them:</b> the <b>step-retry</b> (inside AgentRunner) fixes one malformed answer in place, same attempt. The <b>attempt loop</b> (in member_core/phase_meta) is the 3-strikes machine that escalates agents up the ladder and eventually poisons. Step-retry is a rephrasing; attempts are new chances.</div>
+
+  <h2><span class="n">6.</span> Phase C — everything lands, serially, in iteration order</h2>
+  <div class="band bC"><div class="bt"><span class="ph pC">C</span>&nbsp; stage_update(m) <span class="file">run_factory.py:644</span> — main thread only. This is where a thread's private results become the factory's official record.</div>
+  <div class="tree">
+<div>├─ <span class="desc">for each member, in iteration order: ready → stage_update(m); else → _poison_bookkeeping(m)</span></div>
+<div>├─ <span class="w">writes</span> <span class="desc">state["scores"][i], state["sim_scores"][i], state["last_judge_score"]</span></div>
+<div>├─ <span class="fn">space.record(i, coord, "scored", score, sim_score)</span> <span class="file">state_space.py:242</span> <span class="w">writes</span> <span class="desc">state_space.json ledger</span></div>
+<div>├─ <span class="desc">new best? (higher judge score, or equal score with higher sim_score) → state["best"] = … → </span><span class="fn">_sync_best_files()</span> <span class="file">run_factory.py:714</span> <span class="w">writes</span> <span class="desc">workspace/best_model.py + best_config.json (sanitised)</span></div>
+<div>└─ <span class="fn">save_state()</span> <span class="w">writes</span> <span class="desc">factory_state.json</span></div>
+  </div></div>
+
+  <div class="band bC"><div class="bt">_poison_bookkeeping(m) <span class="file">run_factory.py:682</span> + _write_last_judge(members) <span class="file">run_factory.py:662</span></div>
+  <div class="tree">
+<div>├─ <span class="desc">poisoned: </span><span class="fn">space.record(i, coord, "poisoned", None)</span> <span class="desc">(never proposed again) + append to state["poisoned"] with the failure reasons</span> <span class="w">writes</span></div>
+<div>└─ <span class="w">writes</span> <span class="desc">workspace/last_judge.json = {"previous_wave": [verdicts]} — the wave's scores, feedback, next_steps and metric digests; this is what the NEXT wave's Meta reads</span></div>
+  </div></div>
+
+  <div class="footer">Context Health Factory — one run, function by function</div>
+  <div class="pageno">4 / 5</div>
+</div>
+
+<!-- ============================== PAGE 5 ============================== -->
+<div class="page">
+  <h1>PHASE D + E <span class="thin">— paper, close, and the halt</span></h1>
+  <div class="rule"></div>
+
+  <div class="band bD"><div class="bt"><span class="ph pD">D</span>&nbsp; _parallel(member_doc, scored) <span class="file">run_factory.py:739</span> <span class="thr">THREADS</span> — one Doc agent per scored iteration; all see the SAME paper snapshot (taken before the phase starts).</div>
+  <div class="tree">
+<div>├─ <span class="fn">stage_doc(m, attempt, paper_snapshot)</span> <span class="file">run_factory.py:761</span></div>
+<div>│&nbsp;&nbsp;├─ <span class="desc">draft call</span> <span class="llm">LLM</span> <span class="desc">— payload: ITERATION_LABEL, CONFIG, JUDGE, SIM_SUMMARY (</span><span class="fn">summary_lines</span> <span class="file">simulator/harness.py:125</span> <span class="desc">= log minus per-turn rows), PAPER. Validator: section starts "### Iteration NNN:", no H1/H2 headings.</span></div>
+<div>│&nbsp;&nbsp;├─ <span class="fn">paperize()</span> <span class="file">isolation.py:105</span> <span class="desc">— scrub experiment ids from the section</span></div>
+<div>│&nbsp;&nbsp;└─ <span class="desc">format call (doc/format, always fable-5.1 — rule R5)</span> <span class="llm">LLM</span> <span class="desc">— markdown only; validator </span><span class="fn">paper.format_preserves()</span> <span class="file">paper.py:136</span> <span class="desc">rejects any content change, draft kept instead</span></div>
+<div>├─ <span class="w">writes</span> <span class="desc">doc.json (draft + format status)</span></div>
+<div>└─ <span class="desc">3 failures → NOT poisoned (the experiment is already scored) → </span><span class="fn">_fallback_section()</span> <span class="file">run_factory.py:811</span> <span class="desc">— Python writes a deterministic section from memo</span></div>
+  </div>
+  <div class="note" style="margin:2px 0 0 2px">Poisoned members get <span class="fn">_poison_section()</span> <span class="file">run_factory.py:826</span> — a deterministic "what failed and why" section. Every iteration appears in the paper, scored or not.</div>
+  </div>
+
+  <div class="band bE"><div class="bt"><span class="ph pE">E</span>&nbsp; _finish_wave(members, wave_no) <span class="file">run_factory.py:874</span> — serial, main thread. The barrier where the wave becomes permanent.</div>
+  <div class="tree">
+<div>├─ <span class="fn">paper.upsert_iteration(text, m.i, section)</span> <span class="file">paper.py:41</span> <span class="desc">× each member — insert/replace its section</span> <span class="w">writes</span> <span class="desc">research_paper.md</span></div>
+<div>├─ <span class="fn">paper.replace_block()</span> <span class="file">paper.py:29</span> <span class="desc">— ABSTRACT + RESULTS_NARRATIVE (from the latest draft), RESULTS_TABLE (</span><span class="fn">_leaderboard</span> <span class="file">:863</span><span class="desc">), APPENDIX_SPACE (</span><span class="fn">paper.space_evolution</span> <span class="file">paper.py:91</span><span class="desc">), STATUS (</span><span class="fn">_status_line</span> <span class="file">:868</span><span class="desc">)</span></div>
+<div>├─ <span class="desc">register new fingerprints in state["fingerprints"]</span></div>
+<div>├─ <span class="fn">_row(m)</span> <span class="file">run_factory.py:843</span> <span class="desc">+ wave/router_verdict/closed_at → append to state["iterations"]; next_iteration = last i + 1; waves += 1 → </span><span class="fn">save_state()</span> <span class="w">writes</span></div>
+<div>├─ <span class="fn">analytics.compute(state, space, parallel)</span> <span class="file">analytics.py:62</span> <span class="desc">→ space.data["analytics"] (what works, per-dimension stats) → </span><span class="fn">save_space()</span> <span class="w">writes</span></div>
+<div>├─ <span class="fn">verify_run.check_experiment(i, …)</span> <span class="file">verify_run.py:54</span> <span class="desc">× each member → </span><span class="w">writes</span> <span class="desc">exp_NNN/iteration_summary.json (row + micro_done checks)</span></div>
+<div>└─ <span class="desc">delete the wave's .snapshots — the undo point is no longer needed; the wave is committed</span></div>
+  </div></div>
+
+  <h2><span class="n">7.</span> halt(reason) — how a run ends (when done_checker says so)</h2>
+  <div class="band bG"><div class="bt">halt(reason) <span class="file">run_factory.py:1002</span> — final scoring, final writing, final report.</div>
+  <div class="tree">
+<div>├─ <span class="fn">_confirm_top()</span> <span class="file">run_factory.py:941</span> <span class="sim">SUBPROCESS</span>×K <span class="desc">— re-score the statistically-tied top iterations on 200 hidden scenarios (never used for selection) → confirmation.json + best_model_confirmed.py</span></div>
+<div>├─ <span class="fn">_factory_summary(reason)</span> <span class="file">run_factory.py:915</span> <span class="desc">— the run in numbers (iterations, waves, scores, best, llm_calls)</span></div>
+<div>├─ <span class="desc">final synthesis call (doc/final)</span> <span class="llm">LLM</span> <span class="desc">— writes ABSTRACT, RESULTS_NARRATIVE, DISCUSSION, CONCLUSION. Fails → deterministic closing text (</span><span class="fn">get_block_safe</span> <span class="file">:1066</span><span class="desc">)</span></div>
+<div>├─ <span class="desc">final </span><span class="fn">paper.replace_block</span> <span class="desc">pass + CONFIRMATION table + "Status: complete…" </span><span class="w">writes</span> <span class="desc">research_paper.md</span></div>
+<div>├─ <span class="desc">ai_docs checksum verified one last time (ReadOnlyViolation if changed mid-run)</span></div>
+<div>├─ <span class="w">writes</span> <span class="desc">state["halted"] = {reason, at, iterations} → save_state()</span></div>
+<div>└─ <span class="fn">verify_run.build_report()</span> <span class="file">verify_run.py:149</span> <span class="w">writes</span> <span class="desc">workspace/factory_report.json (macro/micro verification) → exit 0</span></div>
+  </div></div>
+
+  <h2><span class="n">8.</span> The whole run in nine lines</h2>
+  <div class="tree" style="font-size:9px">
+<div>main → initialize? → FactoryOrchestrator → run → preflight → loop { done_checker.check → run_wave → _circuit_breaker } → halt</div>
+<div>run_wave = A phase_meta → _fan_out_meta → B1/B3 _parallel(member_core) → B2 _dedupe(→_refill) → C stage_update/_poison_bookkeeping → D _parallel(member_doc) → E _finish_wave</div>
+<div>member_core = stage_worker → stage_fingerprint → stage_simulate → stage_judge, inside a 3-attempt memoised retry machine</div>
+  </div>
+  <div class="note"><b>Read order suggestion:</b> run_factory.py lines 1073 (main) → 191 (run) → 232 (run_wave) → 393 (member_core) → 548/604/611 (stages) → 644 (stage_update) → 874 (_finish_wave) → 1002 (halt). That path — about 300 lines — is the entire factory. Everything else in the file exists to serve those nine functions.</div>
+
+  <div class="footer">Context Health Factory — one run, function by function</div>
+  <div class="pageno">5 / 5</div>
+</div>
+
+</body>
+</html>
