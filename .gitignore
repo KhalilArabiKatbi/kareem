@@ -14,3 +14,6 @@ factory/.cache/
 
 # hook state + shadow logs
 .kareem/
+
+# eval outputs (contain real transcript-derived data)
+eval/out/
