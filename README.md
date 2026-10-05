@@ -1,18 +1,28 @@
 <p align="center">
-  <img src="assets/logo.png" alt="Kareem" width="380">
+  <img src="assets/logo.png" alt="Kareem | Context surveillance" width="560" />
 </p>
 
-<h1 align="center">Kareem</h1>
+**A tiny trained policy that watches an autonomous agent's context.** Every step, one forward pass (under 1 ms, CPU-only) tells the harness **when to compact, prune, or re-inject instructions**. Trained by an autonomous research factory over 100 experiments and confirmed on a hidden set never used for selection.
 
-<p align="center">
-  <b>Kareem keeps an eye on your agent's context.</b><br>
-  A tiny trained policy that watches an autonomous agent's context every step and tells the harness
-  <b>when to compact, prune, or re-inject instructions</b> — one forward pass, under a millisecond, CPU-only.
-</p>
+<div align="center">
 
----
+[![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](pyproject.toml)
+[![Tests](https://github.com/KhalilArabiKatbi/kareem/actions/workflows/test.yml/badge.svg)](https://github.com/KhalilArabiKatbi/kareem/actions/workflows/test.yml)
+[![Sim score](https://img.shields.io/badge/sim%20score-81.4%20of%20~83%20ceiling-brightgreen)](BENCHMARKS.md)
+[![CPU only](https://img.shields.io/badge/inference-CPU%20only-lightgrey)](#install)
+[![Claude Code](https://img.shields.io/badge/Claude%20Code-hook-D97757)](#claude-code-integration-shadowrecommend-mode)
 
-Every long-running agent hits the same wall: the context fills with stale tool output, the original instructions lose salience, error streaks compound, and eventually the model overflows or quietly degrades. Today most harnesses handle this with a hand-written threshold ("compact at 90%"). Kareem replaces that guess with a policy trained by an autonomous research factory over 100 experiments, selected on held-out scenarios, and confirmed on a hidden set that was never used for selection.
+</div>
+
+## Why Kareem
+
+Every long-running agent hits the same wall: the context fills with stale tool output, the original instructions lose salience, error streaks compound, and eventually the model overflows or quietly degrades. Most harnesses handle this with a hand-written threshold ("compact at 90%"). Kareem replaces that guess with a learned policy.
+
+- **One forward pass, under a millisecond.** A 3-member MLP ensemble, CPU-only. Only dependency: `torch`.
+- **Six typed actions.** `NOOP`, `COMPACT`, `PRUNE_TOOLS`, `REINJECT_INSTRUCTIONS`, `CHECKPOINT_RESET`, `RETRIEVE_MEMORY`.
+- **Shadow-first.** Logs every decision, so you tune the threshold on your own sessions before acting on anything.
+- **Auditable.** Every experiment, judge score, and selection decision is in `experiments/`.
 
 ## Measured performance (simulator)
 
@@ -31,7 +41,8 @@ Full protocol: [ai_docs/benchmark_protocol.md](ai_docs/benchmark_protocol.md) an
 ## Install
 
 ```bash
-pip install -e .          # only dependency: torch
+pip install -e .             # only dependency: torch
+pip install -e ".[claude]"   # optional: Claude Agent SDK wrapper
 ```
 
 ## Quickstart
