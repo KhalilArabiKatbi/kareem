@@ -16,6 +16,8 @@ claude = ["claude-agent-sdk>=0.1"]
 
 [project.scripts]
 kareem-shadow = "kareem.shadow:main"
+kareem-statusline = "kareem.integrations.statusline:main"
+kareem-toggle = "kareem.integrations.statusline:toggle_main"
 
 [tool.setuptools]
 packages = ["kareem", "kareem.integrations"]

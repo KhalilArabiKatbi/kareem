@@ -229,7 +229,7 @@ def _handle_tool_event(event: dict, failed: bool) -> None:
 
 def main() -> None:
     try:
-        if os.environ.get("KAREEM_DISABLED") == "1":
+        if os.environ.get("KAREEM_DISABLED") == "1" or (_state_dir() / "disabled").exists():
             return
         event = json.load(sys.stdin)
         name = event.get("hook_event_name", "")
